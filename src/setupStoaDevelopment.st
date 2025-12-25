@@ -29,7 +29,7 @@ world := UISupervisor ui.
 		morph scale: 1/2.
 		"Compute the available free space for windows placement"
 		area := RealEstateAgent maximumUsableArea 
-			extendBy: 0 @ morph morphHeight negated.
+			extendBy: 0 @ (morph morphHeight + 64) negated.
 		extent := area extent // 2.
 		"Open a few System Browsers"
 		Browser open 
@@ -42,11 +42,14 @@ world := UISupervisor ui.
 		morph := Browser open 
 			morphPosition: area extent // 2;
 			morphExtent: extent.
-		morph model setClass: (Smalltalk at: #Morph) selector: nil.
+		morph model setClass: (Smalltalk at: #Stoa) selector: nil.
 		"Open a Workspace with some default contents"
 		morph := Workspace open.
 		morph model actualContents: 'ChangeSet installNewUpdates.
-Stoa setStoaMenu. 
+Display fullScreenMode: false.
+"Select and execute (Ctrl-D) to set the world menu with DKM menu:"
+Stoa setStoaMenu.
+"To restore the default Cuis world menu:"
 Stoa setCuisMenu.'.
 		morph 
 			morphPosition: 0 @ (area height // 2);

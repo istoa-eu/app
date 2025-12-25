@@ -35,4 +35,4 @@ cp $cuis.image $ide.image
 cp $cuis.changes $ide.changes
 cd -
 
-$VM $imagePath/$ide -s $stoaApp/src/setupDyboDevelopment.st 
+$VM $imagePath/$ide -s $stoaApp/src/setupStoaDevelopment.st 

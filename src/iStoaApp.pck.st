@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7739] on 25 December 2025 at 12:24:56 am'!
+'From Cuis7.5 [latest update: #7739] on 25 December 2025 at 11:06:26 am'!
 'Description '!
-!provides: 'iStoaApp' 1 2!
+!provides: 'iStoaApp' 1 3!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'Commander' 1 9 nil!
 !requires: 'DKM-History-Timeline' 1 6 nil!
@@ -24,13 +24,15 @@ history: menuBuilder
 	self newEntryIn: #history forDKM: Timeline in: #timeline with: menuBuilder 
 			! !
 
-!Stoa class methodsFor: 'command' stamp: 'hlsf 25/Dec/2025 00:20:42'!
+!Stoa class methodsFor: 'command' stamp: 'hlsf 25/Dec/2025 10:38:57'!
 newEntryIn: parentEntry forDKM: aDKMPresenter in: dkmMenuEntry with: menuBuilder
 "	Install the menu entries to play and to edit this aDKMPresenter 	"
 	| playEntry editEntry |
 	playEntry := (dkmMenuEntry, 'play') asSymbol.
 	editEntry := (dkmMenuEntry , 'edit') asSymbol.
-	menuBuilder newEntry: dkmMenuEntry in: parentEntry :: label: aDKMPresenter title.
+	menuBuilder newEntry: dkmMenuEntry in: parentEntry :: 
+		label: aDKMPresenter title;
+		help: aDKMPresenter description .
 		menuBuilder newEntry: playEntry in: dkmMenuEntry ::
 			order: 1;
 			label: 'play';
@@ -69,6 +71,11 @@ getMenuIn: aWorld at: aHand
 	menu addStayUpIcons ;
 		addTitle: 'DKM Menu '.
 	^ menu! !
+
+!Stoa class methodsFor: 'user interface' stamp: 'hlsf 25/Dec/2025 10:38:04'!
+install
+	Preferences name: #focusFollowsMouse category: #gui value: true.
+	self setStoaMenu ! !
 
 !Stoa class methodsFor: 'user interface' stamp: 'hlsf 25/Dec/2025 00:17:19'!
 setCuisMenu
