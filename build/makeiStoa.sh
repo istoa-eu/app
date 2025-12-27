@@ -35,14 +35,14 @@ smalltalkSources=`ls CuisImage/Cuis?.?.sources | cut -d / -f2`
 # the Smalltalk installation script and the iStoa source
 
 vmExec=CuisVM.app/Contents/Linux-x86_64/squeak
-installScript="$src/install-iStoa-workstation.st"
+installScript="$src/install-istoa-workstation.st"
 
 buildImage () {
     # INSTALL PACKAGE
     # prepare the istoa image
     rm $imagePath/istoa.*
     cp $imagePath/$smalltalk.image $imagePath/istoa.image
-    cp $imagePath/$smalltalk.changes $imagePath/istao.changes
+    cp $imagePath/$smalltalk.changes $imagePath/istoa.changes
     # install source code in the istoa image and configure it
     $vmExec $imagePath/istoa.image -s $installScript
     ls -lh $imagePath/istoa.image
