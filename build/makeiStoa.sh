@@ -1,25 +1,25 @@
 #!/bin/bash
 #
-# Build DrGeo image and package bundle
+# Build iStao image and package bundle
 #
-# Link the drgeo repository in the Cuis release folder.
+# Link the iStoa's app repository in the Cuis release folder.
 # Execute the script from Cuis release folder.
-# If necessary, in the Path section below, adjust drgeoRepo, vmExec variables.
-# Adjust below the rel variable to the wished Dr. Geo release number
+# If necessary, in the Path section below, adjust istoaRepo, vmExec variables.
+# Adjust below the rel variable to the wished iStoa release number
 
-# DrGeo release number
-rel="25.06b-beta"
+# iStoa release number
+rel="25.12a-beta"
 
 # Path
-drgeoRepo=./drgeo
-buildPath="$drgeoRepo/build"
+istoaRepo=./app
+buildPath="$istoaRepo/build"
 bundlesPath="$buildPath/bundles"
-src="$drgeoRepo/src"
-resources="$drgeoRepo/resources"
+src="$istoaRepo/src"
+resources="$istoaRepo/resources"
 imagePath=./CuisImage
 
 # Cuis release
-release=`cat drgeo/cuisRelease`
+release=`cat app/cuisRelease`
 # version number, when dealing with rolling release
 version=`ls $imagePath/Cuis$release-????.image | cut -d - -f 2 | cut -d . -f 1`
 if [ -z "$version" ]
@@ -30,33 +30,31 @@ else
 fi
 smalltalkSources=`ls CuisImage/Cuis?.?.sources | cut -d / -f2`
 
-# To build Dr. Geo we need:
+# To build iStoa we need:
 # A Cuis image, its source, the virtual machine,
-# the Smalltalk installation script and the DrGeo source
-
-fonts="ipaexg.ttf WenQuanYiZenHeiSharpRegular.ttf"
+# the Smalltalk installation script and the iStoa source
 
 vmExec=CuisVM.app/Contents/Linux-x86_64/squeak
-installScript="$src/install-drgeo-workstation.st"
+installScript="$src/install-iStoa-workstation.st"
 
 buildImage () {
     # INSTALL PACKAGE
-    # prepare the drgeo image
-    rm $imagePath/drgeo.*
-    cp $imagePath/$smalltalk.image $imagePath/drgeo.image
-    cp $imagePath/$smalltalk.changes $imagePath/drgeo.changes
-    # install source code in the drgeo image and configure it
-    $vmExec $imagePath/drgeo.image -s $installScript
-    ls -lh $imagePath/drgeo.image
-    echo "--== DONE building DrGeo image ==--"    
+    # prepare the istoa image
+    rm $imagePath/istoa.*
+    cp $imagePath/$smalltalk.image $imagePath/istoa.image
+    cp $imagePath/$smalltalk.changes $imagePath/istao.changes
+    # install source code in the istoa image and configure it
+    $vmExec $imagePath/istoa.image -s $installScript
+    ls -lh $imagePath/istoa.image
+    echo "--== DONE building iStoa image ==--"    
 }
 
 copyToBundle () {
     # copy a built image to an existing gnulinux bundle (for quick testing)
     bundlePath="$bundlesPath/gnulinux"
-    bundleApp="$bundlePath/DrGeo"
+    bundleApp="$bundlePath/iStoa"
     bundleResources="$bundleApp/Resources"
-    rsync -av $imagePath/drgeo.{image,changes} $bundleResources/image
+    rsync -av $imagePath/istoa.{image,changes} $bundleResources/image
 }
 
 makeBundle () {
@@ -68,17 +66,17 @@ makeBundle () {
     cuisVMPath="CuisVM.app/Contents"
     case "$1" in
 	gnulinux)
-	    bundleApp="$bundlePath/DrGeo"
+	    bundleApp="$bundlePath/iStoa"
 	    cuisVM="Linux-x86_64"
 	    destVM="VM"
 	;;
 	windows)
-	    bundleApp="$bundlePath/DrGeo"
+	    bundleApp="$bundlePath/iStoa"
 	    cuisVM="Windows-x86_64"
 	    destVM="VM"
 	;;
 	mac)
-	    bundleApp="$bundlePath/DrGeo.app"
+	    bundleApp="$bundlePath/iStoa.app"
 	    cuisVM="MacOS Resources"
 	    # Subfolder Resources to be considered as well
 	    destVM="Contents"
@@ -89,40 +87,19 @@ makeBundle () {
     rm -rf $bundlePath
     echo "Installing template..."
     rsync -a  --exclude '*~' $bundleTemplate $bundlesPath
-    echo "Installing sketches files..."
-    rsync -a "$resources/Sketches" $bundleResources
-    echo "Installing Smalltalk sketches files..."
-    rsync -a "$resources/SmalltalkSketches" $bundleResources
-    echo "Installing user sketches and exports folder, graphics..."
-    mkdir $bundleResources/MySketches
-    mkdir $bundleResources/MyExports
-    rsync -a $resources/graphics/banner/splash.png $bundleResources/icons
-    rsync -a $resources/graphics/iconsSVG/* $bundleResources/icons
     echo "Installing OpenSmalltalk VM..."
     for i in $cuisVM
     do
 	rsync -a $cuisVMPath/$i $bundleApp/$destVM/
     done
     echo "Installing Smalltalk image and changes..."
-    rsync -a $imagePath/drgeo.{image,changes} $bundleResources/image
+    rsync -a $imagePath/istoa.{image,changes} $bundleResources/image
     echo "Installing Smalltalk source..."
     rsync -a $imagePath/$smalltalkSources $bundleResources/image
-    echo "Installing fonts..."
-    mkdir $bundleResources/fonts/
-    for each in $fonts
-    do
-	rsync -a $resources/fonts/$each $bundleResources/fonts
-    done
-    echo "Installing locales..."
-    rsync -a "$drgeoRepo/i18n/locale" $bundleResources/image
-    echo "Installing documentation..."
-    cp $resources/doc/ChangeLog $bundleApp
-    mkdir $bundleResources/doc
-    cp $resources/doc/README.*.txt $resources/doc/README.txt $bundleResources/doc
     echo "Set exec flag and any additional specific files installation..."
     case "$1" in
 	gnulinux)
-	    chmod +x $bundleApp/DrGeo.sh
+	    chmod +x $bundleApp/iStoa.sh
 	    chmod +x $bundleApp/VM/$cuisVM/squeak
 	    ;;
 	mac)
@@ -133,11 +110,11 @@ makeBundle () {
     echo "Preparing to build archive..."
     cd $bundlePath
     echo "Archiving the bundle..."
-    zip -r --symlinks -qdgds 5m DrGeo-$1-$rel.zip "`basename $bundleApp`" -x \*~
-    ls -sh DrGeo-$1-$rel.zip
-    echo "--== DONE packaging DrGeo for $1 ==--"
+    zip -r --symlinks -qdgds 5m iStoa-$1-$rel.zip "`basename $bundleApp`" -x \*~
+    ls -sh iStoa-$1-$rel.zip
+    echo "--== DONE packaging iStoa for $1 ==--"
     echo -n "Signing..."
-    gpg --armor --sign --detach-sign DrGeo-$1-$rel.zip
+    gpg --armor --sign --detach-sign iStoa-$1-$rel.zip
     echo "...DONE."
     cd -
 }
@@ -184,10 +161,10 @@ case "$1" in
 	copyToBundle
 	;;
     --help|*)
-	echo "Usage: makeDrGeo [OPTION] [ARGUMENT]"
+	echo "Usage: makeiStoa [OPTION] [ARGUMENT]"
 	echo
-	echo -e "--build\t\t\t\t\tBuild Dr. Geo image"
-	echo -e "--package all|gnulinux|windows|mac\tPackage Dr.Geo with an already built image"
+	echo -e "--build\t\t\t\t\tBuild iStoa image"
+	echo -e "--package all|gnulinux|windows|mac\tPackage iStoa with an already built image"
 	echo -e "--all\t\t\t\t\tBuild image and package for all OS"
 	echo -e "--copy\t\t\t\t\\tCopy a built image to an existing gnulinux bundle"
 	;;
