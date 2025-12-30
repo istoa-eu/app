@@ -6,13 +6,13 @@ The DKM are independents visual models, each one with a specific
 learning aim.
 
 
-# Installation
+## Installation
 
 The packages can be installed independently or in the [iStoa](../..)
 development environment.
 
 
-# Licenses
+## Licenses
 
 * A financed DKM is released under the
   [LGPL](https://www.gnu.org/licenses/lgpl-3.0-standalone.html) terms.

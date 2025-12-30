@@ -48,8 +48,12 @@ environment for the iStoaApp.
 
 * Copyright 2025-2026 Hilaire Fernandes
 
-* The iStoa source code `iStoa.pck.st` is released under the terms of
+* The iStoa source code `iStoaApp.pck.st` is released under the terms of
   the MIT license.
 
 * Each DKM source code is released under the terms of its specific
-  license, as specified in their owner folder.
+  license, as specified in their [source code
+  folder](https://github.com/istoa-eu/app/tree/main/src/dkm)
+
+License restrictions may apply to the whole application built from the
+iStoaApp source code and DKMs source codes.
