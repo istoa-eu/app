@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7739] on 27 December 2025 at 9:46:56 pm'!
+'From Cuis7.5 [latest update: #7739] on 30 December 2025 at 11:20:52 am'!
 'Description '!
-!provides: 'iStoaApp' 1 8!
+!provides: 'iStoaApp' 1 9!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'Commander' 1 9 nil!
 !requires: 'DKM-History-Timeline' 1 6 nil!
@@ -33,7 +33,7 @@ history: menuBuilder
 	self newEntryIn: #history forDKM: Timeline in: #timeline with: menuBuilder 
 			! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 27/Dec/2025 20:27:10'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 30/Dec/2025 11:20:20'!
 newEntryIn: parentEntry forDKM: aDKMPresenter in: dkmMenuEntry with: menuBuilder
 "	Install the menu entries to play and to edit this aDKMPresenter 	"
 	| playEntry editEntry docEntry |
@@ -57,7 +57,7 @@ newEntryIn: parentEntry forDKM: aDKMPresenter in: dkmMenuEntry with: menuBuilder
 			selector: #presentInWorkspace.
 		menuBuilder newEntry: docEntry in: dkmMenuEntry ::
 			order: 30;
-			label: 'documentation';
+			label: 'doc';
 			icon: #inspectIcon;
 			target: self; selector: #browseApi: ; arguments: {aDKMPresenter} 
 			! !

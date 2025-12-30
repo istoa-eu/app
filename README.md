@@ -30,7 +30,6 @@ iStoaApp.
 ```bash 
 cd Cuis-Smalltalk-Dev
 git clone --depth 1 https://github.com/Dynamic-Book/DyboLib
-git clone --depth 1 https://framagit.org/istoa/dkm
 git clone --depth 1 https://framagit.org/istoa/app
 ```
 
@@ -44,3 +43,13 @@ cd Cuis/Cuis-Smalltalk-Dev
 
 A new image istoaIDE.image is built. This is the development
 environment for the iStoaApp.
+
+# Licenses
+
+* Copyright 2025-2026 Hilaire Fernandes
+
+* The iStoa source code `iStoa.pck.st` is released under the terms of
+  the MIT license.
+
+* Each DKM source code is released under the terms of its specific
+  license, as specified in their owner folder.

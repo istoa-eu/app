@@ -13,7 +13,7 @@ Preferences at: #logDebuggerStackToFile put: true.
 Preferences at: #autoNumberUserChanges put: false.
 Preferences at: #focusFollowsMouse put: true.
 "Install iStoa code"
-Feature require: #'iStoaApp'.
+Feature require: #iStoaApp.
 world := UISupervisor ui.
 [
 	Display fullScreenMode: true.

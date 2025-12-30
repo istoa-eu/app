@@ -4,7 +4,7 @@
 #
 
 imagePath=CuisImage
-stoaApp=app
+stoaApp=`echo "$0" | cut -d / -f 2`
 
 # Cuis release
 release=`cat $stoaApp/cuisRelease`
