@@ -11,7 +11,7 @@
 rel="25.12a-beta"
 
 # Path
-istoaRepo=./app
+istoaRepo=`echo "$0" | cut -d / -f 2`
 buildPath="$istoaRepo/build"
 bundlesPath="$buildPath/bundles"
 src="$istoaRepo/src"
@@ -19,7 +19,7 @@ resources="$istoaRepo/resources"
 imagePath=./CuisImage
 
 # Cuis release
-release=`cat app/cuisRelease`
+release=`cat $istoaRepo/cuisRelease`
 # version number, when dealing with rolling release
 version=`ls $imagePath/Cuis$release-????.image | cut -d - -f 2 | cut -d . -f 1`
 if [ -z "$version" ]
