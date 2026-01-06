@@ -30,7 +30,7 @@ iStoaApp.
 ```bash 
 cd Cuis-Smalltalk-Dev
 git clone --depth 1 https://github.com/Dynamic-Book/DyboLib
-git clone --depth 1 https://framagit.org/istoa/app
+git clone --depth 1 https://github.com/istoa-eu/app
 ```
 
 ## 3. Start the iStoaApp IDE
