@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7739] on 25 December 2025 at 11:06:15 am'!
+'From Cuis7.7 [latest update: #7791] on 11 January 2026 at 8:31:33 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 2!
+!provides: 'DKM-Core' 1 3!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -60,15 +60,12 @@ title
 	self subclassResponsibility 
 	"^ 'Model title'"! !
 
-!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 24/Dec/2025 20:16:42'!
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 11/Jan/2026 19:42:41'!
 evaluateSample
 " Evaluate the sample and present it to the world "
-	| evaluateAndOpen |
-	evaluateAndOpen := String streamContents: [:str |
-			str nextPut: $(;
-				nextPutAll: self codeSample;
-				nextPutAll: ') openInHand'].
-	Compiler evaluate: evaluateAndOpen ! !
+	| view |
+	view := Compiler evaluate: self codeSample.
+	view openInHand! !
 
 !DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 25/Dec/2025 10:54:54'!
 presentInWorkspace
