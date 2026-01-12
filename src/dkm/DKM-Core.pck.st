@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7791] on 11 January 2026 at 8:31:33 pm'!
+'From Cuis7.7 [latest update: #7791] on 12 January 2026 at 9:08:26 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 3!
+!provides: 'DKM-Core' 1 4!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -60,6 +60,11 @@ title
 	self subclassResponsibility 
 	"^ 'Model title'"! !
 
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026 20:52:50'!
+dslCategory
+" The method category of the DSL "
+	^ 'DSL'! !
+
 !DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 11/Jan/2026 19:42:41'!
 evaluateSample
 " Evaluate the sample and present it to the world "
@@ -82,3 +87,8 @@ presentInWorkspace
 	Workspace new
 		contents: codeSample;
 		openLabel: self title! !
+
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026 20:53:37'!
+presenterClass
+" The class of the real presenter, if different "
+	^ self! !

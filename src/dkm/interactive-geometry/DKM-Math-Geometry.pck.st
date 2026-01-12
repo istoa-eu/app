@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7791] on 11 January 2026 at 8:31:35 pm'!
+'From Cuis7.7 [latest update: #7791] on 12 January 2026 at 9:08:28 pm'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 1!
+!provides: 'DKM-Math-Geometry' 1 2!
 !requires: 'DrGeoCore' 1 10 nil!
 SystemOrganization addCategory: #'DKM-Math-Geometry'!
 
@@ -47,3 +47,11 @@ description
 !InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 11/Jan/2026 19:28:37'!
 title
 	^ 'Interactive geometry' translated! !
+
+!InteractiveGeometry class methodsFor: 'as yet unclassified' stamp: 'hlsf 12/Jan/2026 20:54:03'!
+dslCategory
+	^ 'DSL point' ! !
+
+!InteractiveGeometry class methodsFor: 'as yet unclassified' stamp: 'hlsf 12/Jan/2026 20:53:52'!
+presenterClass
+	^ DrGeoSketch ! !
