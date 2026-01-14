@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7739] on 30 December 2025 at 11:20:52 am'!
+'From Cuis7.7 [latest update: #7791] on 14 January 2026 at 9:37:45 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 9!
+!provides: 'iStoaApp' 1 10!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'Commander' 1 9 nil!
 !requires: 'DKM-History-Timeline' 1 6 nil!
@@ -31,6 +31,13 @@ getMenuIn: aWorld at: aHand
 history: menuBuilder
 	<iStoaAppCommand>
 	self newEntryIn: #history forDKM: Timeline in: #timeline with: menuBuilder 
+			! !
+
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 11/Jan/2026 19:36:01'!
+math: menuBuilder
+	<iStoaAppCommand>
+	self newEntryIn: #math forDKM: InteractiveGeometry in: #interactiveGeometry with: menuBuilder 
+
 			! !
 
 !Stoa class methodsFor: 'menu' stamp: 'hlsf 30/Dec/2025 11:20:20'!
@@ -116,15 +123,18 @@ toolMenu: menuBuilder
 		icon: #saveIcon;
 		help: 'Save this iStoa session.'! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 27/Dec/2025 20:36:46'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 11/Jan/2026 19:36:43'!
 topMenu: menuBuilder
 	<iStoaAppCommand>
 	menuBuilder newEntry: #history ::
 		label: 'History';
 		order: 10.
+	menuBuilder newEntry: #math ::
+		label: 'Mathematics';
+		order: 20.
 	menuBuilder newEntry: #physics ::
 		label: 'Physics';
-		order: 20.
+		order: 30.
 	menuBuilder newEntry: #tools ::
 		label: 'Tools';
 		icon: #systemIcon;
@@ -139,11 +149,11 @@ topMenu: menuBuilder
 		order: 999	
 		! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 27/Dec/2025 20:33:17'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 12/Jan/2026 20:53:20'!
 browseApi: aDKMPresenter
 	| browser |
-	browser := HierarchyBrowserWindow onClass: aDKMPresenter selector: nil.
-	browser model messageCategoryListIndex: (browser model messageCategoryList indexOf: 'DSL')! !
+	browser := HierarchyBrowserWindow onClass: aDKMPresenter presenterClass selector: nil.
+	browser model messageCategoryListIndex: (browser model messageCategoryList indexOf: aDKMPresenter dslCategory)! !
 
 !Stoa class methodsFor: 'documentation' stamp: 'hlsf 27/Dec/2025 15:59:40'!
 cuisVersion
