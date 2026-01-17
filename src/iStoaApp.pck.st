@@ -1,7 +1,8 @@
-'From Cuis7.7 [latest update: #7791] on 14 January 2026 at 9:37:45 pm'!
+'From Cuis7.7 [latest update: #7791] on 17 January 2026 at 11:11:31 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 10!
+!provides: 'iStoaApp' 1 11!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
+!requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
 !requires: 'DKM-History-Timeline' 1 6 nil!
 SystemOrganization addCategory: #iStoaApp!
