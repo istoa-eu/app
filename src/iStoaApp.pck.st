@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7791] on 17 January 2026 at 11:11:31 pm'!
+'From Cuis7.7 [latest update: #7791] on 18 January 2026 at 7:29:21 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 11!
+!provides: 'iStoaApp' 1 12!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
@@ -19,12 +19,12 @@ Stoa class
 	instanceVariableNames: ''!
 
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 27/Dec/2025 20:42:51'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 18/Jan/2026 19:17:05'!
 getMenuIn: aWorld at: aHand
 	| menu |
 	menu :=  (CommandBuilder on: #iStoaAppCommand) getMenu.
 	menu 
-		addTitle: 'Environement Menu    '; 
+		addTitle: 'Dynamic Knowledge Models   '; 
 		addStayUpIcons .
 	^ menu! !
 
@@ -41,13 +41,14 @@ math: menuBuilder
 
 			! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 30/Dec/2025 11:20:20'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 18/Jan/2026 19:12:47'!
 newEntryIn: parentEntry forDKM: aDKMPresenter in: dkmMenuEntry with: menuBuilder
 "	Install the menu entries to play and to edit this aDKMPresenter 	"
-	| playEntry editEntry docEntry |
+	| playEntry editEntry docEntry promptForAI |
 	playEntry := (dkmMenuEntry, 'play') asSymbol.
 	editEntry := (dkmMenuEntry , 'edit') asSymbol.
 	docEntry := (dkmMenuEntry , 'doc') asSymbol.
+	promptForAI := (dkmMenuEntry, 'prompt') asSymbol.
 	menuBuilder newEntry: dkmMenuEntry in: parentEntry :: 
 		label: aDKMPresenter title;
 		help: aDKMPresenter description .
@@ -60,14 +61,19 @@ newEntryIn: parentEntry forDKM: aDKMPresenter in: dkmMenuEntry with: menuBuilder
 		menuBuilder newEntry: editEntry in: dkmMenuEntry ::
 			order: 20;
 			label: 'edit';
-			icon: #terminalIcon;
+			icon: #textEditorIcon;
 			target: aDKMPresenter ;
 			selector: #presentInWorkspace.
 		menuBuilder newEntry: docEntry in: dkmMenuEntry ::
 			order: 30;
-			label: 'doc';
+			label: 'documentation';
 			icon: #inspectIcon;
-			target: self; selector: #browseApi: ; arguments: {aDKMPresenter} 
+			target: self; selector: #browseApi: ; arguments: (Array with: aDKMPresenter).
+		menuBuilder newEntry: promptForAI in: dkmMenuEntry ::
+			order: 40;
+			label: 'copy prompt for AI';
+			icon: #terminalIcon;
+			action: [Clipboard storeObject: aDKMPresenter promptForAI]
 			! !
 
 !Stoa class methodsFor: 'menu' stamp: 'hlsf 24/Dec/2025 20:46:45'!
