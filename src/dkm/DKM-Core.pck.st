@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7791] on 12 January 2026 at 9:08:26 pm'!
+'From Cuis7.7 [latest update: #7791] on 18 January 2026 at 7:06:09 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 4!
+!provides: 'DKM-Core' 1 5!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -26,6 +26,29 @@ model
 !DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025 10:02:07'!
 view
 	^ view! !
+
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 18/Jan/2026 17:48:20'!
+codeSampleForAI
+" Working code sample exposing all the DSL with working code sample.
+Subclasses should overide this method with the full DSL API exposed "
+	^ self codeSample! !
+
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 18/Jan/2026 18:38:59'!
+promptForAI
+	^ self promptTemplate format: (Array with: self title with: self description with: self codeSampleForAI)! !
+
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 18/Jan/2026 18:31:35'!
+promptTemplate
+	^ '# Introduction
+I am teacher using the application iStoa (http://istoa.eu) and its library of DKM (Dynamic Knowledge Model) to build pedagogical
+content to use in front of student . The content is described with a script written in the Smalltalk programming language (Cuis-Smalltalk
+implementation), when executed in the iStoa application, a visual simulation is then constructed.
+
+Now, I am using one of the iStoa DKM to build {1} simulation {2}. In the next section, I show you the complete DSL API specific to this DKM. Please learn from it for the next question I will ask you.
+
+# DSL API for {1}
+{3}
+'! !
 
 !DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:30'!
 codeSample

@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7739] on 25 December 2025 at 11:06:21 am'!
+'From Cuis7.7 [latest update: #7791] on 18 January 2026 at 7:06:07 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 10!
+!provides: 'DKM-History-Timeline' 1 11!
 !requires: 'UI-Widgets' 1 62 nil!
 !requires: 'DKM-Core' 1 0 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -207,6 +207,21 @@ width: aColor
 initialize
 	model := TimelineModel new.
 	view := TimelineView presenter: self! !
+
+!Timeline class methodsFor: 'AI' stamp: 'hlsf 18/Jan/2026 18:49:34'!
+codeSampleForAI 
+	^'| myTimeline |
+myTimeline := Timeline title: ''History of Book''.
+myTimeline 
+	addEvent: ''China. Gong Xuanyi first known printer with a wood printing device on paper.'' on: ''480.1.1'';
+	addEvent: ''Germany. Gutemberg printing press with metal mobile blocks.'' on: ''1450.1.1'';
+	color: Color blue.
+"To shrink too long timeline"
+myTimeline shrink.
+"To not shrink too long timeline"
+myTimeline unshrink.
+myTimeline view'
+! !
 
 !Timeline class methodsFor: 'DKM' stamp: 'hlsf 12/Oct/2025 12:54:56'!
 codeSample
@@ -986,19 +1001,19 @@ extent
 >= anotherDate
 	^ (self < anotherDate) not! !
 
-!Date methodsFor: '*DKM-History-Timeline' stamp: 'hlsf 2/Oct/2025 22:00:42'!
+!Date methodsFor: '*DKM-History-Timeline' stamp: 'hlsf 18/Jan/2026 19:00:23'!
 roundDownTo: aDuration
 	^ Date 
 		year:  (self yearNumber roundDownTo: aDuration years)
 		month: self monthIndex 
-		day: self dayOfMonth! !
+		day: 1! !
 
-!Date methodsFor: '*DKM-History-Timeline' stamp: 'hlsf 2/Oct/2025 22:01:23'!
+!Date methodsFor: '*DKM-History-Timeline' stamp: 'hlsf 18/Jan/2026 19:00:29'!
 roundUpTo: aDuration
 	^ Date 
 		year:  (self yearNumber roundUpTo: aDuration years)
 		month: self monthIndex 
-		day: self dayOfMonth! !
+		day: 1! !
 
 !Date methodsFor: '*DKM-History-Timeline' stamp: 'hlsf 4/Oct/2025 13:37:48'!
 to: endDate by: aDuration do: block
