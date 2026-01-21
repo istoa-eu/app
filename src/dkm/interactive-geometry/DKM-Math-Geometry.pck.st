@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7791] on 21 January 2026 at 3:45:07 pm'!
+'From Cuis7.7 [latest update: #7791] on 21 January 2026 at 8:11:12 pm'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 4!
+!provides: 'DKM-Math-Geometry' 1 5!
 !requires: 'DrGeoCore' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Math-Geometry'!
 
@@ -60,10 +60,11 @@ dslCategory
 presenterClass
 	^ DrGeoSketch ! !
 
-!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 21/Jan/2026 15:44:12'!
+!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 21/Jan/2026 19:37:21'!
 codeSampleForAI
 	^ '| mySketch point anotherPoint mobile dependent segment line circle arc ray locus value angle polygon ruler vector |
 "## Creating a new sketch instance"
+"By default grid and axes are off"
 mySketch := DrGeoSketch new.
 "## Manipulating sketch"
 mySketch centerTo: 15@20.
@@ -188,7 +189,7 @@ mySketch symmetry: polygon center: 0@0.
 value := mySketch value: [(0 to: Float halfPi by: Float pi / 20) atRandom].
 mySketch rotate: polygon center: point angle: value.
 mySketch rotate: polygon center: 5@5 angle: angle.
-ruler := mySketch integer: 10 at: 0@10 from: 1 to: 60.
+ruler := mySketch integer: 10 at: 0@10 from: 1 to: 60 name:''angle'' showValue: true.
 value := mySketch value: ruler.
 mySketch rotate: polygon center: 0@0 angleDegrees: value.
 ruler := mySketch float: 1.1 at: 0@15 from: -3 to: 3 name: ''factor'' showValue: true.
