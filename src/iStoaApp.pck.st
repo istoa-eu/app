@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7804] on 22 January 2026 at 10:58:31 am'!
+'From Cuis7.7 [latest update: #7810] on 22 January 2026 at 6:31:47 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 13!
+!provides: 'iStoaApp' 1 14!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
@@ -213,9 +213,9 @@ toggleFullscreen
 	Preferences at: #fullscreen put: isFullscreen not.
 	Display fullScreenMode: isFullscreen not! !
 
-!Stoa class methodsFor: 'accessing' stamp: 'hlsf 22/Jan/2026 10:38:15'!
+!Stoa class methodsFor: 'accessing' stamp: 'hlsf 22/Jan/2026 18:24:19'!
 install
-	| world |
+	| world  stream |
 	"Report by any mean installation and run time"
 	Transcript
 		showOnDisplay: false;
@@ -252,7 +252,11 @@ install
 		(world submorphs reject: [:aMorph | aMorph is: #TaskbarMorph]) 
 			do: [:each | each delete].
 		'Morphs deleted' print.
-		'Cleaning image' print.
+		'Installing background image...' print.
+		stream := (DirectoryEntry cuisBaseDirectory / 
+			'iStoa' / 'resources' / 'graphics' // 'background.png') readStream.
+		world backgroundImageData: stream binary contentsOfEntireFile.
+		'Cleaning image...' print.
 		Smalltalk garbageCollect.
 		'Installation ended' print.
 		'Saving image...' print.
