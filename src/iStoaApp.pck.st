@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7810] on 22 January 2026 at 6:37:47 pm'!
+'From Cuis7.7 [latest update: #7804] on 22 January 2026 at 8:08:26 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 15!
+!provides: 'iStoaApp' 1 16!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
@@ -130,7 +130,7 @@ toolMenu: menuBuilder
 		icon: #saveIcon;
 		help: 'Save this iStoa session.'! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 11/Jan/2026 19:36:43'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 22/Jan/2026 20:05:14'!
 topMenu: menuBuilder
 	<iStoaAppCommand>
 	menuBuilder newEntry: #history ::
@@ -149,7 +149,10 @@ topMenu: menuBuilder
 	menuBuilder newEntry: #preferences ::
 		label: 'Preferences';
 		icon: #preferencesIcon;
-		order: 110.		
+		order: 110.	
+	menuBuilder newEntry: #About ::
+		action: [Stoa about];
+		order: 120.	
 	menuBuilder newEntry:  #Quit ::
 		action: [ Stoa quit ];
 		icon: #quitIcon;
@@ -170,10 +173,10 @@ cuisVersion
 iStoaCopyright
 	^ 'Source code application: Copyright 2025-2026 Hilaire Fernandes'! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 27/Dec/2025 16:03:36'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 22/Jan/2026 20:07:06'!
 iStoaInformationString
 	|text |
-	text := 'iStoa is a simulation environment to explore the Dynamic Knowledge Models (DKM).
+	text := 'iStoa (istoa.eu) is a simulation environment to explore the Dynamic Knowledge Models (DKM).
 With iStoa you can explore the DKM with the script examples already provided or
 edit new ones to invent variations.
 iStoa is also a development environment, so you can study and modify
@@ -184,10 +187,10 @@ the DKM code as you wish.
 LICENSE: GPL' translated format: {self iStoaVersion. self iStoaCopyright. self cuisVersion }.
 	^ text! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 27/Dec/2025 16:25:56'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 22/Jan/2026 20:06:05'!
 iStoaVersion
 	^ 'Installed version: ', 
-		'25.12a (code revision ', 
+		'26.02a (code revision ', 
 		(String streamContents: [:str | 
 			(CodePackage installedPackages at: 'iStoaApp') featureSpec provides printVersionRevisionOn: str]), ')'! !
 
