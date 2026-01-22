@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7791] on 18 January 2026 at 7:29:21 pm'!
+'From Cuis7.7 [latest update: #7804] on 22 January 2026 at 10:58:31 am'!
 'Description '!
-!provides: 'iStoaApp' 1 12!
+!provides: 'iStoaApp' 1 13!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
@@ -213,7 +213,7 @@ toggleFullscreen
 	Preferences at: #fullscreen put: isFullscreen not.
 	Display fullScreenMode: isFullscreen not! !
 
-!Stoa class methodsFor: 'accessing' stamp: 'hlsf 27/Dec/2025 21:46:40'!
+!Stoa class methodsFor: 'accessing' stamp: 'hlsf 22/Jan/2026 10:38:15'!
 install
 	| world |
 	"Report by any mean installation and run time"
@@ -233,6 +233,8 @@ install
 	"Preferences at: #logDebuggerStackToFile put: true."
 	Preferences at: #warnAndOfferLastUserChanges put: false.
 	Preferences at: #autoNumberUserChanges put: false.
+	"We do code style for a whole workspace, not by paragraph"
+	Preferences at: #workspacesStyleByParagraphs put: false.
 	"Set a default name for authoring"
 	Utilities setAuthorName: 'iStoa User' initials: 'iStoaUser'.
 
