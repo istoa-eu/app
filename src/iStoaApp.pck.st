@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7810] on 22 January 2026 at 6:31:47 pm'!
+'From Cuis7.7 [latest update: #7810] on 22 January 2026 at 6:37:47 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 14!
+!provides: 'iStoaApp' 1 15!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
@@ -213,7 +213,7 @@ toggleFullscreen
 	Preferences at: #fullscreen put: isFullscreen not.
 	Display fullScreenMode: isFullscreen not! !
 
-!Stoa class methodsFor: 'accessing' stamp: 'hlsf 22/Jan/2026 18:24:19'!
+!Stoa class methodsFor: 'accessing' stamp: 'hlsf 22/Jan/2026 18:37:43'!
 install
 	| world  stream |
 	"Report by any mean installation and run time"
@@ -245,13 +245,14 @@ install
 	UISupervisor whenUIinSafeState: 	[
 		"Adjust taskbar size"
 		world showTaskbar 
-		world taskbar scale: 1/2.
+		world taskbar scale: 1.
 		'Task bar rescaled' print.
 		Display fullScreenMode: true.
 		"Remove all morphs"
 		(world submorphs reject: [:aMorph | aMorph is: #TaskbarMorph]) 
 			do: [:each | each delete].
 		'Morphs deleted' print.
+		world taskbar color: Color gray muchLighter.
 		'Installing background image...' print.
 		stream := (DirectoryEntry cuisBaseDirectory / 
 			'iStoa' / 'resources' / 'graphics' // 'background.png') readStream.
