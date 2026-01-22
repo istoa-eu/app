@@ -18,7 +18,7 @@ NB_ARG=$#
 gio set \
 	"$0" \
 	"metadata::custom-icon" \
-	"file://$RESOURCES/icons/istoa.png" \
+	"file://$RESOURCES/graphics/istoa.png" \
 	2> /dev/null
 
 
