@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7791] on 21 January 2026 at 8:11:08 pm'!
+'From Cuis7.7 [latest update: #7809] on 23 January 2026 at 2:28:59 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 6!
+!provides: 'DKM-Core' 1 7!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -37,14 +37,16 @@ Subclasses should overide this method with the full DSL API exposed "
 promptForAI
 	^ self promptTemplate format: (Array with: self title with: self description with: self codeSampleForAI)! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 21/Jan/2026 16:04:12'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 23/Jan/2026 14:18:24'!
 promptTemplate
 	^ '# Introduction
 I am teacher using the application iStoa (http://istoa.eu) and its library of DKM (Dynamic Knowledge Model) to build pedagogical
-content to use in front of student . The content is described with a script written in the Smalltalk programming language (Cuis-Smalltalk
+content to use in front of student. The content is described with a script written in the Smalltalk programming language (Cuis-Smalltalk
 implementation), when executed in the iStoa application, a visual simulation is then constructed.
 
-Now, I am using one of the iStoa DKM to build {1} simulation ({2}). In the next section, I show the complete DSL API specific to this DKM. Please learn from it for the next questions I will ask you.
+Now, I am using one of the iStoa DKM to build {1} ({2})
+
+In the next section, I show the complete DSL API specific to this DKM. Please learn from it for the next questions I will ask you.
 
 # DSL API for {1}
 {3}
