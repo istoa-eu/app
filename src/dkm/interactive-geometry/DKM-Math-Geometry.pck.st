@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7810] on 22 January 2026 at 6:28:28 pm'!
+'From Cuis7.7 [latest update: #7809] on 25 January 2026 at 4:32:01 pm'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 6!
+!provides: 'DKM-Math-Geometry' 1 7!
 !requires: 'DrGeoCore' 1 18 nil!
 !requires: 'DKM-Core' 1 6 nil!
 SystemOrganization addCategory: #'DKM-Math-Geometry'!
@@ -61,7 +61,7 @@ dslCategory
 presenterClass
 	^ DrGeoSketch ! !
 
-!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 21/Jan/2026 19:37:21'!
+!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 25/Jan/2026 15:40:36'!
 codeSampleForAI
 	^ '| mySketch point anotherPoint mobile dependent segment line circle arc ray locus value angle polygon ruler vector |
 "## Creating a new sketch instance"
@@ -101,6 +101,11 @@ Arc of circle defined by three points
 -aPoint: a point the arc is passing through
 -end: ending point of the arc"
 mySketch arc: -8.5@2 to: point to: 12@-4.
+"arcCenter: center from: start to: end
+Oriented arc of circle (anti-clockwised) defined by its center and two points
+-center: a point, center of the circle
+-start: starting point of the arc
+-end: ending point of the arc"
 arc := mySketch arcCenter: 0@0 from: 0@5 to: 12@-2.
 arc color: Color magenta.
 circle := mySketch circleCenter: 0@0 radius: 10.
