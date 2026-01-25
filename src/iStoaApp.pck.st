@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7804] on 22 January 2026 at 8:08:26 pm'!
+'From Cuis7.7 [latest update: #7809] on 25 January 2026 at 4:47:12 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 16!
+!provides: 'iStoaApp' 1 17!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
@@ -216,7 +216,7 @@ toggleFullscreen
 	Preferences at: #fullscreen put: isFullscreen not.
 	Display fullScreenMode: isFullscreen not! !
 
-!Stoa class methodsFor: 'accessing' stamp: 'hlsf 22/Jan/2026 18:37:43'!
+!Stoa class methodsFor: 'system-support' stamp: 'hlsf 22/Jan/2026 18:37:43'!
 install
 	| world  stream |
 	"Report by any mean installation and run time"
