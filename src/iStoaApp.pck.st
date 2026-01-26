@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7809] on 25 January 2026 at 4:47:12 pm'!
+'From Cuis7.7 [latest update: #7810] on 26 January 2026 at 7:32:16 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 17!
+!provides: 'iStoaApp' 1 18!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
@@ -173,7 +173,7 @@ cuisVersion
 iStoaCopyright
 	^ 'Source code application: Copyright 2025-2026 Hilaire Fernandes'! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 22/Jan/2026 20:07:06'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 26/Jan/2026 19:31:36'!
 iStoaInformationString
 	|text |
 	text := 'iStoa (istoa.eu) is a simulation environment to explore the Dynamic Knowledge Models (DKM).
@@ -184,7 +184,9 @@ the DKM code as you wish.
 
 {2}
 {1} - {3}
-LICENSE: GPL' translated format: {self iStoaVersion. self iStoaCopyright. self cuisVersion }.
+LICENSES: 
+ - iStoaApp LGPL, 
+ - eack DKM comes with its own license terms (visit istoa.eu/dkm).' translated format: {self iStoaVersion. self iStoaCopyright. self cuisVersion }.
 	^ text! !
 
 !Stoa class methodsFor: 'documentation' stamp: 'hlsf 22/Jan/2026 20:06:05'!
