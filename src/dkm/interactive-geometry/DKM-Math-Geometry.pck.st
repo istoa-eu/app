@@ -1,8 +1,9 @@
-'From Cuis7.7 [latest update: #7809] on 25 January 2026 at 4:32:01 pm'!
+'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 11:01:13 am'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 7!
+!provides: 'DKM-Math-Geometry' 1 8!
 !requires: 'DrGeoCore' 1 18 nil!
 !requires: 'DKM-Core' 1 6 nil!
+!requires: 'DrGeoFrench' 1 17 nil!
 SystemOrganization addCategory: #'DKM-Math-Geometry'!
 
 
@@ -16,6 +17,16 @@ DKMPresenter subclass: #InteractiveGeometry
 InteractiveGeometry class
 	instanceVariableNames: ''!
 
+!classDefinition: #GeometrieInteractive category: #'DKM-Math-Geometry'!
+InteractiveGeometry subclass: #GeometrieInteractive
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'DKM-Math-Geometry'!
+!classDefinition: 'GeometrieInteractive class' category: #'DKM-Math-Geometry'!
+GeometrieInteractive class
+	instanceVariableNames: ''!
+
 
 !InteractiveGeometry methodsFor: 'DSL' stamp: 'hlsf 11/Jan/2026 19:47:02'!
 readMe
@@ -24,7 +35,7 @@ Browse the class DrGeoSketch (Ctrl-B) for the complet protocol.
 
 "! !
 
-!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 11/Jan/2026 19:37:39'!
+!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:02:35'!
 codeSample
 	^'| sketch triangle ourRandom m n p |
 sketch := DrGeoSketch new.
@@ -32,9 +43,9 @@ triangle := [:p1 :p2 :p3 |
 	sketch segment: p1 to: p2.
 	sketch segment: p2 to: p3.
 	sketch segment: p3 to: p1].
-""
+
 ourRandom := [6 - 11 atRandom].
-""
+
 m := sketch point: ourRandom value @ 0.
 n := sketch point: 5 @ 0.
 p := sketch point:  ourRandom value @ 3.
@@ -61,7 +72,7 @@ dslCategory
 presenterClass
 	^ DrGeoSketch ! !
 
-!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 25/Jan/2026 15:40:36'!
+!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 10:42:26'!
 codeSampleForAI
 	^ '| mySketch point anotherPoint mobile dependent segment line circle arc ray locus value angle polygon ruler vector |
 "## Creating a new sketch instance"
@@ -78,7 +89,9 @@ mySketch axesOn;
 	gridOn.
 "## Point and straight line"	
 point := mySketch point: 5 @ (1/3).
-point cross; color: Color blue; name: ''A''.
+"The default shape of a point is round"
+point cross; round; square.
+point color: Color blue; name: ''A''.
 segment := mySketch segment: point to: 15@-5.
 segment large; color: Color red; name: ''AB''.
 "Different way to mark a segment in its middle, only one is visible at a time"
@@ -90,7 +103,7 @@ mySketch intersectionOf: line and: segment.
 ray := mySketch ray: 0@0 to: point.
 ray dotted.
 mySketch parallel: line at: point.
-"mySketch perpendicular: ray at: point."
+mySketch perpendicular: ray at: point.
 mySketch perpendicularBisector: segment.
 line := mySketch perpendicularBisector: point to: 0@0.
 mySketch angleBisectorSummit: 0@0 side1: 8@-1 side2: point.
@@ -207,3 +220,32 @@ mySketch translate: polygon vector: -0.5@-0.2.
 "## Free text"
 mySketch text: ''This sketch illustrates the Inteactive geometry DSL API''.
 mySketch view. '! !
+
+!GeometrieInteractive class methodsFor: 'as yet unclassified' stamp: 'hlsf 29/Jan/2026 10:00:53'!
+codeSample
+	^'| figure triangle auHasard m n p |
+figure := DrGeoFigure new.
+triangle := [:p1 :p2 :p3 |
+	figure segmentDe: p1 à: p2.
+	figure segmentDe: p2 à: p3.
+	figure segmentDe: p3 à: p1].
+
+auHasard := [6 - 11 auHasard ].
+
+m := figure point: auHasard valeur @ 0.
+n := figure point: 5 @ 0.
+p := figure point:  auHasard valeur @ 3.
+triangle valeur: m valeur: n valeur: p.
+figure vue'! !
+
+!GeometrieInteractive class methodsFor: 'as yet unclassified' stamp: 'hlsf 29/Jan/2026 10:04:01'!
+description
+	^'Décrire une figure géométrique avec des instructions. La figure géométrique résultante peut être manipulée interactivement.'! !
+
+!GeometrieInteractive class methodsFor: 'as yet unclassified' stamp: 'hlsf 29/Jan/2026 10:04:55'!
+presenterClass
+	^ DrGeoFigure ! !
+
+!GeometrieInteractive class methodsFor: 'as yet unclassified' stamp: 'hlsf 29/Jan/2026 10:03:14'!
+title
+	^ 'Géométre interactive'! !
