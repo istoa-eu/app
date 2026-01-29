@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7810] on 26 January 2026 at 7:32:16 pm'!
+'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 11:47:22 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 18!
+!provides: 'iStoaApp' 1 19!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
 !requires: 'Commander' 1 9 nil!
@@ -34,10 +34,11 @@ history: menuBuilder
 	self newEntryIn: #history forDKM: Timeline in: #timeline with: menuBuilder 
 			! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 11/Jan/2026 19:36:01'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 29/Jan/2026 22:27:39'!
 math: menuBuilder
 	<iStoaAppCommand>
-	self newEntryIn: #math forDKM: InteractiveGeometry in: #interactiveGeometry with: menuBuilder 
+	self newEntryIn: #math forDKM: InteractiveGeometry in: #interactiveGeometry with: menuBuilder.
+	self newEntryIn: #math forDKM: GeometrieInteractive in: #geometrieInteractive with: menuBuilder 
 
 			! !
 

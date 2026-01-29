@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7809] on 23 January 2026 at 2:28:59 pm'!
+'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 11:47:08 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 7!
+!provides: 'DKM-Core' 1 8!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -49,6 +49,21 @@ Now, I am using one of the iStoa DKM to build {1} ({2})
 In the next section, I show the complete DSL API specific to this DKM. Please learn from it for the next questions I will ask you.
 
 # DSL API for {1}
+{3}
+'! !
+
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 22:44:04'!
+promptTemplateFr
+	^ '# Introduction
+Je suis un enseignant utilisant l''application iStoa (http://istoa.eu) et sa bibliothèque de DKM (Dynamic Knowledge Model ou Modèle Dynamique de Connaissance)
+pour construire du contenu pédagogique à utiliser devant les étudiants. Le contenu est décrit avec un script écrit dans le langage de programmation Smalltalk
+(implementation Cuis-Smalltalk), lorsqu''il est exécuté dans l''application iStoa application, une simulation visuelle est alors construite.
+
+Maintenant, j''utilise un DKM spécifique de iStoa pour {1} ({2})
+
+Dans la section suivante, je montre l''API du DSL de ce DKM. Merci de l''apprendre et de l''utiliser pour les questions suivantes que je vais te poser.
+
+# DSL API pour {1}
 {3}
 '! !
 

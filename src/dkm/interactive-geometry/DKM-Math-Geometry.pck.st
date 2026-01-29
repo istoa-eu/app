@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 12:05:40 pm'!
+'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 11:47:12 pm'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 9!
+!provides: 'DKM-Math-Geometry' 1 10!
 !requires: 'DrGeoCore' 1 18 nil!
 !requires: 'DKM-Core' 1 6 nil!
 !requires: 'DrGeoFrench' 1 17 nil!
@@ -72,7 +72,7 @@ dslCategory
 presenterClass
 	^ DrGeoSketch ! !
 
-!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 11:59:38'!
+!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 23:41:11'!
 codeSampleForAI
 	^ '| mySketch point anotherPoint mobile dependent segment line circle arc ray locus value angle polygon ruler vector |
 "## Creating a new sketch instance"
@@ -162,6 +162,7 @@ anotherPoint := (mySketch
 	point: [:aSegment :aPoint | ( (aSegment extremity1 + aSegment extremity2) / 2  + aPoint point) / 2] 
 	parents: {segment . point }) color: Color blue.
 anotherPoint large; color: Color cyan; name: ''point computed from two other objects''.
+
 "## Value"
 mySketch abscissaOf: point.
 mySketch ordinateOf: point.
@@ -183,12 +184,14 @@ value := mySketch value: [:aCircle :aPoint | ((aCircle center dist: aPoint point
 	 parents: {circle . point } 
 	at: 10@10.
 value color: Color purple darker; name: ''distance to circle''.
+
 "## Polygon"
 polygon := mySketch polygon: {0@0. point. 4@-5/3}.
 polygon filled; translucent; color: Color yellow.
 value := mySketch value: [(3 to: 10) atRandom].
 polygon := mySketch regularPolygonCenter: 0@0 vertex: point sides: value.
 polygon large; color: Color red.
+
 "## Angle"
 "angle: vertex to: point1 to: point2
 Oriented angle in [0 ; 360[ defined by three points
@@ -208,6 +211,7 @@ Oriented angle defined by two vectors
 -vector1: a point or DrGeo vector
 -vector2: a point or DrGeo vector"
 mySketch angle: 1@0 to: 0@1. "90 degrees"
+
 "## Geometric transformation"
 mySketch reflect: polygon axis: line.
 mySketch symmetry: polygon center: 0@0.
@@ -215,10 +219,11 @@ value := mySketch value: [(0 to: Float halfPi by: Float pi / 20) atRandom].
 mySketch rotate: polygon center: point angle: value.
 mySketch rotate: polygon center: 5@5 angle: angle.
 ruler := mySketch integer: 10 at: 0@10 from: 1 to: 60 name:''angle'' showValue: true.
+mySketch point: [ruler value @ 10].
+mySketch value: [ruler value degreesToRadians].
 mySketch rotate: polygon center: 0@0 angleDegrees: ruler.
 ruler := mySketch float: 1.1 at: 0@15 from: -3 to: 3 name: ''factor'' showValue: true.
-value := mySketch value: ruler.
-polygon := mySketch scale: polygon center: 0@0 factor: value.
+polygon := mySketch scale: polygon center: 0@0 factor: ruler.
 vector := mySketch vector: 0.5@0.2.
 mySketch translate: polygon vector: vector.
 mySketch translate: polygon vector: -0.5@-0.2.
@@ -226,7 +231,7 @@ mySketch translate: polygon vector: -0.5@-0.2.
 mySketch text: ''This sketch illustrates the Inteactive geometry DSL API''.
 mySketch view. '! !
 
-!GeometrieInteractive class methodsFor: 'as yet unclassified' stamp: 'hlsf 29/Jan/2026 10:00:53'!
+!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:00:53'!
 codeSample
 	^'| figure triangle auHasard m n p |
 figure := DrGeoFigure new.
@@ -243,14 +248,194 @@ p := figure point:  auHasard valeur @ 3.
 triangle valeur: m valeur: n valeur: p.
 figure vue'! !
 
-!GeometrieInteractive class methodsFor: 'as yet unclassified' stamp: 'hlsf 29/Jan/2026 10:04:01'!
+!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:04:01'!
 description
 	^'Décrire une figure géométrique avec des instructions. La figure géométrique résultante peut être manipulée interactivement.'! !
 
-!GeometrieInteractive class methodsFor: 'as yet unclassified' stamp: 'hlsf 29/Jan/2026 10:04:55'!
-presenterClass
-	^ DrGeoFigure ! !
-
-!GeometrieInteractive class methodsFor: 'as yet unclassified' stamp: 'hlsf 29/Jan/2026 10:03:14'!
+!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:03:14'!
 title
 	^ 'Géométre interactive'! !
+
+!GeometrieInteractive class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 23:42:35'!
+codeSampleForAI
+	^ '| figure point autrePoint mobile dependent segment droite cercle arc demiDroite lieu valeur angle polygone réglette vecteur |
+
+"## Créer une nouvelle figure"
+"Par défaut la grilles et les axes ne sont pas affichés"
+figure := DrGeoFigure nouveau.
+
+"## Manipuler la figure"
+figure centrerVue: 15@20.
+"échelle: entier
+Changer l''échelle de la figure
+-entier : nombre de pixels utilisés pour représenter une unité.
+Plus le nombre est large, plus la figure est grossie."
+figure échelle: 15.
+figure axesMontrer;
+       axesCacher;
+       grilleMontrer;
+       grilleCacher.
+
+"## Point et ligne droite"
+point := figure point: 5 @ (1/3).
+
+"L''aspect par défaut d''un point est rond"
+point croix; rond; carré.
+point couleur: Couleur bleu; nom: ''''A''''.
+segment := figure segmentDe: point à: 15@-5.
+segment épais; couleur: Couleur rouge; nom: ''''AB''''.
+
+"Différentes façons de marquer un segment en son milieu, une seule marque visible à la fois"
+segment marqueCercle; marqueDisque; marqueSimpleTrait; marqueDoubleTrait; marqueTripleTrait.
+figure milieuDe: segment .
+droite := figure droitePassantPar: -4@1 et: 8@-2.
+droite pointillé; fin; couleur: Couleur orange; nom: ''''Δ''''.
+figure intersectionDe: droite et: segment.
+demiDroite := figure demiDroiteOrigine: 0@0 passantPar: point.
+demiDroite tiret.
+figure parallèleA: droite passantPar: point.
+figure perpendiculaireA: demiDroite passantPar: point.
+figure médiatriceDe: segment.
+droite := figure médiatriceDe: point à: 0@0.
+figure bissectriceSommet: 0@0 côté1: 8@-1 côté2: point.
+
+"## Ligne courbe"
+"arcDe: début  à: fin passantPar: unPoint
+Arc de cercle défini par trois points
+-début : point de début de l''arc
+-fin : point de fin de l''arc
+-unPoint : un point par lequel passe l''arc"
+figure arcDe: -8.5@2 à: point passantPar: 12@-4.
+
+"arcCentre: centre de: début à: fin
+Arc de cercle orienté (sens anti-horaire) défini par son centre et deux points
+-centre : un point, centre du cercle
+-début : point de début de l''arc
+-fin : point de fin de l''arc"
+arc := figure arcCentre: 0@0 de: 0@5 à: 12@-2.
+arc couleur: Couleur magenta.
+cercle := figure cercleCentre: 0@0 rayon: 10.
+cercle rempli; translucide.
+figure intersectionDe: cercle et: droite.
+figure autreIntersectionDe: cercle et: droite.
+figure cercleCentre: point segment: segment.
+figure circleCentre: 0@0 passantPar: point.
+
+"## Point et lieu de point"
+"pointSurLigne: ligne à: abscisse
+Point mobile sur une ligne
+-ligne : une ligne droite ou courbe (see DSL ligne/ligne courbe)
+-abscisse : un nombre de l''intervalle [0 ; 1]"
+mobile := figure pointSurLigne: cercle à: 0.5.
+mobile nom: ''''bouge moi !!''''; rond; large.
+dépendent := figure milieuDe: 10@5 et: mobile.
+dépendent croix; petit; couleur: Couleur noir.
+
+"lieuDe: dépendant lorsqueBouge: mobile
+Lieu d''un point selon un autre point
+-mobile: un point mobile sur une ligne (droite ou courbe)
+-dépendant: un point dépendant par construction du point mobile"
+lieu := figure lieuDe: dépendent lorsqueBouge: mobile.
+
+"## Affichage de la courbe d''une fonction"
+"courbeDe: f de: x0 à: x1
+Affiche la courbe d''une fonction à un argument dans l''intervalle [x0 ; x1]
+-f : bloc de code pour décrire la fonction. ex: [:x | x + (10 * x) cos]
+-x0 : abscisse minimun pour afficher la fonction
+-x1 : abscisse maximum"
+lieu := figure courbeDe: [:x | x raisedToInteger: 3] de: -10 à: 10.
+lieu couleur: Couleur bleu; nom: ''''Cf''''.
+
+"## Point avancé"
+"point: block parent: drgeoItem
+Point defined by a block of code
+-block: a block of code with a MathItem argument. 
+   The block returns a Smalltalk point
+-drgeoItem: the Item whose MathItem is passed as argument to the block.
+   See DrGMathItem class hierarchy"
+autrePoint := figure point: [:aSegment | (aSegment extremity1 * 2 + aSegment extremity2) / 3] parent: segment.
+autrePoint large; couleur: Couleur pourpre; nom: ''''Point barycentrique''''.
+autrePoint := (figure 
+	point: [:aSegment :aPoint | ( (aSegment extremity1 + aSegment extremity2) / 2  + aPoint point) / 2] 
+	parents: {segment . point }) couleur: Couleur bleu.
+autrePoint large; couleur: Couleur cyan; nom: ''''position du point calculée à partir de deux autres objets''''.
+
+"## Valeur"
+figure abscisseDe: point.
+figure ordonnéeDe: point.
+
+"longueurDe: ligneFinie
+Longueur d''une ligne
+-ligneFinie : un segment, cercle, arc de cercle, polygone ou vecteur"
+figure longueurDe: cercle.
+
+figure penteDe: droite.
+figure distance: droite à: point.
+valeur := figure valeur: Float pi.
+valeur nom: ''''π''''.
+figure valeur: Float pi à: 5@5.
+valeur := figure valeur: [10 atRandom].
+valeur couleur: Couleur rouge; nom: ''''nombre au hasard.
+valeur := figure valeur: [:unCercle | unCercle radius] parent: cercle.
+valeur nom: ''''rayon''''.
+"Distance from a point to a circle"
+valeur := figure valeur: [:unCercle :aPoint | ((unCercle center dist: aPoint point) - unCercle radius) abs]
+	 parents: {cercle . point } 
+	at: 10@10.
+valeur couleur: Couleur pourpre foncer; nom: ''''distance à un cercle''''.
+
+"## Polygone"
+polygone := figure polygone: {0@0. point. 4@-5/3}.
+polygone rempli; translucide; couleur: Couleur jaune.
+valeur := figure valeur: [(3 to: 10) atRandom].
+polygone := figure polygoneRégulierCentre: 0@0 sommet: point côtés: valeur.
+polygone large; couleur: Couleur rouge.
+
+"## Angle"
+"angleSommet: sommet de: point1 à: point2
+Angle orienté dans [0 ; 360[ defini par trois points
+-sommet: un point, sommet de l''angle
+-point1: un point sur un côté de l''angle
+-point2: un point sur l''autre côté de l''angle"
+angle := figure angleSommet: 0@0 de: point à: 0@5.
+angle couleur: Couleur rouge; nom: ''''AOB''''.
+
+"angleGéométriqueSommet: sommet de: point1 à: point2
+Angle géométrique dans [0 ; 180] défini par trois points
+-sommet: un point, sommet de l''angle
+-point1: un point sur un côté de l''angle
+-point2: un point sur l''autre côté de l''angle"
+figure angleGéométriqueSommet: 0@0 de: 1@0 à: 0@-1.
+
+"angleVecteur: vecteur1 et: vecteur2
+Angle orienté défini par deux vecteurs
+-vecteur1: un point ou vecteur DrGeo
+-vecteur2: un point ou vecteur DrGeo"
+figure angleVecteur: 1@0 et: 0@1. "90 degrés"
+
+"## Transformation géométrique"
+figure symétriqueDe: polygone selonAxe: droite.
+figure symétriqueDe: polygone selonCentre: 0@0.
+valeur := figure valeur: [(0 to: Float halfPi by: Float pi / 20) atRandom].
+figure rotationDe: polygone centre: point angle: valeur.
+figure rotationDe: polygone centre: 5@5 angle: angle.
+réglette := figure entier: 10 à: 0@10 min: 1 max: 60 nom:''''angle'''' afficherValeur: true.
+figure point: [réglette value @ 10].
+figure valeur: [réglette value degreesToRadians].
+figure rotationDe: polygone centre: 0@0 angleDegrés: réglette.
+réglette := figure décimal: 1.1 à: 0@15 min: -3 max: 3 nom: ''''factor'''' afficherValeur: true.
+polygone := figure homothétieDe: polygone centre: 0@0 facteur: réglette.
+vecteur := figure vecteur: 0.5@0.2.
+figure translationDe: polygone parVecteur: vecteur.
+figure translationDe: polygone parVecteur: -0.5@-0.2.
+"## Texte libre"
+figure texte: ''''Cette figure montre API DSL de géométrie interactive.
+figure vue.'! !
+
+!GeometrieInteractive class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 22:44:24'!
+promptForAI
+	^ self promptTemplateFr format: (Array with: self title with: self description with: self codeSampleForAI)! !
+
+!GeometrieInteractive class methodsFor: 'user interface' stamp: 'hlsf 29/Jan/2026 10:04:55'!
+presenterClass
+	^ DrGeoFigure ! !
