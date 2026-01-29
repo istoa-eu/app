@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 11:01:13 am'!
+'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 12:05:40 pm'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 8!
+!provides: 'DKM-Math-Geometry' 1 9!
 !requires: 'DrGeoCore' 1 18 nil!
 !requires: 'DKM-Core' 1 6 nil!
 !requires: 'DrGeoFrench' 1 17 nil!
@@ -72,7 +72,7 @@ dslCategory
 presenterClass
 	^ DrGeoSketch ! !
 
-!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 10:42:26'!
+!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 11:59:38'!
 codeSampleForAI
 	^ '| mySketch point anotherPoint mobile dependent segment line circle arc ray locus value angle polygon ruler vector |
 "## Creating a new sketch instance"
@@ -150,6 +150,12 @@ Plot the curve of a one argument function in the x interval [x0 ; x1]
 locus := mySketch plot: [:x | x raisedToInteger: 3] from: -10 to: 10.
 locus color: Color blue; name: ''Cf''.
 "## Point advanced"
+"point: block parent: drgeoItem
+Point defined by a block of code
+-block: a block of code with a MathItem argument. 
+   The block returns a Smalltalk point
+-drgeoItem: the Item whose MathItem is passed as argument to the block.
+   See DrGMathItem class hierarchy"
 anotherPoint := mySketch point: [:aSegment | (aSegment extremity1 * 2 + aSegment extremity2) / 3] parent: segment.
 anotherPoint large; color: Color purple; name: ''Barycentric point''.
 anotherPoint := (mySketch 
@@ -209,8 +215,7 @@ value := mySketch value: [(0 to: Float halfPi by: Float pi / 20) atRandom].
 mySketch rotate: polygon center: point angle: value.
 mySketch rotate: polygon center: 5@5 angle: angle.
 ruler := mySketch integer: 10 at: 0@10 from: 1 to: 60 name:''angle'' showValue: true.
-value := mySketch value: ruler.
-mySketch rotate: polygon center: 0@0 angleDegrees: value.
+mySketch rotate: polygon center: 0@0 angleDegrees: ruler.
 ruler := mySketch float: 1.1 at: 0@15 from: -3 to: 3 name: ''factor'' showValue: true.
 value := mySketch value: ruler.
 polygon := mySketch scale: polygon center: 0@0 factor: value.
