@@ -8,14 +8,12 @@
 # Adjust below the rel variable to the wished iStoa release number
 
 # iStoa release number
-rel="25.12a-beta"
+rel="26.02a"
 
 # Path
 istoaRepo=`echo "$0" | cut -d / -f 2`
 buildPath="$istoaRepo/build"
 bundlesPath="$buildPath/bundles"
-src="$istoaRepo/src"
-resources="$istoaRepo/resources"
 imagePath=./CuisImage
 
 # Cuis release
@@ -35,7 +33,7 @@ smalltalkSources=`ls CuisImage/Cuis?.?.sources | cut -d / -f2`
 # the Smalltalk installation script and the iStoa source
 
 vmExec=CuisVM.app/Contents/Linux-x86_64/squeak
-installScript="$src/install-istoa-workstation.st"
+installScript="$istoaRepo/src/install-istoa-workstation.st"
 
 buildImage () {
     # INSTALL PACKAGE
@@ -87,6 +85,12 @@ makeBundle () {
     rm -rf $bundlePath
     echo "Installing template..."
     rsync -a  --exclude '*~' $bundleTemplate $bundlesPath
+    echo "Copy license terms of each dkm..."
+    for dkm in `find $istoaRepo/src/dkm/* -maxdepth 1 -type d -printf "%f "`
+    do
+	mkdir -p $bundleResources/dkm/$dkm
+	cp $istoaRepo/src/dkm/$dkm/License* $bundleResources/dkm/$dkm
+    done
     echo "Installing OpenSmalltalk VM..."
     for i in $cuisVM
     do
