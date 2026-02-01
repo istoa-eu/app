@@ -1,3 +1,6 @@
 [submodule "DyboLib"]
 	path = DyboLib
 	url = https://github.com/Dynamic-Book/DyboLib
+[submodule "drgeo"]
+	path = drgeo
+	url = https://github.com/Dynamic-Book/drgeo
