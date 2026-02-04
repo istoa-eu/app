@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7791] on 18 January 2026 at 7:06:07 pm'!
+'From Cuis7.7 [latest update: #7823] on 4 February 2026 at 3:26:40 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 11!
+!provides: 'DKM-History-Timeline' 1 12!
 !requires: 'UI-Widgets' 1 62 nil!
 !requires: 'DKM-Core' 1 0 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -720,12 +720,12 @@ drawOn: canvas graduationAt: posY from: start to: end hardStop: endGrad
 			canvas strokeWidth: self entryWidth color: self color do: [canvas moveTo: pos; rel_LineTo: 0 @ 20].
 			canvas drawString: aDate yearNumber asString atCenterX: pos + (0@25) font: font color: self color] ]! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 7/Oct/2025 21:14:16'!
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 4/Feb/2026 15:25:44'!
 drawOn: canvas subGraduationAt: posY from: start to: end hardStop: endGrad
 	| model pos |
 	" Sub graduation "
 	model := presenter model.
-	canvas strokeWidth: self entryWidth color: self color do: [
+	canvas strokeWidth: self entryWidth - 1 color: self color do: [
 		start to: end by: model subGraduation interval do: [:aDate |
 			(aDate roundDownTo: model graduation interval) = aDate ifFalse: [
 				pos := (model abscissaAt: aDate) @ posY.
