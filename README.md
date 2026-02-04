@@ -26,9 +26,12 @@ Next, we fetch the source code packages of the DKM and
 iStoaApp.
 
 ## 2. The DKM and iStoaApp packages
+Install the direct dependencies to DKM
+
 
 ```bash 
 cd Cuis-Smalltalk-Dev
+git clone --depth 1 https://github.com/Dynamic-Book/drgeo
 git clone --depth 1 https://github.com/Dynamic-Book/DyboLib
 git clone --depth 1 https://github.com/istoa-eu/app
 ```
