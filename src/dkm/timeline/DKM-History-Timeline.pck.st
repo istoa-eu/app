@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7823] on 4 February 2026 at 3:26:40 pm'!
+'From Cuis7.7 [latest update: #7827] on 8 February 2026 at 12:16:21 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 12!
+!provides: 'DKM-History-Timeline' 1 13!
 !requires: 'UI-Widgets' 1 62 nil!
 !requires: 'DKM-Core' 1 0 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -58,7 +58,7 @@ TimelineConnector class
 
 !classDefinition: #TimelineCanvas category: #'DKM-History-Timeline'!
 BoxMorph subclass: #TimelineCanvas
-	instanceVariableNames: 'presenter prevPosition'
+	instanceVariableNames: 'presenter prevPosition font'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'DKM-History-Timeline'!
@@ -122,7 +122,8 @@ A graduation on the timeline.
 - interval: a duration, the time distance between two consecutive tick on the timeline!
 
 !TimelineModel commentStamp: '<historical>' prior: 0!
-- entries, a collection of models (timeline entry)!
+- entries, a collection of models (timeline entry)
+- temporalGaps: indexes of event with temporal gap with its chronologically previous event!
 
 !TimelineCanvas commentStamp: '<historical>' prior: 0!
 The place where is effectively drawn the timeline. 
@@ -328,7 +329,7 @@ interval
 interval: aDuration
 	interval := aDuration ! !
 
-!TimelineGraduation methodsFor: 'as yet unclassified' stamp: 'hlsf 2/Oct/2025 09:36:49'!
+!TimelineGraduation methodsFor: 'printing' stamp: 'hlsf 2/Oct/2025 09:36:49'!
 printOn: stream
 	stream nextPutAll: 'Tick every '.
 	interval years printOn: stream.
@@ -626,13 +627,12 @@ updateWidth
 		select: [:each | each is: #TimelineEntryView] 
 		thenDo: [:eventView  | eventView borderWidth: self entryWidth]! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 7/Oct/2025 21:18:09'!
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026 11:09:19'!
 drawFullOn: canvas
-	| start end font timelineY model endGrad |
+	| start end timelineY model endGrad |
 	model := presenter model.
 	canvas fillRectangle: self localBounds color: Color white.
-	font := (FontFamily familyName: FontFamily defaultFamilyName pointSize: 16) emphasized: 7.
-	canvas drawString: model title atCenterX: extent x // 2 @ 0 font: font color: self color.
+	canvas drawString: model title atCenterX: extent x // 2 @ 0 font: self titleFont color: self color.
 	timelineY := TimelineCanvas topMargin + TimelineEntryView extent y + TimelineConnector height.
 	endGrad := extent x - 11.
 	canvas strokeWidth: self entryWidth color: self color do: [
@@ -652,14 +652,13 @@ drawFullOn: canvas
 
 ! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 7/Oct/2025 22:03:50'!
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026 11:22:28'!
 drawGapsOn: canvas
-	| start end runningDate font timelineY model entries endGrad |
+	| start end runningDate timelineY model entries endGrad |
 	model := presenter model.
 	entries := model entries.
 	canvas fillRectangle: self localBounds color: Color white.
-	font := (FontFamily familyName: FontFamily defaultFamilyName pointSize: 16) emphasized: 7.
-	canvas drawString: model title atCenterX: extent x // 2 @ 0 font: font color: self color.
+	canvas drawString: model title atCenterX: extent x // 2 @ 0 font: self titleFont color: self color.
 	timelineY := TimelineCanvas topMargin + TimelineEntryView extent y + TimelineConnector height.
 	endGrad := extent x - 11.
 		canvas strokeWidth: self entryWidth color: self color do: [
@@ -685,7 +684,9 @@ drawGapsOn: canvas
 
   	entries allButLast withIndexDo: [:entry :i |
 		runningDate := (entries at: i + 1) date roundUpTo: model graduation interval.
-		(model isTemporalGap: i + 1 ) ifFalse: [" no temporal gap, non shrinked representation "			
+		((model isTemporalGap: i + 1) 
+		or: [(runningDate - start) years < model graduation interval years ])  ifFalse: [" no temporal gap, non shrinked representation "
+			"Transcript show: start; show: ' - '; show: runningDate; cr.	"	
 			self 	drawOn: canvas graduationAt: timelineY - 10 from: start to: runningDate hardStop: endGrad].
 		start := runningDate ].
 
@@ -697,7 +698,7 @@ drawGapsOn: canvas
 	entries allButLast withIndexDo: [:entry :i |
 		runningDate := (entries at: i + 1) date roundUpTo: model subGraduation interval.
 		endGrad := model abscissaAt: (entries at: i + 1) date.
-		(model isTemporalGap: i + 1) ifFalse: [" no temporal gap, non shrinked representation "		
+		(model isTemporalGap: i + 1) ifFalse: [" no temporal gap, non shrinked representation "
 			self drawOn: canvas subGraduationAt: timelineY - 5 from: start to: runningDate hardStop: endGrad].
 		start := runningDate]
 ! !
@@ -708,17 +709,18 @@ drawOn: canvas
 		ifTrue: [self drawGapsOn: canvas]
 		ifFalse: [self drawFullOn: canvas]! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 6/Oct/2025 21:49:00'!
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026 12:14:54'!
 drawOn: canvas graduationAt: posY from: start to: end hardStop: endGrad
-	| model font pos |
+	| model pos gradDate |
 	" First level graduation "
 	model := presenter model.
-	font := FontFamily familyName: FontFamily defaultFamilyName pointSize: 8.
 	start to: end 	by: model graduation interval do: [:aDate |
-		pos := (model abscissaAt: aDate) @ posY.
-		(pos x between: 0 and: endGrad) ifTrue: [
+		gradDate := Date year: aDate yearNumber month: 1 day: 1.
+		pos := (model abscissaAt: gradDate) @ posY.
+		( (pos x between: 0 and: endGrad) and: [gradDate between: start and: end] ) ifTrue: [
 			canvas strokeWidth: self entryWidth color: self color do: [canvas moveTo: pos; rel_LineTo: 0 @ 20].
-			canvas drawString: aDate yearNumber asString atCenterX: pos + (0@25) font: font color: self color] ]! !
+			canvas drawString: aDate yearNumber asString atCenterX: pos + (0@25) font: self gradFont color: self color] ]
+! !
 
 !TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 4/Feb/2026 15:25:44'!
 drawOn: canvas subGraduationAt: posY from: start to: end hardStop: endGrad
@@ -730,6 +732,16 @@ drawOn: canvas subGraduationAt: posY from: start to: end hardStop: endGrad
 			(aDate roundDownTo: model graduation interval) = aDate ifFalse: [
 				pos := (model abscissaAt: aDate) @ posY.
 				(pos x between: 0 and: endGrad) ifTrue: [canvas moveTo: pos; rel_LineTo: 0 @ 10]] ] ]! !
+
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026 11:10:02'!
+gradFont
+	^ font ifNil: [
+		font := FontFamily familyName: FontFamily defaultFamilyName pointSize: 8]
+! !
+
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026 11:09:05'!
+titleFont
+	^ (FontFamily familyName: FontFamily defaultFamilyName pointSize: 16) emphasized: 7! !
 
 !TimelineCanvas methodsFor: 'geometry testing' stamp: 'hlsf 3/Oct/2025 20:29:29'!
 requiresVectorCanvas
@@ -1000,6 +1012,10 @@ extent
 !Date methodsFor: '*DKM-History-Timeline' stamp: 'hlsf 5/Oct/2025 22:20:25'!
 >= anotherDate
 	^ (self < anotherDate) not! !
+
+!Date methodsFor: '*DKM-History-Timeline' stamp: 'hlsf 8/Feb/2026 12:03:31'!
+between: min and: max 
+	^self >= min and: [self <= max]! !
 
 !Date methodsFor: '*DKM-History-Timeline' stamp: 'hlsf 18/Jan/2026 19:00:23'!
 roundDownTo: aDuration
