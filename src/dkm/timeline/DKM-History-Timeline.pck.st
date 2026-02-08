@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7827] on 8 February 2026 at 12:16:21 pm'!
+'From Cuis7.7 [latest update: #7827] on 8 February 2026 at 12:31:25 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 13!
+!provides: 'DKM-History-Timeline' 1 14!
 !requires: 'UI-Widgets' 1 62 nil!
 !requires: 'DKM-Core' 1 0 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -925,19 +925,22 @@ presenter: aPresenter
 defaultColor
 	^ Color white! !
 
-!TimelineEntryView methodsFor: 'initialization' stamp: 'hlsf 15/Oct/2025 21:37:43'!
+!TimelineEntryView methodsFor: 'initialization' stamp: 'hlsf 8/Feb/2026 12:30:59'!
 initialize
 	| scroll |
 	super initialize.
 	self beColumn.
 	date := LabelMorph contents: (model date printFormat: #(1 2 3 $/ 1 1 1))  fontSize: 12 emphasis: 1.
+	date setBalloonText: model balloonText.
 	description := TextParagraphMorph contents: (model description justified italic pointSize: 10):: 
 		color: Color white ;
 		setHeightOnContent ;
+		setBalloonText: model balloonText;
 		borderWidth: 0.
 	self addMorph:  date layoutSpec: LayoutSpec keepMorphExtent ;
 		addMorphUseAll: (scroll := PluggableScrollPane new 
 			layoutSpec: LayoutSpec useAll;
+			setBalloonText: model balloonText;
 			color: Color white;
 			scroller: description);
 		morphExtent: TimelineEntryView extent.
