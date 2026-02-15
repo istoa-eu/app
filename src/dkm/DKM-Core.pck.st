@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 11:47:08 pm'!
+'From Cuis7.7 [latest update: #7839] on 15 February 2026 at 12:47:09 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 8!
+!provides: 'DKM-Core' 1 10!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -15,9 +15,11 @@ DKMPresenter class
 	instanceVariableNames: ''!
 
 
-!DKMPresenter commentStamp: '<historical>' prior: 0!
+!DKMPresenter commentStamp: 'hlsf 15/Feb/2026 11:48:14' prior: 0!
 An abstract Presenter each new DKM's presenter must inherit from.
-See class side too.!
+See class side too.
+
+Implement the class methods pragmaMneu and menu: to add specific entries in the Annotator morph. See Timeline class for an example.!
 
 !DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025 10:02:00'!
 model
@@ -71,24 +73,27 @@ Dans la section suivante, je montre l''API du DSL de ce DKM. Merci de l''apprend
 codeSample
 	self subclassResponsibility ! !
 
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 15/Feb/2026 12:36:24'!
+codeSampleWithHeaderFor: aPresenter
+	^ String streamContents: [:str |
+			str nextPutAll: (self header format: {aPresenter title . aPresenter description . aPresenter printString});
+				lf;
+				nextPutAll: aPresenter codeSample ]! !
+
 !DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:34'!
 description
 	self subclassResponsibility 
 	"^ 'A dynamic knowledge model covering one specific teaching domain.'"! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:54'!
-menu: menuBuilder
-"	Set an unique symbol to identify menu pragma, see menu: method 
-	<myDynamicKnowldgeModelMenu>
-"
-	
-! !
-
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:48'!
-pragmaMenu
-"	Set an unique symbol to identify menu pragma, see menu: method "
-	#myDynamicKnowldgeModelMenu
-! !
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 15/Feb/2026 12:24:10'!
+header
+"	Metadata template to describe a DKM instance. 
+	The user edits this template along the DKM script "
+^ '"@title: {1}
+@description: {2}
+@tags: tag1 ; tag2 ; tag3
+@author: eric.dupont@edu.eu
+@class: {3}"'! !
 
 !DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:39'!
 svgIcon
@@ -132,3 +137,7 @@ presentInWorkspace
 presenterClass
 " The class of the real presenter, if different "
 	^ self! !
+
+!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 15/Feb/2026 12:42:20'!
+codeSampleWithHeader
+	^DKMPresenter codeSampleWithHeaderFor: self! !

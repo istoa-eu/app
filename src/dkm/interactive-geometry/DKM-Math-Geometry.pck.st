@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7819] on 29 January 2026 at 11:47:12 pm'!
+'From Cuis7.7 [latest update: #7839] on 15 February 2026 at 12:30:48 pm'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 10!
+!provides: 'DKM-Math-Geometry' 1 11!
 !requires: 'DrGeoCore' 1 18 nil!
 !requires: 'DKM-Core' 1 6 nil!
 !requires: 'DrGeoFrench' 1 17 nil!
