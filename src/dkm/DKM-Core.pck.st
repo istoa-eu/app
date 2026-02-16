@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7839] on 15 February 2026 at 12:47:09 pm'!
+'From Cuis7.7 [latest update: #7839] on 15 February 2026 at 8:16:06 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 10!
+!provides: 'DKM-Core' 1 11!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -85,12 +85,13 @@ description
 	self subclassResponsibility 
 	"^ 'A dynamic knowledge model covering one specific teaching domain.'"! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 15/Feb/2026 12:24:10'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 15/Feb/2026 19:50:03'!
 header
 "	Metadata template to describe a DKM instance. 
 	The user edits this template along the DKM script "
 ^ '"@title: {1}
 @description: {2}
+@category: <category>
 @tags: tag1 ; tag2 ; tag3
 @author: eric.dupont@edu.eu
 @class: {3}"'! !
