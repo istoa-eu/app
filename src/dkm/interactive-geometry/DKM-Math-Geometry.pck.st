@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7839] on 15 February 2026 at 12:30:48 pm'!
+'From Cuis7.7 [latest update: #7840] on 21 February 2026 at 10:44:57 am'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 11!
+!provides: 'DKM-Math-Geometry' 1 12!
 !requires: 'DrGeoCore' 1 18 nil!
 !requires: 'DKM-Core' 1 6 nil!
 !requires: 'DrGeoFrench' 1 17 nil!
@@ -34,6 +34,10 @@ readMe
 Browse the class DrGeoSketch (Ctrl-B) for the complet protocol.
 
 "! !
+
+!InteractiveGeometry methodsFor: 'as yet unclassified' stamp: 'hlsf 21/Feb/2026 10:34:32'!
+initialize
+	DrGeoSystem beDybo! !
 
 !InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:02:35'!
 codeSample
