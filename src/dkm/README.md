@@ -20,4 +20,5 @@ development environment.
 * A DKM not yet fully financed is released under the creative commons
   [BY-NC-ND](https://creativecommons.org/licenses/by-nc-nd/4.0/) terms.
 
-Learn more how to help financing DKM at the iStoa web page.
+Learn more how to help financing DKM at the [iStoa web
+page](http://www.istoa.eu/support-us/).
