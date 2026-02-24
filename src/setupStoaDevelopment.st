@@ -50,7 +50,8 @@ Display fullScreenMode: false.
 "Select and execute (Ctrl-D) to set the world menu with DKM menu:"
 Stoa setStoaMenu.
 "To restore the default Cuis world menu:"
-Stoa setCuisMenu.'.
+Stoa setCuisMenu.
+'.
 		morph 
 			morphPosition: 0 @ (area height // 2);
 			morphExtent: extent x @ (2 / 3 * extent y).
