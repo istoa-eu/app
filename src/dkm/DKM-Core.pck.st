@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7839] on 15 February 2026 at 8:16:06 pm'!
+'From Cuis7.7 [latest update: #7843] on 22 March 2026 at 1:26:50 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 11!
+!provides: 'DKM-Core' 1 13!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -21,6 +21,16 @@ See class side too.
 
 Implement the class methods pragmaMneu and menu: to add specific entries in the Annotator morph. See Timeline class for an example.!
 
+!DKMPresenter methodsFor: 'events' stamp: 'hlsf 9/Mar/2026 21:20:34'!
+haloAdded
+" get notified my Annotator halo shows up, my subclass may want to do something"
+	'Notified, halo added' print! !
+
+!DKMPresenter methodsFor: 'events' stamp: 'hlsf 9/Mar/2026 21:20:49'!
+haloRemoved
+" get notified my Annotator halo is removed, my subclass may want to do something"
+	'Notified, halo removed' print! !
+
 !DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025 10:02:00'!
 model
 	^ model! !
@@ -29,17 +39,22 @@ model
 view
 	^ view! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 18/Jan/2026 17:48:20'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 11:42:30'!
+AI_PromptFor: aPresenter
+" Read *DKM-Core methohd category in Object "
+	^ self promptTemplate format: (Array with: aPresenter title with: aPresenter description with: aPresenter codeSampleForAI)! !
+
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 11:23:22'!
 codeSampleForAI
-" Working code sample exposing all the DSL with working code sample.
-Subclasses should overide this method with the full DSL API exposed "
+"
+	Working code sample exposing ALL the DSL with working code sample.
+	Subclasses should overide this method with the COMPLET DSL API exposed.
+	It is different to the #codeSample message which only provides a working example
+	of a script for a given DKM 
+"
 	^ self codeSample! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 18/Jan/2026 18:38:59'!
-promptForAI
-	^ self promptTemplate format: (Array with: self title with: self description with: self codeSampleForAI)! !
-
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 23/Jan/2026 14:18:24'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 13:11:36'!
 promptTemplate
 	^ '# Introduction
 I am teacher using the application iStoa (http://istoa.eu) and its library of DKM (Dynamic Knowledge Model) to build pedagogical
@@ -49,6 +64,7 @@ implementation), when executed in the iStoa application, a visual simulation is 
 Now, I am using one of the iStoa DKM to build {1} ({2})
 
 In the next section, I show the complete DSL API specific to this DKM. Please learn from it for the next questions I will ask you.
+Be brief on your comments.
 
 # DSL API for {1}
 {3}
@@ -73,8 +89,9 @@ Dans la section suivante, je montre l''API du DSL de ce DKM. Merci de l''apprend
 codeSample
 	self subclassResponsibility ! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 15/Feb/2026 12:36:24'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 22/Mar/2026 11:42:48'!
 codeSampleWithHeaderFor: aPresenter
+" Read *DKM-Core methohd category in Object "
 	^ String streamContents: [:str |
 			str nextPutAll: (self header format: {aPresenter title . aPresenter description . aPresenter printString});
 				lf;
@@ -138,6 +155,14 @@ presentInWorkspace
 presenterClass
 " The class of the real presenter, if different "
 	^ self! !
+
+!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026 12:32:30'!
+AI_Prompt
+	^DKMPresenter AI_PromptFor: self! !
+
+!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026 11:41:32'!
+AI_PromptFor
+	^DKMPresenter AI_PromptFor: self! !
 
 !Object class methodsFor: '*DKM-Core' stamp: 'hlsf 15/Feb/2026 12:42:20'!
 codeSampleWithHeader

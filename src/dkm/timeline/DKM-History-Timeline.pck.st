@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7827] on 8 February 2026 at 9:28:56 pm'!
+'From Cuis7.7 [latest update: #7843] on 22 March 2026 at 1:26:56 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 15!
+!provides: 'DKM-History-Timeline' 1 17!
 !requires: 'UI-Widgets' 1 62 nil!
 !requires: 'DKM-Core' 1 0 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -209,7 +209,7 @@ initialize
 	model := TimelineModel new.
 	view := TimelineView presenter: self! !
 
-!Timeline class methodsFor: 'AI' stamp: 'hlsf 18/Jan/2026 18:49:34'!
+!Timeline class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 11:37:15'!
 codeSampleForAI 
 	^'| myTimeline |
 myTimeline := Timeline title: ''History of Book''.
@@ -219,7 +219,7 @@ myTimeline
 	color: Color blue.
 "To shrink too long timeline"
 myTimeline shrink.
-"To not shrink too long timeline"
+"To not shrink timeline"
 myTimeline unshrink.
 myTimeline view'
 ! !
@@ -822,12 +822,13 @@ defaultBorderWidth
 defaultColor
 	^ Color transparent! !
 
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 24/Dec/2025 12:24:28'!
+!TimelineView methodsFor: 'initialization' stamp: 'hlsf 10/Mar/2026 19:05:27'!
 initialize
 	super initialize.
 	self morphExtent: 700@500.
 	self installView.
-! !
+	self when: #enterAnnotator send: #showTools to: self.
+	self when: #leaveAnnotator send: #hideTools to: self! !
 
 !TimelineView methodsFor: 'initialization' stamp: 'hlsf 24/Dec/2025 12:21:30'!
 installView
@@ -851,6 +852,10 @@ installView
 !TimelineView methodsFor: 'initialization' stamp: 'hlsf 11/Oct/2025 11:28:52'!
 noteNewOwner: aMorph
 	  UISupervisor whenUIinSafeState: [canvas morphPosition: canvas owner morphExtent - canvas morphExtent // 2]! !
+
+!TimelineView methodsFor: 'accessing' stamp: 'hlsf 24/Dec/2025 12:38:20'!
+adoptWidgetsColor: paneColor
+	! !
 
 !TimelineView methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025 11:12:33'!
 borderColor: aColor
@@ -882,6 +887,10 @@ presenter
 presenter: aPresenter
 	presenter := aPresenter ! !
 
+!TimelineView methodsFor: 'widget' stamp: 'hlsf 10/Mar/2026 19:08:26'!
+hideTools
+	submorphs select: [:each | each is: #WheelMorph] thenDo: [:wheel | wheel hide]! !
+
 !TimelineView methodsFor: 'widget' stamp: 'hlsf 3/Oct/2025 22:18:45'!
 horizontalWheel 
 	^ (WheelMorph target: presenter actionSelector: #moveOXAction:)
@@ -892,6 +901,10 @@ horizontalWheel
 		color: Color orange;
 		borderColor: Color black;
 		yourself! !
+
+!TimelineView methodsFor: 'widget' stamp: 'hlsf 10/Mar/2026 19:08:09'!
+showTools
+	submorphs select: [:each | each is: #WheelMorph] thenDo: [:wheel | wheel show]! !
 
 !TimelineView methodsFor: 'widget' stamp: 'hlsf 3/Oct/2025 22:18:31'!
 zoomWheel
@@ -906,10 +919,6 @@ zoomWheel
 
 !TimelineView methodsFor: 'drawing' stamp: 'hlsf 11/Oct/2025 17:29:40'!
 drawOn: aCanvas ! !
-
-!TimelineView methodsFor: 'as yet unclassified' stamp: 'hlsf 24/Dec/2025 12:38:20'!
-adoptWidgetsColor: paneColor
-	! !
 
 !TimelineView class methodsFor: 'instance creation' stamp: 'hlsf 27/Sep/2025 12:56:16'!
 presenter: aPresenter

@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7809] on 23 January 2026 at 2:28:56 pm'!
+'From Cuis7.7 [latest update: #7840] on 10 March 2026 at 7:21:42 pm'!
 'Description '!
-!provides: 'DKM-Physics-GasSimulation' 1 36!
+!provides: 'DKM-Physics-GasSimulation' 1 37!
 !requires: 'DKM-Core' 1 0 nil!
 SystemOrganization addCategory: #'DKM-Physics-GasSimulation'!
 
@@ -862,13 +862,15 @@ addSensorIn: rectangle
 	temperatureView measuredArea: (GasSimulation rectPixelToModel: rectangle).
 	temperatureViews addMorph: temperatureView ! !
 
-!GasSimulationView methodsFor: 'initialization' stamp: 'hlsf 10/Dec/2025 21:28:25'!
+!GasSimulationView methodsFor: 'initialization' stamp: 'hlsf 10/Mar/2026 19:13:46'!
 initialize
 	super initialize.
 	self beRow.
 	self padding: 4@5; gap: 10.
 	self addMorph: self simulationView ;
-		addMorph: self temperatureViews layoutSpec: (LayoutSpec keepMorphExtent offAxisEdgeWeight: 0)! !
+		addMorph: self temperatureViews layoutSpec: (LayoutSpec keepMorphExtent offAxisEdgeWeight: 0).
+	self when: #enterAnnotator send: #startStepping to: self.
+	self when: #leaveAnnotator send: #stopStepping to: self! !
 
 !GasSimulationView methodsFor: 'initialization' stamp: 'hlsf 8/Dec/2025 22:58:32'!
 installButtons

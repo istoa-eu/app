@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7840] on 24 February 2026 at 7:12:52 pm'!
+'From Cuis7.7 [latest update: #7843] on 22 March 2026 at 1:27:00 pm'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 13!
+!provides: 'DKM-Math-Geometry' 1 16!
 !requires: 'DrGeoCore' 1 18 nil!
 !requires: 'DKM-Core' 1 6 nil!
 !requires: 'DrGeoFrench' 1 17 nil!
@@ -260,6 +260,10 @@ description
 title
 	^ 'Géométre interactive'! !
 
+!GeometrieInteractive class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 11:27:25'!
+AI_Prompt
+	^ self promptTemplateFr format: (Array with: self title with: self description with: self codeSampleForAI)! !
+
 !GeometrieInteractive class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 23:42:35'!
 codeSampleForAI
 	^ '| figure point autrePoint mobile dependent segment droite cercle arc demiDroite lieu valeur angle polygone réglette vecteur |
@@ -435,10 +439,6 @@ figure translationDe: polygone parVecteur: -0.5@-0.2.
 "## Texte libre"
 figure texte: ''''Cette figure montre API DSL de géométrie interactive.
 figure vue.'! !
-
-!GeometrieInteractive class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 22:44:24'!
-promptForAI
-	^ self promptTemplateFr format: (Array with: self title with: self description with: self codeSampleForAI)! !
 
 !GeometrieInteractive class methodsFor: 'user interface' stamp: 'hlsf 29/Jan/2026 10:04:55'!
 presenterClass
