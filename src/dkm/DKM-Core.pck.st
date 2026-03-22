@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7843] on 22 March 2026 at 1:26:50 pm'!
+'From Cuis7.7 [latest update: #7843] on 22 March 2026 at 3:56:11 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 13!
+!provides: 'DKM-Core' 1 14!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -39,10 +39,15 @@ model
 view
 	^ view! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 11:42:30'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 15:12:22'!
 AI_PromptFor: aPresenter
 " Read *DKM-Core methohd category in Object "
-	^ self promptTemplate format: (Array with: aPresenter title with: aPresenter description with: aPresenter codeSampleForAI)! !
+	^ self promptTemplate format: (Array 
+		with: aPresenter title 
+		with: aPresenter description 
+		with: aPresenter codeSampleForAI
+		with: (self header format: {'<title>' . '<description>' . aPresenter printString})
+	)! !
 
 !DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 11:23:22'!
 codeSampleForAI
@@ -54,7 +59,7 @@ codeSampleForAI
 "
 	^ self codeSample! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 13:11:36'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 15:09:14'!
 promptTemplate
 	^ '# Introduction
 I am teacher using the application iStoa (http://istoa.eu) and its library of DKM (Dynamic Knowledge Model) to build pedagogical
@@ -63,8 +68,11 @@ implementation), when executed in the iStoa application, a visual simulation is 
 
 Now, I am using one of the iStoa DKM to build {1} ({2})
 
+When generating the script, add first its header with metadata set for <title>, <description> , <category> and at least one <tag>:
+{4}
+
 In the next section, I show the complete DSL API specific to this DKM. Please learn from it for the next questions I will ask you.
-Be brief on your comments.
+Be brief in your comments, avoid unnecessary compliments.
 
 # DSL API for {1}
 {3}
@@ -102,15 +110,15 @@ description
 	self subclassResponsibility 
 	"^ 'A dynamic knowledge model covering one specific teaching domain.'"! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 15/Feb/2026 19:50:03'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 22/Mar/2026 15:00:14'!
 header
 "	Metadata template to describe a DKM instance. 
 	The user edits this template along the DKM script "
 ^ '"@title: {1}
 @description: {2}
 @category: <category>
-@tags: tag1 ; tag2 ; tag3
-@author: eric.dupont@edu.eu
+@tags: <tag1> ; <tag2> ; <tag3>
+@author: <email>
 @class: {3}"'! !
 
 !DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:39'!
