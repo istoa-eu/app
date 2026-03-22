@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7843] on 22 March 2026 at 3:56:11 pm'!
+'From Cuis7.7 [latest update: #7843] on 22 March 2026 at 4:39:38 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 14!
+!provides: 'DKM-Core' 1 15!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -48,16 +48,6 @@ AI_PromptFor: aPresenter
 		with: aPresenter codeSampleForAI
 		with: (self header format: {'<title>' . '<description>' . aPresenter printString})
 	)! !
-
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 11:23:22'!
-codeSampleForAI
-"
-	Working code sample exposing ALL the DSL with working code sample.
-	Subclasses should overide this method with the COMPLET DSL API exposed.
-	It is different to the #codeSample message which only provides a working example
-	of a script for a given DKM 
-"
-	^ self codeSample! !
 
 !DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 15:09:14'!
 promptTemplate
@@ -171,6 +161,17 @@ AI_Prompt
 !Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026 11:41:32'!
 AI_PromptFor
 	^DKMPresenter AI_PromptFor: self! !
+
+!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026 16:33:51'!
+codeSampleForAI
+"	A default choice, subclasses should implement it with the complete DSL API
+
+	Working code sample exposing ALL the DSL with working code sample.
+	Subclasses should overide this method with the COMPLET DSL API exposed.
+	It is different to the #codeSample message which only provides a working example
+	of a script for a given DKM 
+"
+	^ self codeSample! !
 
 !Object class methodsFor: '*DKM-Core' stamp: 'hlsf 15/Feb/2026 12:42:20'!
 codeSampleWithHeader
