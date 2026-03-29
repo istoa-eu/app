@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7843] on 22 March 2026 at 4:39:38 pm'!
+'From Cuis7.7 [latest update: #7850] on 29 March 2026 at 1:57:07 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 15!
+!provides: 'DKM-Core' 1 16!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -49,7 +49,7 @@ AI_PromptFor: aPresenter
 		with: (self header format: {'<title>' . '<description>' . aPresenter printString})
 	)! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 15:09:14'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 29/Mar/2026 13:56:53'!
 promptTemplate
 	^ '# Introduction
 I am teacher using the application iStoa (http://istoa.eu) and its library of DKM (Dynamic Knowledge Model) to build pedagogical
@@ -58,7 +58,7 @@ implementation), when executed in the iStoa application, a visual simulation is 
 
 Now, I am using one of the iStoa DKM to build {1} ({2})
 
-When generating the script, add first its header with metadata set for <title>, <description> , <category> and at least one <tag>:
+When generating the script, add first its header, in Smalltalk comment, with metadata set for <title>, <description> , <category> and at least one <tag>:
 {4}
 
 In the next section, I show the complete DSL API specific to this DKM. Please learn from it for the next questions I will ask you.
