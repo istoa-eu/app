@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7850] on 29 March 2026 at 1:57:07 pm'!
+'From Cuis7.7 [latest update: #7965] on 28 May 2026 at 10:14:01 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 16!
+!provides: 'DKM-Core' 1 17!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -39,14 +39,18 @@ model
 view
 	^ view! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026 15:12:22'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 28/May/2026 21:37:16'!
 AI_PromptFor: aPresenter
 " Read *DKM-Core methohd category in Object "
 	^ self promptTemplate format: (Array 
 		with: aPresenter title 
 		with: aPresenter description 
 		with: aPresenter codeSampleForAI
-		with: (self header format: {'<title>' . '<description>' . aPresenter printString})
+		with: (self header format: {
+			'<title>' . 
+			'<description>' . 
+			aPresenter dkmUser.
+			aPresenter printString})
 	)! !
 
 !DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 29/Mar/2026 13:56:53'!
@@ -68,7 +72,7 @@ Be brief in your comments, avoid unnecessary compliments.
 {3}
 '! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 22:44:04'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 28/May/2026 21:42:26'!
 promptTemplateFr
 	^ '# Introduction
 Je suis un enseignant utilisant l''application iStoa (http://istoa.eu) et sa bibliothèque de DKM (Dynamic Knowledge Model ou Modèle Dynamique de Connaissance)
@@ -76,6 +80,9 @@ pour construire du contenu pédagogique à utiliser devant les étudiants. Le
 (implementation Cuis-Smalltalk), lorsqu''il est exécuté dans l''application iStoa application, une simulation visuelle est alors construite.
 
 Maintenant, j''utilise un DKM spécifique de iStoa pour {1} ({2})
+
+Lors de la génération d''un script, ajoute en premier son entête, dans un commentaire en Smalltalk, avec des valeurs de metadonnées pour <title>, <description> , <category> et au moins un <tag>:
+{4}
 
 Dans la section suivante, je montre l''API du DSL de ce DKM. Merci de l''apprendre et de l''utiliser pour les questions suivantes que je vais te poser.
 
@@ -87,29 +94,33 @@ Dans la section suivante, je montre l''API du DSL de ce DKM. Merci de l''apprend
 codeSample
 	self subclassResponsibility ! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 22/Mar/2026 11:42:48'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 28/May/2026 11:04:42'!
 codeSampleWithHeaderFor: aPresenter
 " Read *DKM-Core methohd category in Object "
 	^ String streamContents: [:str |
-			str nextPutAll: (self header format: {aPresenter title . aPresenter description . aPresenter printString});
-				lf;
-				nextPutAll: aPresenter codeSample ]! !
+		str nextPutAll: (self header format: {
+			aPresenter title . 
+			aPresenter description . 
+			aPresenter dkmUser . 
+			aPresenter printString});
+			lf;
+			nextPutAll: aPresenter codeSample ]! !
 
 !DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:34'!
 description
 	self subclassResponsibility 
 	"^ 'A dynamic knowledge model covering one specific teaching domain.'"! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 22/Mar/2026 15:00:14'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 28/May/2026 21:57:00'!
 header
 "	Metadata template to describe a DKM instance. 
 	The user edits this template along the DKM script "
 ^ '"@title: {1}
 @description: {2}
 @category: <category>
-@tags: <tag1> ; <tag2> ; <tag3>
-@author: <email>
-@class: {3}"'! !
+@tags: <tag1> ; <tag2>
+@author: {3}
+@class: {4}"'! !
 
 !DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:39'!
 svgIcon
@@ -153,6 +164,12 @@ presentInWorkspace
 presenterClass
 " The class of the real presenter, if different "
 	^ self! !
+
+!Object methodsFor: '*DKM-Core' stamp: 'hlsf 28/May/2026 21:37:07'!
+dkmUser
+	^(self  respondsTo: #dyboUser) 
+		ifTrue: [self dyboUser] 
+		ifFalse: ['<author>'].! !
 
 !Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026 12:32:30'!
 AI_Prompt
