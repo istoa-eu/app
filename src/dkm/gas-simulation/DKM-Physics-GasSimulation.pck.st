@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8120] on 3 August 2026 at 3:07:40 pm'!
+'From Cuis7.9 [latest update: #8120] on 3 August 2026 at 3:39:14 pm'!
 'Description '!
-!provides: 'DKM-Physics-GasSimulation' 1 38!
+!provides: 'DKM-Physics-GasSimulation' 1 39!
 !requires: 'DKM-Core' 1 0 nil!
 SystemOrganization addCategory: #'DKM-Physics-GasSimulation'!
 
@@ -866,15 +866,13 @@ addSensorIn: rectangle
 defaultColor
 	^ Theme current paneBackgroundFrom: self defaultBorderColor ! !
 
-!GasSimulationView methodsFor: 'initialization' stamp: 'hlsf 10/Mar/2026, 5:13:46 pm (UTC)'!
+!GasSimulationView methodsFor: 'initialization' stamp: 'hlsf 3/Aug/2026, 1:27:53 pm (UTC)'!
 initialize
 	super initialize.
 	self beRow.
 	self padding: 4@5; gap: 10.
 	self addMorph: self simulationView ;
-		addMorph: self temperatureViews layoutSpec: (LayoutSpec keepMorphExtent offAxisEdgeWeight: 0).
-	self when: #enterAnnotator send: #startStepping to: self.
-	self when: #leaveAnnotator send: #stopStepping to: self! !
+		addMorph: self temperatureViews layoutSpec: (LayoutSpec keepMorphExtent offAxisEdgeWeight: 0)! !
 
 !GasSimulationView methodsFor: 'initialization' stamp: 'hlsf 8/Dec/2025, 8:58:32 pm (UTC)'!
 installButtons
