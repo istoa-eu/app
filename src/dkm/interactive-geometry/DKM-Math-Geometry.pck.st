@@ -1,9 +1,9 @@
-'From Cuis7.7 [latest update: #7965] on 28 May 2026 at 10:14:04 pm'!
+'From Cuis7.9 [latest update: #8160] on 8 September 2026 at 9:05:09 pm'!
 'Description '!
-!provides: 'DKM-Math-Geometry' 1 17!
-!requires: 'DrGeoCore' 1 18 nil!
-!requires: 'DKM-Core' 1 6 nil!
-!requires: 'DrGeoFrench' 1 17 nil!
+!provides: 'DKM-Math-Geometry' 1 18!
+!requires: 'DrGeoCore' 1 72 nil!
+!requires: 'DKM-Core' 1 17 nil!
+!requires: 'DrGeoFrench' 1 23 nil!
 SystemOrganization addCategory: #'DKM-Math-Geometry'!
 
 
@@ -28,14 +28,14 @@ GeometrieInteractive class
 	instanceVariableNames: ''!
 
 
-!InteractiveGeometry methodsFor: 'DSL' stamp: 'hlsf 11/Jan/2026 19:47:02'!
+!InteractiveGeometry methodsFor: 'DSL' stamp: 'hlsf 11/Jan/2026, 5:47:02 pm (UTC)'!
 readMe
 "
 Browse the class DrGeoSketch (Ctrl-B) for the complet protocol.
 
 "! !
 
-!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:02:35'!
+!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026, 8:02:35 am (UTC)'!
 codeSample
 	^'| sketch triangle ourRandom m n p |
 sketch := DrGeoSketch new.
@@ -52,27 +52,27 @@ p := sketch point:  ourRandom value @ 3.
 triangle value: m value: n value: p.
 sketch view'! !
 
-!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 11/Jan/2026 19:28:29'!
+!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 11/Jan/2026, 5:28:29 pm (UTC)'!
 description
 	^'Describe a geometric sketch with dedicated instructions. The result is a geometric sketch you can interactively manipulate.' translated! !
 
-!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 17/Jan/2026 23:09:47'!
+!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 17/Jan/2026, 9:09:47 pm (UTC)'!
 svgIcon
 	^ '<svg width="75" height="75" version="1.1" xmlns="http://www.w3.org/2000/svg"><!!-- GPL Copyright 2010 2026 Hilaire Fernandes--><rect x="1.7783" y="1.6735" width="71.772" height="71.99" rx="7.5" ry="7.5" fill="#aaa" opacity=".96" stroke="#000" stroke-linecap="square" stroke-linejoin="round" stroke-width="3"/><g fill-opacity=".75" fill-rule="evenodd" stroke-linejoin="round"><path d="m29.785 12.675 26.734 40.359-39.146-0.28027 12.412-40.078z" fill="#fff" stroke="#000" stroke-width="3"/><path d="m36.333 5.0316v57.093 6.2641" fill="#0121fd" stroke="#333" stroke-width="2.2075"/><path d="m5.961 26.742 61.64 21.176" fill="#e6e6e6" stroke="#333" stroke-width="2.2075"/></g><path d="m64.499 19.444-56.457 35.549" fill="none" stroke="#333" stroke-linejoin="round" stroke-width="2.2075"/><ellipse transform="matrix(1.1192 0 0 1.1843 31.646 -7.3558)" cx="4.626" cy="37.303" rx="23.13" ry="22.146" fill="none" stroke="#808080" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.7372"/></svg>'! !
 
-!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 11/Jan/2026 19:28:37'!
+!InteractiveGeometry class methodsFor: 'DKM' stamp: 'hlsf 11/Jan/2026, 5:28:37 pm (UTC)'!
 title
 	^ 'Interactive geometry' translated! !
 
-!InteractiveGeometry class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026 20:54:03'!
+!InteractiveGeometry class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026, 6:54:03 pm (UTC)'!
 dslCategory
 	^ 'DSL point' ! !
 
-!InteractiveGeometry class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026 20:53:52'!
+!InteractiveGeometry class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026, 6:53:52 pm (UTC)'!
 presenterClass
 	^ DrGeoSketch ! !
 
-!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 23:41:11'!
+!InteractiveGeometry class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026, 9:41:11 pm (UTC)'!
 codeSampleForAI
 	^ '| mySketch point anotherPoint mobile dependent segment line circle arc ray locus value angle polygon ruler vector |
 "## Creating a new sketch instance"
@@ -231,11 +231,11 @@ mySketch translate: polygon vector: -0.5@-0.2.
 mySketch text: ''This sketch illustrates the Inteactive geometry DSL API''.
 mySketch view. '! !
 
-!InteractiveGeometry class methodsFor: 'class initialization' stamp: 'hlsf 24/Feb/2026 19:12:40'!
+!InteractiveGeometry class methodsFor: 'class initialization' stamp: 'hlsf 24/Feb/2026, 5:12:40 pm (UTC)'!
 initialize
 	DrGeoSystem beDybo! !
 
-!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:00:53'!
+!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026, 8:00:53 am (UTC)'!
 codeSample
 	^'| figure triangle auHasard m n p |
 figure := DrGeoFigure new.
@@ -252,15 +252,15 @@ p := figure point:  auHasard valeur @ 3.
 triangle valeur: m valeur: n valeur: p.
 figure vue'! !
 
-!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:04:01'!
+!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026, 8:04:01 am (UTC)'!
 description
 	^'Décrire une figure géométrique avec des instructions. La figure géométrique résultante peut être manipulée interactivement.'! !
 
-!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026 10:03:14'!
+!GeometrieInteractive class methodsFor: 'DKM' stamp: 'hlsf 29/Jan/2026, 8:03:14 am (UTC)'!
 title
 	^ 'Géométre interactive'! !
 
-!GeometrieInteractive class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026 23:42:35'!
+!GeometrieInteractive class methodsFor: 'AI' stamp: 'hlsf 29/Jan/2026, 9:42:35 pm (UTC)'!
 codeSampleForAI
 	^ '| figure point autrePoint mobile dependent segment droite cercle arc demiDroite lieu valeur angle polygone réglette vecteur |
 
@@ -436,7 +436,7 @@ figure translationDe: polygone parVecteur: -0.5@-0.2.
 figure texte: ''''Cette figure montre API DSL de géométrie interactive.
 figure vue.'! !
 
-!GeometrieInteractive class methodsFor: 'user interface' stamp: 'hlsf 29/Jan/2026 10:04:55'!
+!GeometrieInteractive class methodsFor: 'user interface' stamp: 'hlsf 29/Jan/2026, 8:04:55 am (UTC)'!
 presenterClass
 	^ DrGeoFigure ! !
 InteractiveGeometry initialize!
