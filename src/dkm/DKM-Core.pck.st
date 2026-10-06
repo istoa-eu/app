@@ -1,6 +1,6 @@
-'From Cuis7.7 [latest update: #7965] on 28 May 2026 at 10:14:01 pm'!
+'From Cuis7.9 [latest update: #8239] on 6 October 2026 at 11:42:48 am'!
 'Description '!
-!provides: 'DKM-Core' 1 17!
+!provides: 'DKM-Core' 1 18!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -21,25 +21,25 @@ See class side too.
 
 Implement the class methods pragmaMneu and menu: to add specific entries in the Annotator morph. See Timeline class for an example.!
 
-!DKMPresenter methodsFor: 'events' stamp: 'hlsf 9/Mar/2026 21:20:34'!
+!DKMPresenter methodsFor: 'events' stamp: 'hlsf 9/Mar/2026, 7:20:34 pm (UTC)'!
 haloAdded
 " get notified my Annotator halo shows up, my subclass may want to do something"
 	'Notified, halo added' print! !
 
-!DKMPresenter methodsFor: 'events' stamp: 'hlsf 9/Mar/2026 21:20:49'!
+!DKMPresenter methodsFor: 'events' stamp: 'hlsf 9/Mar/2026, 7:20:49 pm (UTC)'!
 haloRemoved
 " get notified my Annotator halo is removed, my subclass may want to do something"
 	'Notified, halo removed' print! !
 
-!DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025 10:02:00'!
+!DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025, 8:02:00 am (UTC)'!
 model
 	^ model! !
 
-!DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025 10:02:07'!
+!DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025, 8:02:07 am (UTC)'!
 view
 	^ view! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 28/May/2026 21:37:16'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 28/May/2026, 7:37:16 pm (UTC)'!
 AI_PromptFor: aPresenter
 " Read *DKM-Core methohd category in Object "
 	^ self promptTemplate format: (Array 
@@ -53,7 +53,7 @@ AI_PromptFor: aPresenter
 			aPresenter printString})
 	)! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 29/Mar/2026 13:56:53'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 29/Mar/2026, 11:56:53 am (UTC)'!
 promptTemplate
 	^ '# Introduction
 I am teacher using the application iStoa (http://istoa.eu) and its library of DKM (Dynamic Knowledge Model) to build pedagogical
@@ -72,7 +72,7 @@ Be brief in your comments, avoid unnecessary compliments.
 {3}
 '! !
 
-!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 28/May/2026 21:42:26'!
+!DKMPresenter class methodsFor: 'AI' stamp: 'hlsf 28/May/2026, 7:42:26 pm (UTC)'!
 promptTemplateFr
 	^ '# Introduction
 Je suis un enseignant utilisant l''application iStoa (http://istoa.eu) et sa bibliothèque de DKM (Dynamic Knowledge Model ou Modèle Dynamique de Connaissance)
@@ -90,13 +90,13 @@ Dans la section suivante, je montre l''API du DSL de ce DKM. Merci de l''apprend
 {3}
 '! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:30'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025, 4:36:30 pm (UTC)'!
 codeSample
 	self subclassResponsibility ! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 28/May/2026 11:04:42'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 6/Oct/2026, 9:29:48 am (UTC)'!
 codeSampleWithHeaderFor: aPresenter
-" Read *DKM-Core methohd category in Object "
+" Read the Object '*DKM-Core' method category "
 	^ String streamContents: [:str |
 		str nextPutAll: (self header format: {
 			aPresenter title . 
@@ -106,12 +106,12 @@ codeSampleWithHeaderFor: aPresenter
 			lf;
 			nextPutAll: aPresenter codeSample ]! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:34'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025, 4:36:34 pm (UTC)'!
 description
 	self subclassResponsibility 
 	"^ 'A dynamic knowledge model covering one specific teaching domain.'"! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 28/May/2026 21:57:00'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 28/May/2026, 7:57:00 pm (UTC)'!
 header
 "	Metadata template to describe a DKM instance. 
 	The user edits this template along the DKM script "
@@ -122,29 +122,29 @@ header
 @author: {3}
 @class: {4}"'! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:39'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025, 4:36:39 pm (UTC)'!
 svgIcon
 "	Poo icon, subclasses are strongly suggested to set a different icon!! "
 	^'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!!--!!Font Awesome Free v5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M451.4 369.1C468.7 356 480 335.4 480 312c0-39.8-32.2-72-72-72h-14.1c13.4-11.7 22.1-28.8 22.1-48 0-35.3-28.7-64-64-64h-5.9c3.6-10.1 5.9-20.7 5.9-32 0-53-43-96-96-96-5.2 0-10.2.7-15.1 1.5C250.3 14.6 256 30.6 256 48c0 44.2-35.8 80-80 80h-16c-35.3 0-64 28.7-64 64 0 19.2 8.7 36.3 22.1 48H104c-39.8 0-72 32.2-72 72 0 23.4 11.3 44 28.6 57.1C26.3 374.6 0 404.1 0 440c0 39.8 32.2 72 72 72h368c39.8 0 72-32.2 72-72 0-35.9-26.3-65.4-60.6-70.9zM192 256c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32zm159.5 139C341 422.9 293 448 256 448s-85-25.1-95.5-53c-2-5.3 2-11 7.8-11h175.4c5.8 0 9.8 5.7 7.8 11zM320 320c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z"/></svg>'! !
 
-!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025 18:36:44'!
+!DKMPresenter class methodsFor: 'DKM' stamp: 'hlsf 29/Nov/2025, 4:36:44 pm (UTC)'!
 title
 	self subclassResponsibility 
 	"^ 'Model title'"! !
 
-!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026 20:52:50'!
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026, 6:52:50 pm (UTC)'!
 dslCategory
 " The method category of the DSL "
 	^ 'DSL'! !
 
-!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 11/Jan/2026 19:42:41'!
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 11/Jan/2026, 5:42:41 pm (UTC)'!
 evaluateSample
 " Evaluate the sample and present it to the world "
 	| view |
 	view := Compiler evaluate: self codeSample.
 	view openInHand! !
 
-!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 25/Dec/2025 10:54:54'!
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 25/Dec/2025, 8:54:54 am (UTC)'!
 presentInWorkspace
 " Present the code sample of the DKM in a Workspace "
 	| codeSample |
@@ -160,36 +160,36 @@ presentInWorkspace
 		contents: codeSample;
 		openLabel: self title! !
 
-!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026 20:53:37'!
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 12/Jan/2026, 6:53:37 pm (UTC)'!
 presenterClass
 " The class of the real presenter, if different "
 	^ self! !
 
-!Object methodsFor: '*DKM-Core' stamp: 'hlsf 28/May/2026 21:37:07'!
+!Object methodsFor: '*DKM-Core' stamp: 'hlsf 28/May/2026, 7:37:07 pm (UTC)'!
 dkmUser
 	^(self  respondsTo: #dyboUser) 
 		ifTrue: [self dyboUser] 
 		ifFalse: ['<author>'].! !
 
-!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026 12:32:30'!
+!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026, 10:32:30 am (UTC)'!
 AI_Prompt
 	^DKMPresenter AI_PromptFor: self! !
 
-!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026 11:41:32'!
+!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026, 9:41:32 am (UTC)'!
 AI_PromptFor
 	^DKMPresenter AI_PromptFor: self! !
 
-!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 22/Mar/2026 16:33:51'!
+!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 6/Oct/2026, 9:36:26 am (UTC)'!
 codeSampleForAI
-"	A default choice, subclasses should implement it with the complete DSL API
+"	A default choice, subclasses should override it with the complete DSL API
 
 	Working code sample exposing ALL the DSL with working code sample.
-	Subclasses should overide this method with the COMPLET DSL API exposed.
+	Subclasses should overide this method with the COMPLETE DSL API exposed.
 	It is different to the #codeSample message which only provides a working example
 	of a script for a given DKM 
 "
 	^ self codeSample! !
 
-!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 15/Feb/2026 12:42:20'!
+!Object class methodsFor: '*DKM-Core' stamp: 'hlsf 15/Feb/2026, 10:42:20 am (UTC)'!
 codeSampleWithHeader
 	^DKMPresenter codeSampleWithHeaderFor: self! !
