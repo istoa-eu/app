@@ -1,13 +1,13 @@
-'From Cuis7.9 [latest update: #8160] on 8 September 2026 at 9:05:20 pm'!
+'From Cuis7.9 [latest update: #8266] on 7 October 2026 at 5:21:29 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 19!
+!provides: 'DKM-History-Timeline' 1 21!
 !requires: 'UI-Widgets' 1 75 nil!
 !requires: 'DKM-Core' 1 17 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
 
 
 !classDefinition: #Timeline category: #'DKM-History-Timeline'!
-DKMPresenter subclass: #Timeline
+DKMCanvasPresenter subclass: #Timeline
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -37,8 +37,8 @@ TimelineGraduation class
 	instanceVariableNames: ''!
 
 !classDefinition: #TimelineModel category: #'DKM-History-Timeline'!
-ActiveModel subclass: #TimelineModel
-	instanceVariableNames: 'title entries graduation subGraduation ppd temporalGaps shrink'
+DKMCanvasModel subclass: #TimelineModel
+	instanceVariableNames: 'entries graduation subGraduation ppd temporalGaps shrink'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'DKM-History-Timeline'!
@@ -57,8 +57,8 @@ TimelineConnector class
 	instanceVariableNames: ''!
 
 !classDefinition: #TimelineCanvas category: #'DKM-History-Timeline'!
-BoxMorph subclass: #TimelineCanvas
-	instanceVariableNames: 'presenter prevPosition font drawnGrads'
+DKMCanvas subclass: #TimelineCanvas
+	instanceVariableNames: 'font drawnGrads'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'DKM-History-Timeline'!
@@ -66,19 +66,9 @@ BoxMorph subclass: #TimelineCanvas
 TimelineCanvas class
 	instanceVariableNames: ''!
 
-!classDefinition: #TimelineContainer category: #'DKM-History-Timeline'!
-ColoredBoxMorph subclass: #TimelineContainer
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'DKM-History-Timeline'!
-!classDefinition: 'TimelineContainer class' category: #'DKM-History-Timeline'!
-TimelineContainer class
-	instanceVariableNames: ''!
-
 !classDefinition: #TimelineView category: #'DKM-History-Timeline'!
-FormLayoutMorph subclass: #TimelineView
-	instanceVariableNames: 'presenter canvas'
+DKMCanvasView subclass: #TimelineView
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'DKM-History-Timeline'!
@@ -142,33 +132,6 @@ A view of a timeline entry.
 - description, a text paragraph morph
 - position, a symbol (#above #below), indicating my positionning to the time line!
 
-!Timeline methodsFor: 'callback ui' stamp: 'hlsf 11/Oct/2025, 3:32:53 pm (UTC)'!
-moveOXAction: increment
-	| canvas myIncr |
-	canvas := view canvas.
-	myIncr := 0.
-	increment > 0 
-		ifTrue: [ " Move to the right as long as canvas ox zero is lower than container right border (extent x) "
-			(canvas externalize: 0@0) x < view container morphExtent x ifTrue: [myIncr := increment ] ]
-		ifFalse: [ " Move to the left as long as canvas width on ox is greater thant container left obrder (0) "
-			(canvas externalize: model canvasWidth@0) x > 0 ifTrue: [myIncr := increment ] ].
-	myIncr isZero ifFalse: [
-		myIncr := myIncr * model canvasWidth / 4000.
-		canvas morphPosition: canvas morphPosition x + myIncr  @ canvas morphPosition y]! !
-
-!Timeline methodsFor: 'callback ui' stamp: 'hlsf 2/Oct/2025, 6:59:48 am (UTC)'!
-zoomAction: increment
-	self zoomAction: increment at: view container fullBoundsInOwner center! !
-
-!Timeline methodsFor: 'callback ui' stamp: 'hlsf 1/Oct/2025, 8:27:37 pm (UTC)'!
-zoomAction: increment at: referencePoint
-	| canvas center |
-	canvas := view canvas.
-	center := canvas internalize: referencePoint.
-	canvas scale: (canvas scale - increment min: 2 max: 0.1).
-	center := canvas externalize: center.
-	canvas morphPosition: canvas morphPosition - center + referencePoint .! !
-
 !Timeline methodsFor: 'DSL' stamp: 'hlsf 28/Sep/2025, 11:33:08 am (UTC)'!
 addEvent: aText on: aStringDate
 	^ self addEvent: aText on: aStringDate image: nil! !
@@ -184,10 +147,6 @@ addEvent: aText on: aStringDate image: anUrl
 	^ model addEntry: entry
 	! !
 
-!Timeline methodsFor: 'DSL' stamp: 'hlsf 9/Oct/2025, 8:55:30 am (UTC)'!
-color: aColor
-	view borderColor: aColor! !
-
 !Timeline methodsFor: 'DSL' stamp: 'hlsf 9/Oct/2025, 8:22:33 am (UTC)'!
 shrink
 " Timeline spaning over long periods of time can be shrinked.
@@ -199,10 +158,6 @@ unshrink
 " Timeline spaning over long periods of time can be shrinked.
   These periods are then represented as dots in the timeline."
 	model unshrink ! !
-
-!Timeline methodsFor: 'DSL' stamp: 'hlsf 9/Oct/2025, 8:57:03 am (UTC)'!
-width: aColor
-	view borderWidth: aColor! !
 
 !Timeline methodsFor: 'initialization' stamp: 'hlsf 24/Dec/2025, 10:25:22 am (UTC)'!
 initialize
@@ -264,13 +219,6 @@ svgIcon
 !Timeline class methodsFor: 'DKM' stamp: 'hlsf 12/Oct/2025, 10:33:50 am (UTC)'!
 title
 	^ 'Timeline' translated! !
-
-!Timeline class methodsFor: 'instance creation' stamp: 'hlsf 28/Sep/2025, 9:52:03 am (UTC)'!
-title: aText
-	| timeline |
-	timeline := self new.
-	timeline model title: aText.
-	^ timeline ! !
 
 !TimelineEntry methodsFor: 'accessing' stamp: 'hlsf 28/Sep/2025, 10:56:06 am (UTC)'!
 date
@@ -415,14 +363,6 @@ temporalGaps
 				ifTrue: [temporalGaps add: index + 1 " we have a gap to go to the (index+1)th entry "] ].
 		temporalGaps]
 		! !
-
-!TimelineModel methodsFor: 'accessing' stamp: 'hlsf 4/Oct/2025, 10:59:39 am (UTC)'!
-title
-	^ title! !
-
-!TimelineModel methodsFor: 'accessing' stamp: 'hlsf 28/Sep/2025, 9:48:45 am (UTC)'!
-title: aText
-	title := aText! !
 
 !TimelineModel methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025, 8:18:23 am (UTC)'!
 unshrink
@@ -569,33 +509,17 @@ drawOn: canvas
 height
 	^ 50! !
 
-!TimelineCanvas methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025, 8:58:06 am (UTC)'!
-color
-	^ self mainView borderColor ! !
-
-!TimelineCanvas methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025, 8:39:06 am (UTC)'!
-container
-	^ owner! !
-
 !TimelineCanvas methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025, 8:58:00 am (UTC)'!
 entryWidth
 	^ self mainView borderWidth ! !
-
-!TimelineCanvas methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025, 8:39:14 am (UTC)'!
-mainView
-	^ self container owner! !
-
-!TimelineCanvas methodsFor: 'accessing' stamp: 'hlsf 4/Oct/2025, 2:53:13 pm (UTC)'!
-model
-	^ presenter model! !
 
 !TimelineCanvas methodsFor: 'accessing' stamp: 'hlsf 1/Oct/2025, 3:44:44 pm (UTC)'!
 positions
 	^ `Array with: #above with: #below`! !
 
-!TimelineCanvas methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025, 8:17:35 am (UTC)'!
+!TimelineCanvas methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 2:47:01 pm (UTC)'!
 presenter: aPresenter
-	presenter := aPresenter.
+	super presenter: aPresenter.
 	presenter model when: #changedTimeline send: #updateCanvas to: self! !
 
 !TimelineCanvas methodsFor: 'geometry' stamp: 'hlsf 4/Oct/2025, 2:55:39 pm (UTC)'!
@@ -740,34 +664,6 @@ gradFont
 titleFont
 	^ (FontFamily familyName: FontFamily defaultFamilyName pointSize: 16) emphasized: 7! !
 
-!TimelineCanvas methodsFor: 'geometry testing' stamp: 'hlsf 3/Oct/2025, 6:29:29 pm (UTC)'!
-requiresVectorCanvas
-	^ true ! !
-
-!TimelineCanvas methodsFor: 'event handling testing' stamp: 'hlsf 4/Oct/2025, 3:06:57 pm (UTC)'!
-handlesMouseDown: event
-	^ true
-! !
-
-!TimelineCanvas methodsFor: 'event handling testing' stamp: 'hlsf 4/Oct/2025, 2:51:19 pm (UTC)'!
-handlesMouseScroll: scrollEvent
-	^ true! !
-
-!TimelineCanvas methodsFor: 'events' stamp: 'hlsf 4/Oct/2025, 3:07:19 pm (UTC)'!
-mouseButton1Up: event localPosition: localPosition
-	prevPosition := nil! !
-
-!TimelineCanvas methodsFor: 'events' stamp: 'hlsf 4/Oct/2025, 3:06:32 pm (UTC)'!
-mouseMove: event localPosition: localPosition
-	| pos |
-	event mouseButton1Pressed not ifTrue: [^ self ].
-	prevPosition 
-		ifNotNil:  [
-			pos := self externalize: localPosition.
-			self morphPosition: self morphPosition + pos - prevPosition.
-			prevPosition := pos]
-		ifNil: [prevPosition := self externalize: localPosition]! !
-
 !TimelineCanvas methodsFor: 'events' stamp: 'hlsf 4/Oct/2025, 2:59:38 pm (UTC)'!
 mouseScroll: evt localPosition: localEventPosition
 	evt direction == #down
@@ -793,51 +689,14 @@ verticalMargin
 " top and bottom margin "
 	^ self topMargin + self bottomMargin ! !
 
-!TimelineContainer methodsFor: 'geometry testing' stamp: 'hlsf 29/Sep/2025, 7:35:40 pm (UTC)'!
-clipsSubmorphs
-	^ true ! !
-
-!TimelineContainer methodsFor: 'initialization' stamp: 'hlsf 4/Oct/2025, 3:08:58 pm (UTC)'!
-defaultColor
-	^ Color white slightlyDarker ! !
-
-!TimelineContainer methodsFor: 'as yet unclassified' stamp: 'hlsf 11/Oct/2025, 4:39:01 pm (UTC)'!
-handlesMouseDown: aMouseButtonEvent
-	^ true ! !
-
-!TimelineContainer class methodsFor: 'instance creation' stamp: 'hlsf 29/Sep/2025, 7:48:29 pm (UTC)'!
-for: aTimelineCanvas
-	^ self new
-		addMorph: aTimelineCanvas position: 0@0! !
-
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 9/Oct/2025, 8:52:20 am (UTC)'!
-defaultBorderColor 
-	^ Color blue! !
-
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 9/Oct/2025, 8:52:26 am (UTC)'!
-defaultBorderWidth 
-	^ 2! !
-
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 4/Oct/2025, 3:11:56 pm (UTC)'!
-defaultColor
-	^ Color transparent! !
-
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 10/Mar/2026, 5:05:27 pm (UTC)'!
-initialize
-	super initialize.
-	self morphExtent: 700@500.
-	self installView.
-	self when: #enterAnnotator send: #showTools to: self.
-	self when: #leaveAnnotator send: #hideTools to: self! !
-
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 3/Aug/2026, 1:01:04 pm (UTC)'!
+!TimelineView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 1:24:59 pm (UTC)'!
 installView
 	| halfHeight halfWidth |
 	halfHeight := (Theme current wheelHeight / 2) rounded.
 	halfWidth := (Theme current wheelWidth / 2) rounded.
 	canvas := TimelineCanvas new presenter: presenter.
 	canvas setExtent.
-	self addMorph: (TimelineContainer for: canvas)
+	self addMorph: (DKMContainer for: canvas)
 		layoutSpec: (LayoutEdgesSpec 
 			tlEdgesWeight: 0@0 offset: 0@0 
 			brEdgesWeight: 1@1 offset: (halfWidth * -2) asPoint).
@@ -851,84 +710,6 @@ installView
 			brEdgesWeight: 0.5 @1 offset: halfHeight @ 0).
 	canvas morphPosition: 10@10
 ! !
-
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 11/Oct/2025, 9:28:52 am (UTC)'!
-noteNewOwner: aMorph
-	  UISupervisor whenUIinSafeState: [canvas morphPosition: canvas owner morphExtent - canvas morphExtent // 2]! !
-
-!TimelineView methodsFor: 'accessing' stamp: 'hlsf 24/Dec/2025, 10:38:20 am (UTC)'!
-adoptWidgetsColor: paneColor
-	! !
-
-!TimelineView methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025, 9:12:33 am (UTC)'!
-borderColor: aColor
-	super borderColor: aColor.
-	canvas updateColor! !
-
-!TimelineView methodsFor: 'accessing' stamp: 'hlsf 9/Oct/2025, 9:15:34 am (UTC)'!
-borderWidth: anInteger
-	super borderWidth: anInteger.
-	canvas updateWidth ! !
-
-!TimelineView methodsFor: 'accessing' stamp: 'hlsf 1/Oct/2025, 2:28:34 pm (UTC)'!
-canvas
-	^ canvas! !
-
-!TimelineView methodsFor: 'accessing' stamp: 'hlsf 2/Oct/2025, 6:59:41 am (UTC)'!
-container
-	^ canvas owner! !
-
-!TimelineView methodsFor: 'accessing' stamp: 'hlsf 29/Sep/2025, 7:43:41 pm (UTC)'!
-model
-	^ presenter model! !
-
-!TimelineView methodsFor: 'accessing' stamp: 'hlsf 12/Oct/2025, 4:56:35 pm (UTC)'!
-presenter
-	^ presenter! !
-
-!TimelineView methodsFor: 'accessing' stamp: 'hlsf 27/Sep/2025, 10:56:37 am (UTC)'!
-presenter: aPresenter
-	presenter := aPresenter ! !
-
-!TimelineView methodsFor: 'widget' stamp: 'hlsf 10/Mar/2026, 5:08:26 pm (UTC)'!
-hideTools
-	submorphs select: [:each | each is: #WheelMorph] thenDo: [:wheel | wheel hide]! !
-
-!TimelineView methodsFor: 'widget' stamp: 'hlsf 3/Oct/2025, 8:18:45 pm (UTC)'!
-horizontalWheel 
-	^ (WheelMorph target: presenter actionSelector: #moveOXAction:)
-		beHorizontal; 
-		factor: 2; 
-		setBalloonText: 'Scroll the time line to the left or the right.' translated;
-		borderWidth: 3;
-		color: Color orange;
-		borderColor: Color black;
-		yourself! !
-
-!TimelineView methodsFor: 'widget' stamp: 'hlsf 10/Mar/2026, 5:08:09 pm (UTC)'!
-showTools
-	submorphs select: [:each | each is: #WheelMorph] thenDo: [:wheel | wheel show]! !
-
-!TimelineView methodsFor: 'widget' stamp: 'hlsf 3/Oct/2025, 8:18:31 pm (UTC)'!
-zoomWheel
-	^ (WheelMorph target: presenter actionSelector: #zoomAction:)
-		beVertical ;		
-		factor: 0.01 ;
-		setBalloonText: 'Zoom in or out the timeline' translated;
-		borderWidth: 3;
-		color: Color gray;
-		borderColor: Color black;
-		yourself! !
-
-!TimelineView methodsFor: 'drawing' stamp: 'hlsf 11/Oct/2025, 3:29:40 pm (UTC)'!
-drawOn: aCanvas ! !
-
-!TimelineView class methodsFor: 'instance creation' stamp: 'hlsf 27/Sep/2025, 10:56:16 am (UTC)'!
-presenter: aPresenter
-	^ self basicNew
-		presenter: aPresenter;
-		initialize;
-		yourself! !
 
 !TimelineEntryView methodsFor: 'initialization' stamp: 'hlsf 1/Oct/2025, 7:54:50 pm (UTC)'!
 defaultColor

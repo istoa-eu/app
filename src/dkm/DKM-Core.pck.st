@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8239] on 6 October 2026 at 11:42:48 am'!
+'From Cuis7.9 [latest update: #8266] on 7 October 2026 at 5:21:27 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 18!
+!provides: 'DKM-Core' 1 19!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -14,12 +14,81 @@ Object subclass: #DKMPresenter
 DKMPresenter class
 	instanceVariableNames: ''!
 
+!classDefinition: #DKMCanvasPresenter category: #'DKM-Core'!
+DKMPresenter subclass: #DKMCanvasPresenter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'DKM-Core'!
+!classDefinition: 'DKMCanvasPresenter class' category: #'DKM-Core'!
+DKMCanvasPresenter class
+	instanceVariableNames: ''!
+
+!classDefinition: #DKMCanvasModel category: #'DKM-Core'!
+ActiveModel subclass: #DKMCanvasModel
+	instanceVariableNames: 'title'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'DKM-Core'!
+!classDefinition: 'DKMCanvasModel class' category: #'DKM-Core'!
+DKMCanvasModel class
+	instanceVariableNames: ''!
+
+!classDefinition: #DKMCanvas category: #'DKM-Core'!
+BoxMorph subclass: #DKMCanvas
+	instanceVariableNames: 'presenter prevPosition'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'DKM-Core'!
+!classDefinition: 'DKMCanvas class' category: #'DKM-Core'!
+DKMCanvas class
+	instanceVariableNames: ''!
+
+!classDefinition: #DKMContainer category: #'DKM-Core'!
+ColoredBoxMorph subclass: #DKMContainer
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'DKM-Core'!
+!classDefinition: 'DKMContainer class' category: #'DKM-Core'!
+DKMContainer class
+	instanceVariableNames: ''!
+
+!classDefinition: #DKMCanvasView category: #'DKM-Core'!
+FormLayoutMorph subclass: #DKMCanvasView
+	instanceVariableNames: 'canvas presenter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'DKM-Core'!
+!classDefinition: 'DKMCanvasView class' category: #'DKM-Core'!
+DKMCanvasView class
+	instanceVariableNames: ''!
+
 
 !DKMPresenter commentStamp: 'hlsf 15/Feb/2026 11:48:14' prior: 0!
 An abstract Presenter each new DKM's presenter must inherit from.
 See class side too.
 
 Implement the class methods pragmaMneu and menu: to add specific entries in the Annotator morph. See Timeline class for an example.!
+
+!DKMCanvasPresenter commentStamp: '<historical>' prior: 0!
+An abstract Presenter for DKM handling a canvas!
+
+!DKMCanvasModel commentStamp: '<historical>' prior: 0!
+An abstract Model for DKM handling a canvas!
+
+!DKMCanvas commentStamp: '<historical>' prior: 0!
+I am canvas to be used with DKM with a canvas view!
+
+!DKMContainer commentStamp: '<historical>' prior: 0!
+I am a container for a canvas view. 
+The canvas view can be panned or zoomed inside me.
+!
+
+!DKMCanvasView commentStamp: '<historical>' prior: 0!
+An abstract View for DKM handling a canvas
+In this kind of DKM view a canvas can be panned/zoomed around.
+The model is displayed in the canvas view.!
 
 !DKMPresenter methodsFor: 'events' stamp: 'hlsf 9/Mar/2026, 7:20:34 pm (UTC)'!
 haloAdded
@@ -164,6 +233,223 @@ presentInWorkspace
 presenterClass
 " The class of the real presenter, if different "
 	^ self! !
+
+!DKMCanvasPresenter methodsFor: 'DSL' stamp: 'hlsf 7/Oct/2026, 3:00:02 pm (UTC)'!
+color: aColor
+	view borderColor: aColor! !
+
+!DKMCanvasPresenter methodsFor: 'DSL' stamp: 'hlsf 7/Oct/2026, 3:00:48 pm (UTC)'!
+width: aColor
+	view borderWidth: aColor! !
+
+!DKMCanvasPresenter methodsFor: 'callback ui' stamp: 'hlsf 7/Oct/2026, 3:13:13 pm (UTC)'!
+moveOXAction: increment
+	| canvas myIncr |
+	canvas := view canvas.
+	myIncr := 0.
+	increment > 0 
+		ifTrue: [ " Move to the right as long as canvas ox zero is lower than container right border (extent x) "
+			(canvas externalize: 0@0) x < view container morphExtent x ifTrue: [myIncr := increment ] ]
+		ifFalse: [ " Move to the left as long as canvas width on ox is greater thant container left obrder (0) "
+			(canvas externalize: view canvas morphExtent x@0) x > 0 ifTrue: [myIncr := increment ] ].
+	myIncr isZero ifFalse: [
+		myIncr := myIncr * view canvas morphExtent x / 4000.
+		canvas morphPosition: canvas morphPosition x + myIncr  @ canvas morphPosition y]! !
+
+!DKMCanvasPresenter methodsFor: 'callback ui' stamp: 'hlsf 7/Oct/2026, 3:01:09 pm (UTC)'!
+zoomAction: increment
+	self zoomAction: increment at: view container fullBoundsInOwner center! !
+
+!DKMCanvasPresenter methodsFor: 'callback ui' stamp: 'hlsf 7/Oct/2026, 3:01:09 pm (UTC)'!
+zoomAction: increment at: referencePoint
+	| canvas center |
+	canvas := view canvas.
+	center := canvas internalize: referencePoint.
+	canvas scale: (canvas scale - increment min: 2 max: 0.1).
+	center := canvas externalize: center.
+	canvas morphPosition: canvas morphPosition - center + referencePoint .! !
+
+!DKMCanvasPresenter class methodsFor: 'instance creation' stamp: 'hlsf 7/Oct/2026, 3:04:25 pm (UTC)'!
+title: aText
+	| canvasPresenter |
+	canvasPresenter := self new.
+	canvasPresenter model title: aText.
+	^ canvasPresenter ! !
+
+!DKMCanvasModel methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 3:05:15 pm (UTC)'!
+title
+	^ title! !
+
+!DKMCanvasModel methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 3:05:10 pm (UTC)'!
+title: aText
+	title := aText! !
+
+!DKMCanvas methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 2:44:34 pm (UTC)'!
+color
+	^ self mainView borderColor ! !
+
+!DKMCanvas methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 2:44:34 pm (UTC)'!
+container
+	^ owner! !
+
+!DKMCanvas methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 2:44:34 pm (UTC)'!
+mainView
+	^ self container owner! !
+
+!DKMCanvas methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 2:45:11 pm (UTC)'!
+model
+	^ presenter model! !
+
+!DKMCanvas methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 2:46:51 pm (UTC)'!
+presenter: aPresenter
+	presenter := aPresenter! !
+
+!DKMCanvas methodsFor: 'event handling testing' stamp: 'hlsf 7/Oct/2026, 2:45:02 pm (UTC)'!
+handlesMouseDown: event
+	^ true
+! !
+
+!DKMCanvas methodsFor: 'event handling testing' stamp: 'hlsf 7/Oct/2026, 2:45:06 pm (UTC)'!
+handlesMouseScroll: scrollEvent
+	^ true! !
+
+!DKMCanvas methodsFor: 'events' stamp: 'hlsf 7/Oct/2026, 2:45:33 pm (UTC)'!
+mouseButton1Up: event localPosition: localPosition
+	prevPosition := nil! !
+
+!DKMCanvas methodsFor: 'events' stamp: 'hlsf 7/Oct/2026, 2:45:44 pm (UTC)'!
+mouseMove: event localPosition: localPosition
+	| pos |
+	event mouseButton1Pressed not ifTrue: [^ self ].
+	prevPosition 
+		ifNotNil:  [
+			pos := self externalize: localPosition.
+			self morphPosition: self morphPosition + pos - prevPosition.
+			prevPosition := pos]
+		ifNil: [prevPosition := self externalize: localPosition]! !
+
+!DKMCanvas methodsFor: 'geometry testing' stamp: 'hlsf 7/Oct/2026, 2:47:16 pm (UTC)'!
+requiresVectorCanvas
+	^ true ! !
+
+!DKMContainer methodsFor: 'geometry testing' stamp: 'hlsf 29/Sep/2025, 7:35:40 pm (UTC)'!
+clipsSubmorphs
+	^ true ! !
+
+!DKMContainer methodsFor: 'initialization' stamp: 'hlsf 4/Oct/2025, 3:08:58 pm (UTC)'!
+defaultColor
+	^ Color white slightlyDarker ! !
+
+!DKMContainer methodsFor: 'event handling testing' stamp: 'hlsf 11/Oct/2025, 4:39:01 pm (UTC)'!
+handlesMouseDown: aMouseButtonEvent
+	^ true ! !
+
+!DKMContainer class methodsFor: 'instance creation' stamp: 'hlsf 29/Sep/2025, 7:48:29 pm (UTC)'!
+for: aTimelineCanvas
+	^ self new
+		addMorph: aTimelineCanvas position: 0@0! !
+
+!DKMCanvasView methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 1:35:25 pm (UTC)'!
+adoptWidgetsColor: paneColor
+	! !
+
+!DKMCanvasView methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 1:35:35 pm (UTC)'!
+borderColor: aColor
+	super borderColor: aColor.
+	canvas updateColor! !
+
+!DKMCanvasView methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 1:35:43 pm (UTC)'!
+borderWidth: anInteger
+	super borderWidth: anInteger.
+	canvas updateWidth ! !
+
+!DKMCanvasView methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 1:35:48 pm (UTC)'!
+canvas
+	^ canvas! !
+
+!DKMCanvasView methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 1:35:54 pm (UTC)'!
+container
+	^ canvas owner! !
+
+!DKMCanvasView methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 1:37:54 pm (UTC)'!
+model
+	^ presenter model! !
+
+!DKMCanvasView methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 1:38:13 pm (UTC)'!
+presenter
+	^ presenter! !
+
+!DKMCanvasView methodsFor: 'accessing' stamp: 'hlsf 7/Oct/2026, 1:38:18 pm (UTC)'!
+presenter: aPresenter
+	presenter := aPresenter ! !
+
+!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 1:36:01 pm (UTC)'!
+defaultBorderColor 
+	^ Color blue! !
+
+!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 1:36:05 pm (UTC)'!
+defaultBorderWidth 
+	^ 2! !
+
+!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 1:36:09 pm (UTC)'!
+defaultColor
+	^ Color transparent! !
+
+!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 1:37:46 pm (UTC)'!
+initialize
+	super initialize.
+	self morphExtent: 700@500.
+	self installView.
+	self when: #enterAnnotator send: #showTools to: self.
+	self when: #leaveAnnotator send: #hideTools to: self! !
+
+!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 2:44:19 pm (UTC)'!
+installView
+	self subclassResponsibility ! !
+
+!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 1:38:08 pm (UTC)'!
+noteNewOwner: aMorph
+	  UISupervisor whenUIinSafeState: [canvas morphPosition: canvas owner morphExtent - canvas morphExtent // 2]! !
+
+!DKMCanvasView methodsFor: 'drawing' stamp: 'hlsf 7/Oct/2026, 1:36:32 pm (UTC)'!
+drawOn: aCanvas ! !
+
+!DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 7/Oct/2026, 1:36:47 pm (UTC)'!
+hideTools
+	submorphs select: [:each | each is: #WheelMorph] thenDo: [:wheel | wheel hide]! !
+
+!DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 7/Oct/2026, 1:36:53 pm (UTC)'!
+horizontalWheel 
+	^ (WheelMorph target: presenter actionSelector: #moveOXAction:)
+		beHorizontal; 
+		factor: 2; 
+		setBalloonText: 'Scroll the time line to the left or the right.' translated;
+		borderWidth: 3;
+		color: Color orange;
+		borderColor: Color black;
+		yourself! !
+
+!DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 7/Oct/2026, 1:38:23 pm (UTC)'!
+showTools
+	submorphs select: [:each | each is: #WheelMorph] thenDo: [:wheel | wheel show]! !
+
+!DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 7/Oct/2026, 1:38:31 pm (UTC)'!
+zoomWheel
+	^ (WheelMorph target: presenter actionSelector: #zoomAction:)
+		beVertical ;		
+		factor: 0.01 ;
+		setBalloonText: 'Zoom in or out the timeline' translated;
+		borderWidth: 3;
+		color: Color gray;
+		borderColor: Color black;
+		yourself! !
+
+!DKMCanvasView class methodsFor: 'instance creation' stamp: 'hlsf 7/Oct/2026, 1:38:44 pm (UTC)'!
+presenter: aPresenter
+	^ self basicNew
+		presenter: aPresenter;
+		initialize;
+		yourself! !
 
 !Object methodsFor: '*DKM-Core' stamp: 'hlsf 28/May/2026, 7:37:07 pm (UTC)'!
 dkmUser

@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8160] on 8 September 2026 at 9:04:55 pm'!
+'From Cuis7.9 [latest update: #8266] on 7 October 2026 at 5:21:32 pm'!
 'Description '!
-!provides: 'DKM-Physics-GasSimulation' 1 40!
+!provides: 'DKM-Physics-GasSimulation' 1 41!
 !requires: 'DKM-Core' 1 17 nil!
 SystemOrganization addCategory: #'DKM-Physics-GasSimulation'!
 
@@ -133,6 +133,10 @@ A view of a molecule in a simulation
 !WallMorph commentStamp: '<historical>' prior: 0!
 A view of a wall in a simulation
  - model, a Wall instance!
+
+!GasSimulationCanvas commentStamp: '<historical>' prior: 0!
+This is where is represented and displayed the simulation.
+No panne nor zoom in this simple canvas!
 
 !GasSimulationView commentStamp: '<historical>' prior: 0!
 The gas simulation view. My extent is computed depending on the installed walls in the simulation.
