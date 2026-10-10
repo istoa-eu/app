@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 7 October 2026 at 5:21:29 pm'!
+'From Cuis7.9 [latest update: #8266] on 10 October 2026 at 12:38:30 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 21!
+!provides: 'DKM-History-Timeline' 1 22!
 !requires: 'UI-Widgets' 1 75 nil!
 !requires: 'DKM-Core' 1 17 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -132,12 +132,12 @@ A view of a timeline entry.
 - description, a text paragraph morph
 - position, a symbol (#above #below), indicating my positionning to the time line!
 
-!Timeline methodsFor: 'DSL' stamp: 'hlsf 28/Sep/2025, 11:33:08 am (UTC)'!
-addEvent: aText on: aStringDate
-	^ self addEvent: aText on: aStringDate image: nil! !
+!Timeline methodsFor: 'DSL' stamp: 'hlsf 10/Oct/2026, 10:36:25 am (UTC)'!
+event: aText on: aStringDate
+	^ self event: aText on: aStringDate image: nil! !
 
-!Timeline methodsFor: 'DSL' stamp: 'hlsf 28/Sep/2025, 11:32:46 am (UTC)'!
-addEvent: aText on: aStringDate image: anUrl
+!Timeline methodsFor: 'DSL' stamp: 'hlsf 10/Oct/2026, 10:36:19 am (UTC)'!
+event: aText on: aStringDate image: anUrl
 " aStringDate, preferably expressed as YYYY-MM-DD YYYY.MM.DD YYYY/MM/DD   "
 	| entry |
 	entry := TimelineEntry new
@@ -164,13 +164,13 @@ initialize
 	model := TimelineModel new.
 	view := TimelineView presenter: self! !
 
-!Timeline class methodsFor: 'AI' stamp: 'hlsf 22/Mar/2026, 9:37:15 am (UTC)'!
+!Timeline class methodsFor: 'AI' stamp: 'hlsf 10/Oct/2026, 10:36:57 am (UTC)'!
 codeSampleForAI 
 	^'| myTimeline |
 myTimeline := Timeline title: ''History of Book''.
 myTimeline 
-	addEvent: ''China. Gong Xuanyi first known printer with a wood printing device on paper.'' on: ''480.1.1'';
-	addEvent: ''Germany. Gutemberg printing press with metal mobile blocks.'' on: ''1450.1.1'';
+	event: ''China. Gong Xuanyi first known printer with a wood printing device on paper.'' on: ''480.1.1'';
+	event: ''Germany. Gutemberg printing press with metal mobile blocks.'' on: ''1450.1.1'';
 	color: Color blue.
 "To shrink too long timeline"
 myTimeline shrink.
@@ -179,12 +179,12 @@ myTimeline unshrink.
 myTimeline view'
 ! !
 
-!Timeline class methodsFor: 'DKM' stamp: 'hlsf 12/Oct/2025, 10:54:56 am (UTC)'!
+!Timeline class methodsFor: 'DKM' stamp: 'hlsf 10/Oct/2026, 10:36:40 am (UTC)'!
 codeSample
 	^'Timeline title: ''History of Book'' ::
-	addEvent: ''China. Gong Xuanyi first known printer with a wood printing device on paper.'' on: ''480.1.1'';
-	addEvent: ''Germany. Gutemberg printing press with metal mobile blocks.'' on: ''1450.1.1'';
-	addEvent: ''Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.'' on: ''1949.12.7'';
+	event: ''China. Gong Xuanyi first known printer with a wood printing device on paper.'' on: ''480.1.1'';
+	event: ''Germany. Gutemberg printing press with metal mobile blocks.'' on: ''1450.1.1'';
+	event: ''Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.'' on: ''1949.12.7'';
 	shrink;
 	color: Color black;
 	view'! !
@@ -261,9 +261,10 @@ printOn: stream
 		nextPutAll: ' - ';
 		nextPutAll: (description truncateWithElipsisTo: 20)! !
 
-!TimelineEntry methodsFor: 'comparing' stamp: 'hlsf 5/Oct/2025, 2:18:37 pm (UTC)'!
+!TimelineEntry methodsFor: 'comparing' stamp: 'hlsf 10/Oct/2026, 10:16:35 am (UTC)'!
 = anEntry
-	^ date = anEntry date! !
+	^ self == anEntry
+	or: [date = anEntry date]! !
 
 !TimelineEntry methodsFor: 'comparing' stamp: 'hlsf 5/Oct/2025, 2:18:45 pm (UTC)'!
 hash
