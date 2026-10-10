@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 10 October 2026 at 12:38:30 pm'!
+'From Cuis7.9 [latest update: #8266] on 10 October 2026 at 1:25:22 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 22!
+!provides: 'DKM-History-Timeline' 1 23!
 !requires: 'UI-Widgets' 1 75 nil!
 !requires: 'DKM-Core' 1 17 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -93,15 +93,15 @@ Copyright 2025-2026 Hilaire Fernandes
 The presenter of the Timeline to handle the controllers and associated callbacks.
 
 (Timeline title: 'History of Book' ::
-	addEvent: 'Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.China. Gong Xuanyi first known printer with a wood printing device on paper.' on: '480.1.1';
-	addEvent: 'Germany. Gutemberg printing press with metal mobile blocks.' on: '1450.1.1';
-	addEvent: 'Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.' on: '1949.12.7';
+	event: 'Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.China. Gong Xuanyi first known printer with a wood printing device on paper.' on: '480.1.1';
+	event: 'Germany. Gutemberg printing press with metal mobile blocks.' on: '1450.1.1';
+	event: 'Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.' on: '1949.12.7';
 	view) openInWorld.
 
 ((Timeline title: 'History of Book' ::
-	addEvent: 'Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.China. Gong Xuanyi first known printer with a wood printing device on paper.' on: '480.1.1';
-	addEvent: 'Germany. Gutemberg printing press with metal mobile blocks.' on: '1450.1.1';
-	addEvent: 'Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.' on: '1949.12.7';
+	event: 'Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.China. Gong Xuanyi first known printer with a wood printing device on paper.' on: '480.1.1';
+	event: 'Germany. Gutemberg printing press with metal mobile blocks.' on: '1450.1.1';
+	event: 'Spain. Angela Ruiz Robles prototyped the first electronic book device with film rolls.' on: '1949.12.7';
 	view) embeddedInMorphicWindowLabeled: 'History of Book') openInWorld!
 
 !TimelineEntry commentStamp: '<historical>' prior: 0!
@@ -690,25 +690,10 @@ verticalMargin
 " top and bottom margin "
 	^ self topMargin + self bottomMargin ! !
 
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 1:24:59 pm (UTC)'!
+!TimelineView methodsFor: 'initialization' stamp: 'hlsf 10/Oct/2026, 11:24:56 am (UTC)'!
 installView
-	| halfHeight halfWidth |
-	halfHeight := (Theme current wheelHeight / 2) rounded.
-	halfWidth := (Theme current wheelWidth / 2) rounded.
-	canvas := TimelineCanvas new presenter: presenter.
+	self installViewWith: #(xWheel zWheel).
 	canvas setExtent.
-	self addMorph: (DKMContainer for: canvas)
-		layoutSpec: (LayoutEdgesSpec 
-			tlEdgesWeight: 0@0 offset: 0@0 
-			brEdgesWeight: 1@1 offset: (halfWidth * -2) asPoint).
-	self	addMorph: self zoomWheel
-		layoutSpec: (LayoutEdgesSpec 
-			tlEdgesWeight: 1@0.5 offset: (halfWidth * 2 @ halfHeight ) negated
-			brEdgesWeight: 1@0.5 offset: 0 @ halfHeight ).
-	self addMorph: self horizontalWheel 
-		layoutSpec: (LayoutEdgesSpec 
-			tlEdgesWeight: 0.5@1 offset: (halfHeight@(2 * halfWidth)) negated 
-			brEdgesWeight: 0.5 @1 offset: halfHeight @ 0).
 	canvas morphPosition: 10@10
 ! !
 

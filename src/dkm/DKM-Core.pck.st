@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 7 October 2026 at 5:21:27 pm'!
+'From Cuis7.9 [latest update: #8266] on 10 October 2026 at 1:25:18 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 19!
+!provides: 'DKM-Core' 1 20!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -256,6 +256,20 @@ moveOXAction: increment
 		myIncr := myIncr * view canvas morphExtent x / 4000.
 		canvas morphPosition: canvas morphPosition x + myIncr  @ canvas morphPosition y]! !
 
+!DKMCanvasPresenter methodsFor: 'callback ui' stamp: 'hlsf 10/Oct/2026, 10:50:15 am (UTC)'!
+moveOYAction: increment
+	| canvas myIncr |
+	canvas := view canvas.
+	myIncr := 0.
+	increment > 0 
+		ifTrue: [ " Move to the bottom as long as canvas oy zero is lower than container bottom border (extent y) "
+			(canvas externalize: 0@0) y < view container morphExtent y ifTrue: [myIncr := increment ] ]
+		ifFalse: [ " Move to the top as long as canvas height on oy is greater thant container top obrder (0) "
+			(canvas externalize: 0@view canvas morphExtent y) y > 0 ifTrue: [myIncr := increment ] ].
+	myIncr isZero ifFalse: [
+		myIncr := myIncr * view canvas morphExtent y / 4000.
+		canvas morphPosition: canvas morphPosition x @ (canvas morphPosition y + myIncr) ]! !
+
 !DKMCanvasPresenter methodsFor: 'callback ui' stamp: 'hlsf 7/Oct/2026, 3:01:09 pm (UTC)'!
 zoomAction: increment
 	self zoomAction: increment at: view container fullBoundsInOwner center! !
@@ -407,6 +421,32 @@ initialize
 installView
 	self subclassResponsibility ! !
 
+!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 10/Oct/2026, 11:21:43 am (UTC)'!
+installViewWith: widgets
+	| wHeight wWidth |
+	wHeight := Theme current wheelHeight rounded.
+	wWidth := Theme current wheelWidth rounded.
+	canvas := TimelineCanvas new presenter: presenter.
+	self addMorph: (DKMContainer for: canvas)
+		layoutSpec: (LayoutEdgesSpec 
+			tlEdgesWeight: 0@0 offset: 0@0 
+			brEdgesWeight: 1@1 offset: wWidth negated asPoint).
+	(widgets includes: #zWheel) ifTrue: [
+		self	addMorph: self zoomWheel
+			layoutSpec: (LayoutEdgesSpec 
+				tlEdgesWeight: 1@0 offset: (wWidth @ 0 ) negated
+				brEdgesWeight: 1@0 offset: 0 @ wHeight ) ].
+	(widgets includes: #xWheel) ifTrue: [
+		self addMorph: self horizontalWheel 
+			layoutSpec: (LayoutEdgesSpec 
+				tlEdgesWeight: 1@1 offset: (wHeight + wWidth @ wWidth ) negated 
+				brEdgesWeight: 1 @1 offset: (wWidth @ 0 ) negated) ].
+	(widgets includes: #yWheel) ifTrue: [
+		self addMorph: self verticalWheel 
+			layoutSpec: (LayoutEdgesSpec 
+				tlEdgesWeight: 1@1 offset: (wWidth @ (wHeight + wWidth) ) negated
+				brEdgesWeight: 1 @1 offset: (0 @ wWidth) negated) ]! !
+
 !DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 7/Oct/2026, 1:38:08 pm (UTC)'!
 noteNewOwner: aMorph
 	  UISupervisor whenUIinSafeState: [canvas morphPosition: canvas owner morphExtent - canvas morphExtent // 2]! !
@@ -418,12 +458,12 @@ drawOn: aCanvas ! !
 hideTools
 	submorphs select: [:each | each is: #WheelMorph] thenDo: [:wheel | wheel hide]! !
 
-!DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 7/Oct/2026, 1:36:53 pm (UTC)'!
+!DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 10/Oct/2026, 10:54:22 am (UTC)'!
 horizontalWheel 
 	^ (WheelMorph target: presenter actionSelector: #moveOXAction:)
 		beHorizontal; 
 		factor: 2; 
-		setBalloonText: 'Scroll the time line to the left or the right.' translated;
+		setBalloonText: 'Scroll the view to the left or the right.' translated;
 		borderWidth: 3;
 		color: Color orange;
 		borderColor: Color black;
@@ -432,6 +472,17 @@ horizontalWheel
 !DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 7/Oct/2026, 1:38:23 pm (UTC)'!
 showTools
 	submorphs select: [:each | each is: #WheelMorph] thenDo: [:wheel | wheel show]! !
+
+!DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 10/Oct/2026, 11:23:14 am (UTC)'!
+verticalWheel 
+	^ (WheelMorph target: presenter actionSelector: #moveOYAction:)
+		beVertical ; 
+		factor: -2; 
+		setBalloonText: 'Scroll the view to the top or the bottom.' translated;
+		borderWidth: 3;
+		color: Color orange;
+		borderColor: Color black;
+		yourself! !
 
 !DKMCanvasView methodsFor: 'widget' stamp: 'hlsf 7/Oct/2026, 1:38:31 pm (UTC)'!
 zoomWheel
