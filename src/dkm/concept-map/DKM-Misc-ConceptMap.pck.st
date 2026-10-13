@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 10 October 2026 at 1:25:25 pm'!
+'From Cuis7.9 [latest update: #8266] on 13 October 2026 at 10:26:55 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 2!
+!provides: 'DKM-Misc-ConceptMap' 1 4!
 !requires: 'DKM-Core' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -65,6 +65,16 @@ DKMCanvasView subclass: #ConceptMapView
 ConceptMapView class
 	instanceVariableNames: ''!
 
+!classDefinition: #ConceptNodeView category: #'DKM-Misc-ConceptMap'!
+SqueezeLabelMorph subclass: #ConceptNodeView
+	instanceVariableNames: 'model angle'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'DKM-Misc-ConceptMap'!
+!classDefinition: 'ConceptNodeView class' category: #'DKM-Misc-ConceptMap'!
+ConceptNodeView class
+	instanceVariableNames: ''!
+
 
 !ConceptNode commentStamp: '<historical>' prior: 0!
 - label, a string, title of the node
@@ -80,6 +90,13 @@ ConceptMapView class
 The model with:
 - nodes, a collection of node model
 - relations, a collection of relation model between two nodes!
+
+!ConceptNodeView commentStamp: '<historical>' prior: 0!
+A view of a node in the map.
+- model, a ConceptNode instance
+- angle, the angle as seen from my top node 
+(the one I am a target and ranked highter as topNode, 
+see ConcepMapModel>topNodes)!
 
 !ConceptMap methodsFor: 'DSL' stamp: 'hlsf 10/Oct/2026, 10:28:56 am (UTC)'!
 concept: aString description: descText
@@ -100,7 +117,7 @@ relationFrom: sourceLabel to: targetLabel labeled: relationLabel
 		label: relationLabel.
 	^ model addRelation: relation! !
 
-!ConceptMap methodsFor: 'as yet unclassified' stamp: 'hlsf 10/Oct/2026, 10:40:21 am (UTC)'!
+!ConceptMap methodsFor: 'initialization' stamp: 'hlsf 10/Oct/2026, 10:40:21 am (UTC)'!
 initialize
 	super initialize.
 	model := ConceptMapModel new.
@@ -201,6 +218,18 @@ target: anObject
 
 	target := anObject! !
 
+!ConceptMapModel methodsFor: 'queries' stamp: 'hlsf 13/Oct/2026, 7:37:59 pm (UTC)'!
+relationsWithSource: aNode
+	^ relations select: [:each | each source == aNode ]! !
+
+!ConceptMapModel methodsFor: 'queries' stamp: 'hlsf 13/Oct/2026, 7:40:54 pm (UTC)'!
+topNodes
+"	Sort the nodes according to their occurence as source in relations
+ 	Top nodes should be central in the view
+"
+	^ nodes sort: [:nodeA :nodeB | 
+		(self relationsWithSource: nodeA) size > (self relationsWithSource: nodeB) size]! !
+
 !ConceptMapModel methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:24:18 am (UTC)'!
 addNode: aNode
 	nodes add: aNode.
@@ -236,6 +265,36 @@ presenter: aPresenter
 	super presenter: aPresenter.
 	presenter model when: #changedConceptMap send: #updateCanvas to: self.! !
 
-!ConceptMapView methodsFor: 'as yet unclassified' stamp: 'hlsf 10/Oct/2026, 11:10:18 am (UTC)'!
+!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 10:09:00 am (UTC)'!
+updateCanvas
+	self setExtent.
+	self removeAllMorphs.
+	! !
+
+!ConceptMapView methodsFor: 'initialization' stamp: 'hlsf 10/Oct/2026, 12:03:08 pm (UTC)'!
 installView
-! !
+	self installViewWith: #(zWheel).! !
+
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 8:20:14 pm (UTC)'!
+angle
+	"Answer the value of angle"
+
+	^ angle! !
+
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 8:20:14 pm (UTC)'!
+angle: anObject
+	"Set the value of angle"
+
+	angle := anObject! !
+
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 8:20:14 pm (UTC)'!
+model
+	"Answer the value of model"
+
+	^ model! !
+
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 8:20:14 pm (UTC)'!
+model: anObject
+	"Set the value of model"
+
+	model := anObject! !
