@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 13 October 2026 at 10:26:55 pm'!
+'From Cuis7.9 [latest update: #8266] on 14 October 2026 at 7:49:08 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 4!
+!provides: 'DKM-Misc-ConceptMap' 1 5!
 !requires: 'DKM-Core' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -260,16 +260,63 @@ initialize
 	nodes := Set new.
 	relations := OrderedCollection new.! !
 
+!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 14/Oct/2026, 5:48:00 pm (UTC)'!
+insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleInterval
+	| relations nodeToInsert nodePosition nodeAngle |
+
+	nodes withIndexDo: [:node :index |
+		nodeToInsert := remainingNodes remove: node ifAbsent: [nil].
+		nodeToInsert ifNotNil: [
+			nodeAngle := angleInterval at: index.
+			nodePosition := center + (Point r: 100 degrees: nodeAngle).
+			self viewFor: node at: nodePosition .
+			relations := self model relationsWithSource: node.
+			relations ifNotEmpty: [
+				self 
+					insertTarget: (relations collect: #target) 
+					from: remainingNodes 
+					centeredAt:  nodePosition 
+					withAperture: (nodeAngle - 60 to: nodeAngle + 60 by: 120 / relations size)
+				]
+			]
+		]! !
+
 !ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:42:59 am (UTC)'!
 presenter: aPresenter
 	super presenter: aPresenter.
 	presenter model when: #changedConceptMap send: #updateCanvas to: self.! !
 
-!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 10:09:00 am (UTC)'!
+!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 14/Oct/2026, 5:42:51 pm (UTC)'!
 updateCanvas
-	self setExtent.
+	| topNodes node relations interval|
 	self removeAllMorphs.
-	! !
+	topNodes := self model topNodes.
+	topNodes ifEmpty: [^ self].
+	node := topNodes removeAt: 1.
+	self viewFor: node at: 0@0.
+	relations := self model relationsWithSource: node.
+	relations isEmpty ifTrue: [^ self].
+	interval := 0 to: 359 by: 360 / relations size.
+	self 
+		insertTarget: (relations collect: #target)
+		from:  topNodes
+		centeredAt:  0@0
+		withAperture: interval
+	" Is there any node left, check topNodes "! !
+
+!ConceptMapCanvas methodsFor: 'as yet unclassified' stamp: 'hlsf 14/Oct/2026, 5:18:54 pm (UTC)'!
+viewFor: aNode at: position
+" 	Return the view of this nodes, 
+	When it does not exist, create it and add it to the canvas "
+	| view |
+	view := submorphs 
+		detect: [:aMorph | (aMorph is: #ConceptNodeView) and: [aMorph model == aNode]] 
+		ifNone: [
+			view := ConceptNodeView contents: aNode label ::
+			setBalloonText: aNode description.
+			self addMorph: view.
+			view morphCenter: position].
+	^ view! !
 
 !ConceptMapView methodsFor: 'initialization' stamp: 'hlsf 10/Oct/2026, 12:03:08 pm (UTC)'!
 installView
@@ -298,3 +345,7 @@ model: anObject
 	"Set the value of model"
 
 	model := anObject! !
+
+!ConceptNodeView methodsFor: 'as yet unclassified' stamp: 'hlsf 14/Oct/2026, 5:15:46 pm (UTC)'!
+is: aSymbol
+	^ aSymbol == #ConceptNodeView or: [super is: aSymbol]! !
