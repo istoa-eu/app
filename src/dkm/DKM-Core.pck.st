@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 10 October 2026 at 1:25:18 pm'!
+'From Cuis7.9 [latest update: #8266] on 14 October 2026 at 10:42:56 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 20!
+!provides: 'DKM-Core' 1 21!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -346,6 +346,18 @@ mouseMove: event localPosition: localPosition
 requiresVectorCanvas
 	^ true ! !
 
+!DKMCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 7:41:27 pm (UTC)'!
+updateCanvas
+	self subclassResponsibility ! !
+
+!DKMCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 7:41:39 pm (UTC)'!
+updateColor
+	self subclassResponsibility ! !
+
+!DKMCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 7:42:14 pm (UTC)'!
+updateWidth
+	self subclassResponsibility ! !
+
 !DKMContainer methodsFor: 'geometry testing' stamp: 'hlsf 29/Sep/2025, 7:35:40 pm (UTC)'!
 clipsSubmorphs
 	^ true ! !
@@ -421,12 +433,11 @@ initialize
 installView
 	self subclassResponsibility ! !
 
-!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 10/Oct/2026, 11:21:43 am (UTC)'!
+!DKMCanvasView methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 7:37:52 pm (UTC)'!
 installViewWith: widgets
 	| wHeight wWidth |
 	wHeight := Theme current wheelHeight rounded.
 	wWidth := Theme current wheelWidth rounded.
-	canvas := TimelineCanvas new presenter: presenter.
 	self addMorph: (DKMContainer for: canvas)
 		layoutSpec: (LayoutEdgesSpec 
 			tlEdgesWeight: 0@0 offset: 0@0 

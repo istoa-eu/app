@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 10 October 2026 at 1:25:22 pm'!
+'From Cuis7.9 [latest update: #8266] on 14 October 2026 at 10:42:59 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 23!
+!provides: 'DKM-History-Timeline' 1 24!
 !requires: 'UI-Widgets' 1 75 nil!
 !requires: 'DKM-Core' 1 17 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -690,8 +690,9 @@ verticalMargin
 " top and bottom margin "
 	^ self topMargin + self bottomMargin ! !
 
-!TimelineView methodsFor: 'initialization' stamp: 'hlsf 10/Oct/2026, 11:24:56 am (UTC)'!
+!TimelineView methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 7:38:09 pm (UTC)'!
 installView
+	canvas := TimelineCanvas new presenter: presenter.
 	self installViewWith: #(xWheel zWheel).
 	canvas setExtent.
 	canvas morphPosition: 10@10
