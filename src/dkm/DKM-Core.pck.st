@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 14 October 2026 at 10:42:56 pm'!
+'From Cuis7.9 [latest update: #8266] on 15 October 2026 at 10:22:45 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 21!
+!provides: 'DKM-Core' 1 22!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -341,6 +341,14 @@ mouseMove: event localPosition: localPosition
 			self morphPosition: self morphPosition + pos - prevPosition.
 			prevPosition := pos]
 		ifNil: [prevPosition := self externalize: localPosition]! !
+
+!DKMCanvas methodsFor: 'events' stamp: 'hlsf 15/Oct/2026, 7:56:19 pm (UTC)'!
+mouseScroll: evt localPosition: localEventPosition
+	evt direction == #down
+		ifTrue: [ presenter zoomAction: -0.02 at: (self externalize:  localEventPosition) ].
+	evt direction == #up
+		ifTrue: [ presenter zoomAction: 0.02 at: (self externalize: localEventPosition) ].
+! !
 
 !DKMCanvas methodsFor: 'geometry testing' stamp: 'hlsf 7/Oct/2026, 2:47:16 pm (UTC)'!
 requiresVectorCanvas

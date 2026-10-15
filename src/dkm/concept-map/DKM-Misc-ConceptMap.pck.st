@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 14 October 2026 at 10:43:01 pm'!
+'From Cuis7.9 [latest update: #8266] on 15 October 2026 at 10:22:52 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 6!
+!provides: 'DKM-Misc-ConceptMap' 1 7!
 !requires: 'DKM-Core' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -45,9 +45,19 @@ DKMCanvasModel subclass: #ConceptMapModel
 ConceptMapModel class
 	instanceVariableNames: ''!
 
+!classDefinition: #ConceptRelationView category: #'DKM-Misc-ConceptMap'!
+Morph subclass: #ConceptRelationView
+	instanceVariableNames: 'start end model'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'DKM-Misc-ConceptMap'!
+!classDefinition: 'ConceptRelationView class' category: #'DKM-Misc-ConceptMap'!
+ConceptRelationView class
+	instanceVariableNames: ''!
+
 !classDefinition: #ConceptMapCanvas category: #'DKM-Misc-ConceptMap'!
 DKMCanvas subclass: #ConceptMapCanvas
-	instanceVariableNames: ''
+	instanceVariableNames: 'labelFont'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'DKM-Misc-ConceptMap'!
@@ -98,6 +108,10 @@ A view of a node in the map.
 (the one I am a target and ranked highter as topNode, 
 see ConcepMapModel>topNodes)!
 
+!ConceptMap methodsFor: 'DSL' stamp: 'hlsf 15/Oct/2026, 7:46:12 pm (UTC)'!
+concept: aString
+	^ self concept: aString description: nil! !
+
 !ConceptMap methodsFor: 'DSL' stamp: 'hlsf 10/Oct/2026, 10:28:56 am (UTC)'!
 concept: aString description: descText
 	| node |
@@ -123,8 +137,28 @@ initialize
 	model := ConceptMapModel new.
 	view := ConceptMapView presenter: self! !
 
-!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 10/Oct/2026, 10:39:29 am (UTC)'!
+!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 15/Oct/2026, 8:02:01 pm (UTC)'!
 codeSample
+	^ 'ConceptMap title: ''Les quadrilatères'' ::
+	concept: ''Quadrilatère'' description: ''Quadrilatère quelconque'';
+	concept: ''Parallélogramme'' description: ''Quadrilatère dont les côtés opposés sont parallèles et isométriques. Ses diagonales se coupent en leur milieu.'';
+	concept: ''Losange'' description: ''Quadrilatère dont les côtés opposés sont parallèles, ses quatres côtés sont isométriques. Ses diagonales se coupent en leur milieu et sont perpendiculaires.'';
+	concept: ''Rectangle'' description: ''Quadrilatère dont les côtés opposés sont parallèles, les angles de ses quatre sommets sont droits. Ses diagonales se coupent en leur milieu et sont isométriques.'';
+	concept: ''Carré'' description: ''Quadrilatère dont les côtés opposés sont parallèles, ses quatres côtés sont isométriques et les angles de ses quatre sommets sont droits. Ses diagonales se coupent en leur milieu perpendiculairement et sont isométriques.'';
+	concept: ''Fer de lance'';
+	concept: ''Cerf-volant'';
+	relationFrom: ''Quadrilatère'' to: ''Parallélogramme'' labeled: ''côtés opposés parallèles'';
+	relationFrom: ''Quadrilatère'' to: ''Fer de lance'' labeled: ''concave et diagonale perpendiculaire'';
+	relationFrom: ''Quadrilatère'' to: ''Cerf-volant'' labeled: ''convexe et diagonale perpendiculaire'';
+	relationFrom: ''Parallélogramme'' to: ''Rectangle'' labeled: ''quatre angles droits'';
+	relationFrom: ''Parallélogramme'' to: ''Losange'' labeled: ''côtés isométriques'';
+	relationFrom: ''Losange'' to: ''Carré'' labeled: ''quatre angles droits'';
+	relationFrom: ''Rectangle'' to: ''Carré'' labeled: ''côtés isométriques'';
+	color: Color blue;
+	view'! !
+
+!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 15/Oct/2026, 7:44:53 pm (UTC)'!
+codeSample2
 	^ 'ConceptMap title: ''Photosynthesis'' ::
 	concept: ''Light'' description: ''Solar energy source'';
 	concept: ''Chloroplasts'' description: ''Cellular organelle'';
@@ -175,12 +209,12 @@ label: anObject
 hash
 	^ label hash! !
 
-!ConceptNode methodsFor: 'printing' stamp: 'hlsf 14/Oct/2026, 7:59:22 pm (UTC)'!
+!ConceptNode methodsFor: 'printing' stamp: 'hlsf 15/Oct/2026, 7:54:23 pm (UTC)'!
 balloonText
 	^ Text streamContents: [:str |
 		str nextPutAll: label bold;
-			nextPut: Character lf;
-			nextPutAll: description justified italic]! !
+			nextPut: Character lf.
+			description ifNotNil: [str nextPutAll: description justified italic] ]! !
 
 !ConceptNode methodsFor: 'printing' stamp: 'hlsf 14/Oct/2026, 7:56:18 pm (UTC)'!
 printOn: stream
@@ -271,12 +305,48 @@ initialize
 	nodes := Set new.
 	relations := OrderedCollection new.! !
 
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:20:13 pm (UTC)'!
+drawOn: canvas
+	canvas line: start to: end width: 1 color: `Color black`.
+	canvas drawString: model label atCenterX: start + end / 2.0 font: owner labelFont color: Color blue! !
+
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:15:21 pm (UTC)'!
+end: anObject
+	"Set the value of end"
+
+	end := anObject! !
+
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:15:21 pm (UTC)'!
+model: anObject
+	"Set the value of model"
+
+	model := anObject! !
+
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:15:21 pm (UTC)'!
+start: anObject
+	"Set the value of start"
+
+	start := anObject! !
+
+!ConceptRelationView class methodsFor: 'as yet unclassified' stamp: 'hlsf 15/Oct/2026, 8:16:16 pm (UTC)'!
+start: point1 end: point2
+	^ self new
+		start: point1;
+		end: point2;
+		yourself ! !
+
+!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:20:45 pm (UTC)'!
+labelFont
+	^ labelFont ifNil: [
+		labelFont := FontFamily familyName: FontFamily defaultFamilyName pointSize: 8]
+! !
+
 !ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:42:59 am (UTC)'!
 presenter: aPresenter
 	super presenter: aPresenter.
 	presenter model when: #changedConceptMap send: #updateCanvas to: self.! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 8:12:38 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 15/Oct/2026, 7:55:12 pm (UTC)'!
 insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleInterval
 	| relations nodeToInsert nodePosition nodeAngle view |
 
@@ -284,7 +354,7 @@ insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleI
 		nodeToInsert := remainingNodes remove: node ifAbsent: [nil].
 		nodeToInsert ifNotNil: [
 			nodeAngle := angleInterval at: index.
-			nodePosition := center + (Point r: 100 degrees: nodeAngle).
+			nodePosition := center + (Point r: 200 degrees: nodeAngle).
 			view := self viewFor: node at: nodePosition .
 			
 			relations := self model relationsWithSource: node.
@@ -296,7 +366,7 @@ insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleI
 					centeredAt:  nodePosition 
 					withAperture: view angle ] ] ]! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 8:30:25 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 15/Oct/2026, 7:55:02 pm (UTC)'!
 updateCanvas
 	| topNodes node relations interval view position |
 	self removeAllMorphs.
@@ -314,7 +384,7 @@ updateCanvas
 			from:  topNodes
 			centeredAt:  extent // 2
 			withAperture: interval.
-		position := position - (100@0).
+		position := position - (200@0).
 	]! !
 
 !ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 8:39:59 pm (UTC)'!
@@ -343,9 +413,16 @@ viewOf: aNode
 		detect: [:aMorph | (aMorph is: #ConceptNodeView) and: [aMorph model == aNode]] 
 		ifNone: [nil]! !
 
-!ConceptMapCanvas methodsFor: 'drawing' stamp: 'hlsf 14/Oct/2026, 7:47:56 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'drawing' stamp: 'hlsf 15/Oct/2026, 8:09:05 pm (UTC)'!
 drawOn: canvas 
-	canvas fillRectangle: self localBounds color: Color white.! !
+	canvas fillRectangle: self localBounds color: Color white.
+	self model relations do: [:relation |
+		canvas 
+			line: (self viewOf: relation source) morphCenter
+			to:  (self viewOf: relation target ) morphCenter
+			width:  1
+			color: Color black
+		]! !
 
 !ConceptMapCanvas methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 7:46:50 pm (UTC)'!
 initialize

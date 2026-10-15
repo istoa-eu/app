@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 14 October 2026 at 10:42:59 pm'!
+'From Cuis7.9 [latest update: #8266] on 15 October 2026 at 10:22:48 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 24!
+!provides: 'DKM-History-Timeline' 1 25!
 !requires: 'UI-Widgets' 1 75 nil!
 !requires: 'DKM-Core' 1 17 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -664,14 +664,6 @@ gradFont
 !TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026, 9:09:05 am (UTC)'!
 titleFont
 	^ (FontFamily familyName: FontFamily defaultFamilyName pointSize: 16) emphasized: 7! !
-
-!TimelineCanvas methodsFor: 'events' stamp: 'hlsf 4/Oct/2025, 2:59:38 pm (UTC)'!
-mouseScroll: evt localPosition: localEventPosition
-	evt direction == #down
-		ifTrue: [ presenter zoomAction: -0.02 at: (self externalize:  localEventPosition) ].
-	evt direction == #up
-		ifTrue: [ presenter zoomAction: 0.02 at: (self externalize: localEventPosition) ].
-! !
 
 !TimelineCanvas class methodsFor: 'as yet unclassified' stamp: 'hlsf 4/Oct/2025, 10:54:42 am (UTC)'!
 bottomMargin
