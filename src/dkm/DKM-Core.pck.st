@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 15 October 2026 at 10:22:45 pm'!
+'From Cuis7.9 [latest update: #8266] on 17 October 2026 at 3:59:22 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 22!
+!provides: 'DKM-Core' 1 23!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -103,6 +103,13 @@ haloRemoved
 !DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025, 8:02:00 am (UTC)'!
 model
 	^ model! !
+
+!DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 12:48:31 pm (UTC)'!
+openView
+" 	By default return the view, subclasses may want to do last minute update. 
+	For example, to just have one finale update on the view before opening it "
+	
+	^ self view! !
 
 !DKMPresenter methodsFor: 'accessing' stamp: 'hlsf 25/Dec/2025, 8:02:07 am (UTC)'!
 view
@@ -331,16 +338,14 @@ handlesMouseScroll: scrollEvent
 mouseButton1Up: event localPosition: localPosition
 	prevPosition := nil! !
 
-!DKMCanvas methodsFor: 'events' stamp: 'hlsf 7/Oct/2026, 2:45:44 pm (UTC)'!
+!DKMCanvas methodsFor: 'events' stamp: 'hlsf 17/Oct/2026, 1:57:10 pm (UTC)'!
 mouseMove: event localPosition: localPosition
 	| pos |
 	event mouseButton1Pressed not ifTrue: [^ self ].
+	pos := self externalize: localPosition.
 	prevPosition 
-		ifNotNil:  [
-			pos := self externalize: localPosition.
-			self morphPosition: self morphPosition + pos - prevPosition.
-			prevPosition := pos]
-		ifNil: [prevPosition := self externalize: localPosition]! !
+		ifNotNil:  [self morphPosition: self morphPosition + pos - prevPosition].
+	prevPosition := pos! !
 
 !DKMCanvas methodsFor: 'events' stamp: 'hlsf 15/Oct/2026, 7:56:19 pm (UTC)'!
 mouseScroll: evt localPosition: localEventPosition

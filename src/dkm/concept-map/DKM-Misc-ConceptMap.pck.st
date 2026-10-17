@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 15 October 2026 at 10:22:52 pm'!
+'From Cuis7.9 [latest update: #8266] on 17 October 2026 at 3:59:24 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 7!
+!provides: 'DKM-Misc-ConceptMap' 1 8!
 !requires: 'DKM-Core' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -47,7 +47,7 @@ ConceptMapModel class
 
 !classDefinition: #ConceptRelationView category: #'DKM-Misc-ConceptMap'!
 Morph subclass: #ConceptRelationView
-	instanceVariableNames: 'start end model'
+	instanceVariableNames: 'source target model'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'DKM-Misc-ConceptMap'!
@@ -76,7 +76,7 @@ ConceptMapView class
 	instanceVariableNames: ''!
 
 !classDefinition: #ConceptNodeView category: #'DKM-Misc-ConceptMap'!
-SqueezeLabelMorph subclass: #ConceptNodeView
+TextParagraphMorph subclass: #ConceptNodeView
 	instanceVariableNames: 'model angle'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -100,6 +100,10 @@ ConceptNodeView class
 The model with:
 - nodes, a collection of node model
 - relations, a collection of relation model between two nodes!
+
+!ConceptRelationView commentStamp: '<historical>' prior: 0!
+- model, a ConceptRelation insance
+- source, target: ConceptNodeView instance!
 
 !ConceptNodeView commentStamp: '<historical>' prior: 0!
 A view of a node in the map.
@@ -137,7 +141,7 @@ initialize
 	model := ConceptMapModel new.
 	view := ConceptMapView presenter: self! !
 
-!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 15/Oct/2026, 8:02:01 pm (UTC)'!
+!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 17/Oct/2026, 1:01:19 pm (UTC)'!
 codeSample
 	^ 'ConceptMap title: ''Les quadrilatères'' ::
 	concept: ''Quadrilatère'' description: ''Quadrilatère quelconque'';
@@ -148,8 +152,8 @@ codeSample
 	concept: ''Fer de lance'';
 	concept: ''Cerf-volant'';
 	relationFrom: ''Quadrilatère'' to: ''Parallélogramme'' labeled: ''côtés opposés parallèles'';
-	relationFrom: ''Quadrilatère'' to: ''Fer de lance'' labeled: ''concave et diagonale perpendiculaire'';
-	relationFrom: ''Quadrilatère'' to: ''Cerf-volant'' labeled: ''convexe et diagonale perpendiculaire'';
+	relationFrom: ''Quadrilatère'' to: ''Fer de lance'' labeled: ''concave, diagonales perpendiculaires'';
+	relationFrom: ''Quadrilatère'' to: ''Cerf-volant'' labeled: ''convexe, diagonales perpendiculaires'';
 	relationFrom: ''Parallélogramme'' to: ''Rectangle'' labeled: ''quatre angles droits'';
 	relationFrom: ''Parallélogramme'' to: ''Losange'' labeled: ''côtés isométriques'';
 	relationFrom: ''Losange'' to: ''Carré'' labeled: ''quatre angles droits'';
@@ -305,16 +309,23 @@ initialize
 	nodes := Set new.
 	relations := OrderedCollection new.! !
 
-!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:20:13 pm (UTC)'!
+!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 17/Oct/2026, 1:36:26 pm (UTC)'!
 drawOn: canvas
-	canvas line: start to: end width: 1 color: `Color black`.
-	canvas drawString: model label atCenterX: start + end / 2.0 font: owner labelFont color: Color blue! !
+	| sourcePosition targetPosition |
+	sourcePosition := source externalize: source morphCenter.
+	targetPosition := target externalize: target morphCenter.
+	canvas line: sourcePosition to: targetPosition width: 1 color: `Color black`.
+	canvas 
+		drawString: model label 
+		atCenterX: sourcePosition + targetPosition / 2.0 
+		font: owner labelFont 
+		color: Color blue! !
 
-!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:15:21 pm (UTC)'!
-end: anObject
-	"Set the value of end"
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 12:20:28 pm (UTC)'!
+model
+	"Answer the value of model"
 
-	end := anObject! !
+	^ model! !
 
 !ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:15:21 pm (UTC)'!
 model: anObject
@@ -322,18 +333,24 @@ model: anObject
 
 	model := anObject! !
 
-!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:15:21 pm (UTC)'!
-start: anObject
-	"Set the value of start"
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 12:20:28 pm (UTC)'!
+source: anObject
+	"Set the value of source"
 
-	start := anObject! !
+	source := anObject! !
 
-!ConceptRelationView class methodsFor: 'as yet unclassified' stamp: 'hlsf 15/Oct/2026, 8:16:16 pm (UTC)'!
-start: point1 end: point2
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 12:20:28 pm (UTC)'!
+target: anObject
+	"Set the value of target"
+
+	target := anObject! !
+
+!ConceptRelationView class methodsFor: 'instance creation' stamp: 'hlsf 17/Oct/2026, 12:22:30 pm (UTC)'!
+source: sourceView target: targetView
 	^ self new
-		start: point1;
-		end: point2;
-		yourself ! !
+		source: sourceView ;
+		target: targetView ;
+		yourself! !
 
 !ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:20:45 pm (UTC)'!
 labelFont
@@ -346,7 +363,7 @@ presenter: aPresenter
 	super presenter: aPresenter.
 	presenter model when: #changedConceptMap send: #updateCanvas to: self.! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 15/Oct/2026, 7:55:12 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 12:31:58 pm (UTC)'!
 insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleInterval
 	| relations nodeToInsert nodePosition nodeAngle view |
 
@@ -355,7 +372,7 @@ insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleI
 		nodeToInsert ifNotNil: [
 			nodeAngle := angleInterval at: index.
 			nodePosition := center + (Point r: 200 degrees: nodeAngle).
-			view := self viewFor: node at: nodePosition .
+			view := self nodeViewFor: node at: nodePosition .
 			
 			relations := self model relationsWithSource: node.
 			relations ifNotEmpty: [
@@ -366,7 +383,29 @@ insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleI
 					centeredAt:  nodePosition 
 					withAperture: view angle ] ] ]! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 15/Oct/2026, 7:55:02 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 12:29:52 pm (UTC)'!
+nodeView: aNode
+	^ submorphs 
+		detect: [:aMorph | (aMorph is: #ConceptNodeView) and: [aMorph model == aNode]] 
+		ifNone: [nil]! !
+
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 1:33:09 pm (UTC)'!
+nodeViewFor: node at: position
+" 	Create the view of this node, 
+	When it exists, return its view instance "
+	| view |
+	view := self nodeView: node.
+	view ifNil: [
+		view := ConceptNodeView contents: node label ::	
+			model: node;
+			setBalloonText: node balloonText .
+		view morphExtent: view minimumExtent.
+		self addMorph: view.
+		view shrink .
+		view morphCenter: position].
+	^ view! !
+
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 1:32:56 pm (UTC)'!
 updateCanvas
 	| topNodes node relations interval view position |
 	self removeAllMorphs.
@@ -374,7 +413,7 @@ updateCanvas
 	topNodes := self model topNodes.
 	[topNodes notEmpty] whileTrue: [
 		node := topNodes removeAt: 1.
-		view := self viewFor: node at: position.
+		view := self nodeViewFor: node at: position.
 		relations := self model relationsWithSource: node.
 		relations isEmpty ifTrue: [^ self].
 		interval := 0 to: 359 by: 360 / relations size.
@@ -384,8 +423,13 @@ updateCanvas
 			from:  topNodes
 			centeredAt:  extent // 2
 			withAperture: interval.
-		position := position - (200@0).
-	]! !
+		position := position - (200@0)	].
+	self model relations do: [:relation |
+		view := ConceptRelationView 
+			source: (self nodeView: relation source) 
+			target: (self nodeView: relation target) ::
+			model: relation.
+		self addMorphBack: view]! !
 
 !ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 8:39:59 pm (UTC)'!
 updateColor
@@ -393,36 +437,9 @@ updateColor
 		select: [:each | each is: #ConceptNodeView] 
 		thenDo: [:nodeView  | nodeView borderColor: self color]"! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 8:32:41 pm (UTC)'!
-viewFor: aNode at: position
-" 	Return the view of this nodes, 
-	When it does not exist, create it and add it to the canvas "
-	| view |
-	view := self viewOf: aNode.
-	view ifNil: [
-		view := ConceptNodeView contents: aNode label ::	
-			setBalloonText: aNode balloonText .
-		view morphExtent: view minimumExtent.
-		self addMorph: view.
-		view morphCenter: position].
-	^ view! !
-
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 8:13:53 pm (UTC)'!
-viewOf: aNode
-	^ submorphs 
-		detect: [:aMorph | (aMorph is: #ConceptNodeView) and: [aMorph model == aNode]] 
-		ifNone: [nil]! !
-
-!ConceptMapCanvas methodsFor: 'drawing' stamp: 'hlsf 15/Oct/2026, 8:09:05 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'drawing' stamp: 'hlsf 17/Oct/2026, 12:33:09 pm (UTC)'!
 drawOn: canvas 
-	canvas fillRectangle: self localBounds color: Color white.
-	self model relations do: [:relation |
-		canvas 
-			line: (self viewOf: relation source) morphCenter
-			to:  (self viewOf: relation target ) morphCenter
-			width:  1
-			color: Color black
-		]! !
+	canvas fillRectangle: self localBounds color: Color white! !
 
 !ConceptMapCanvas methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 7:46:50 pm (UTC)'!
 initialize
@@ -459,24 +476,38 @@ model: anObject
 
 	model := anObject! !
 
-!ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 8:37:54 pm (UTC)'!
+!ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 1:22:17 pm (UTC)'!
 defaultBorderColor
-	^ Color red! !
+	^ `Color black`! !
 
 !ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 8:31:35 pm (UTC)'!
 defaultBorderWidth
 	^ 1 ! !
 
-!ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 8:33:20 pm (UTC)'!
-defaultPadding
-	^ 2@2 ! !
+!ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 1:24:30 pm (UTC)'!
+defaultColor
+	^ `Color gray muchLighter `! !
 
-!ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 8:38:19 pm (UTC)'!
-initialize
-	super initialize.
-	self minCharsToShow: 20.
-	self borderColor: self defaultBorderColor ! !
+!ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 1:22:31 pm (UTC)'!
+defaultPadding
+	^ `4@4`! !
 
 !ConceptNodeView methodsFor: 'testing' stamp: 'hlsf 14/Oct/2026, 5:15:46 pm (UTC)'!
 is: aSymbol
 	^ aSymbol == #ConceptNodeView or: [super is: aSymbol]! !
+
+!ConceptNodeView methodsFor: 'event handling testing' stamp: 'hlsf 17/Oct/2026, 1:47:55 pm (UTC)'!
+handlesMouseDown: event
+	^ true
+! !
+
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 17/Oct/2026, 1:58:09 pm (UTC)'!
+mouseMove: event localPosition: localPosition
+	| prevPosition newPos|
+	event mouseButton1Pressed not ifTrue: [^ self ].
+	newPos := self externalize: localPosition.
+	prevPosition := self valueOfProperty: #prevPosition.
+	prevPosition 
+		ifNotNil: [self morphPosition: self morphPosition + newPos - prevPosition].
+	self setProperty: #prevPosition toValue: newPos.
+	owner redrawNeeded ! !
