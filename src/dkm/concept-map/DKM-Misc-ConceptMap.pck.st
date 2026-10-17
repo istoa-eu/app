@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 17 October 2026 at 3:59:24 pm'!
+'From Cuis7.9 [latest update: #8266] on 17 October 2026 at 5:31:44 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 8!
+!provides: 'DKM-Misc-ConceptMap' 1 9!
 !requires: 'DKM-Core' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -180,34 +180,25 @@ description
 title
 	^ 'Concept map' translated! !
 
-!ConceptNode methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:02:56 am (UTC)'!
+!ConceptNode methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:03 pm (UTC)'!
 description
-	"Answer the value of description"
-
 	^ description! !
 
-!ConceptNode methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:02:56 am (UTC)'!
+!ConceptNode methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:09 pm (UTC)'!
 description: anObject
-	"Set the value of description"
-
 	description := anObject! !
 
-!ConceptNode methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:02:56 am (UTC)'!
+!ConceptNode methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:15 pm (UTC)'!
 label
-	"Answer the value of label"
-
 	^ label! !
 
-!ConceptNode methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:02:56 am (UTC)'!
+!ConceptNode methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:20 pm (UTC)'!
 label: anObject
-	"Set the value of label"
-
 	label := anObject! !
 
-!ConceptNode methodsFor: 'comparing' stamp: 'hlsf 10/Oct/2026, 10:19:05 am (UTC)'!
+!ConceptNode methodsFor: 'comparing' stamp: 'hlsf 17/Oct/2026, 3:28:48 pm (UTC)'!
 = aNode
-	^ self == aNode
-	or: [label = aNode label]! !
+	^ self == aNode or: [label = aNode label]! !
 
 !ConceptNode methodsFor: 'comparing' stamp: 'hlsf 10/Oct/2026, 10:13:38 am (UTC)'!
 hash
@@ -231,51 +222,38 @@ label: aString description: aText
 		description: aText;
 		yourself! !
 
-!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:20:02 am (UTC)'!
+!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:24 pm (UTC)'!
 label
-	"Answer the value of label"
-
 	^ label! !
 
-!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:20:02 am (UTC)'!
+!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:29 pm (UTC)'!
 label: anObject
-	"Set the value of label"
-
 	label := anObject! !
 
-!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:20:02 am (UTC)'!
+!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:34 pm (UTC)'!
 source
-	"Answer the value of source"
-
 	^ source! !
 
-!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:20:02 am (UTC)'!
+!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:39 pm (UTC)'!
 source: anObject
-	"Set the value of source"
-
 	source := anObject! !
 
-!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:20:02 am (UTC)'!
+!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:43 pm (UTC)'!
 target
-	"Answer the value of target"
-
 	^ target! !
 
-!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:20:02 am (UTC)'!
+!ConceptRelation methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:47 pm (UTC)'!
 target: anObject
-	"Set the value of target"
-
 	target := anObject! !
 
 !ConceptMapModel methodsFor: 'queries' stamp: 'hlsf 13/Oct/2026, 7:37:59 pm (UTC)'!
 relationsWithSource: aNode
 	^ relations select: [:each | each source == aNode ]! !
 
-!ConceptMapModel methodsFor: 'queries' stamp: 'hlsf 14/Oct/2026, 7:38:38 pm (UTC)'!
+!ConceptMapModel methodsFor: 'queries' stamp: 'hlsf 17/Oct/2026, 3:28:37 pm (UTC)'!
 topNodes
 "	Sort the nodes according to their occurence as source in relations
- 	Top nodes should be central in the view
-"
+ 	Top nodes should be central in the view "
 	^ nodes asOrderedCollection sort: [:nodeA :nodeB | 
 		(self relationsWithSource: nodeA) size > (self relationsWithSource: nodeB) size]! !
 
@@ -309,40 +287,43 @@ initialize
 	nodes := Set new.
 	relations := OrderedCollection new.! !
 
-!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 17/Oct/2026, 1:36:26 pm (UTC)'!
+!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 17/Oct/2026, 3:25:30 pm (UTC)'!
 drawOn: canvas
-	| sourcePosition targetPosition |
+	| sourcePosition targetPosition center extent angle |
 	sourcePosition := source externalize: source morphCenter.
 	targetPosition := target externalize: target morphCenter.
+	center := sourcePosition - targetPosition / 4.0.
+	angle := center degrees. 
+	extent := self externalizeDistance: 10.
+	center := center + targetPosition.
 	canvas line: sourcePosition to: targetPosition width: 1 color: `Color black`.
+	canvas line: center to: center + (Point  r: extent degrees: angle + 30) width: 2 color: `Color black`.
+	canvas line: center to: center + (Point  r: extent degrees: angle - 30) width: 2 color: `Color black`.
+	center := sourcePosition + targetPosition / 2.0 .	
+	extent := self externalizeDistance: ((owner labelFont widthOfString: model label) @ (owner labelFont pointSize + 5)).
+	canvas 
+		fillRectangle:  (center - ( extent x // 2 @ 0) extent: extent)
+		color: (Color white alpha: 0.8).
 	canvas 
 		drawString: model label 
-		atCenterX: sourcePosition + targetPosition / 2.0 
+		atCenterX: center
 		font: owner labelFont 
-		color: Color blue! !
+		color: Color blue.! !
 
-!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 12:20:28 pm (UTC)'!
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:59 pm (UTC)'!
 model
-	"Answer the value of model"
-
 	^ model! !
 
-!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 15/Oct/2026, 8:15:21 pm (UTC)'!
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:31:04 pm (UTC)'!
 model: anObject
-	"Set the value of model"
-
 	model := anObject! !
 
-!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 12:20:28 pm (UTC)'!
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:31:09 pm (UTC)'!
 source: anObject
-	"Set the value of source"
-
 	source := anObject! !
 
-!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 12:20:28 pm (UTC)'!
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:31:15 pm (UTC)'!
 target: anObject
-	"Set the value of target"
-
 	target := anObject! !
 
 !ConceptRelationView class methodsFor: 'instance creation' stamp: 'hlsf 17/Oct/2026, 12:22:30 pm (UTC)'!
@@ -363,17 +344,15 @@ presenter: aPresenter
 	super presenter: aPresenter.
 	presenter model when: #changedConceptMap send: #updateCanvas to: self.! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 12:31:58 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 3:27:43 pm (UTC)'!
 insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleInterval
 	| relations nodeToInsert nodePosition nodeAngle view |
-
 	nodes withIndexDo: [:node :index |
 		nodeToInsert := remainingNodes remove: node ifAbsent: [nil].
 		nodeToInsert ifNotNil: [
 			nodeAngle := angleInterval at: index.
 			nodePosition := center + (Point r: 200 degrees: nodeAngle).
 			view := self nodeViewFor: node at: nodePosition .
-			
 			relations := self model relationsWithSource: node.
 			relations ifNotEmpty: [
 				view angle:  (nodeAngle - 60 to: nodeAngle + 60 by: 120 / relations size).
@@ -389,10 +368,9 @@ nodeView: aNode
 		detect: [:aMorph | (aMorph is: #ConceptNodeView) and: [aMorph model == aNode]] 
 		ifNone: [nil]! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 1:33:09 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 3:27:53 pm (UTC)'!
 nodeViewFor: node at: position
-" 	Create the view of this node, 
-	When it exists, return its view instance "
+" 	Create the view of this node, when it exists, return its view instance "
 	| view |
 	view := self nodeView: node.
 	view ifNil: [
@@ -431,11 +409,9 @@ updateCanvas
 			model: relation.
 		self addMorphBack: view]! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 8:39:59 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 3:28:09 pm (UTC)'!
 updateColor
-"	submorphs 
-		select: [:each | each is: #ConceptNodeView] 
-		thenDo: [:nodeView  | nodeView borderColor: self color]"! !
+! !
 
 !ConceptMapCanvas methodsFor: 'drawing' stamp: 'hlsf 17/Oct/2026, 12:33:09 pm (UTC)'!
 drawOn: canvas 
@@ -452,28 +428,20 @@ installView
 	canvas := ConceptMapCanvas new presenter: presenter.
 	self installViewWith: #(zWheel).! !
 
-!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 8:20:14 pm (UTC)'!
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:41 pm (UTC)'!
 angle
-	"Answer the value of angle"
-
 	^ angle! !
 
-!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 8:20:14 pm (UTC)'!
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:47 pm (UTC)'!
 angle: anObject
-	"Set the value of angle"
-
 	angle := anObject! !
 
-!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 8:20:14 pm (UTC)'!
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:51 pm (UTC)'!
 model
-	"Answer the value of model"
-
 	^ model! !
 
-!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 13/Oct/2026, 8:20:14 pm (UTC)'!
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:55 pm (UTC)'!
 model: anObject
-	"Set the value of model"
-
 	model := anObject! !
 
 !ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 1:22:17 pm (UTC)'!
@@ -484,9 +452,9 @@ defaultBorderColor
 defaultBorderWidth
 	^ 1 ! !
 
-!ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 1:24:30 pm (UTC)'!
+!ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 3:30:04 pm (UTC)'!
 defaultColor
-	^ `Color gray muchLighter `! !
+	^ `Color gray muchLighter`! !
 
 !ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 1:22:31 pm (UTC)'!
 defaultPadding
@@ -501,7 +469,11 @@ handlesMouseDown: event
 	^ true
 ! !
 
-!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 17/Oct/2026, 1:58:09 pm (UTC)'!
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 17/Oct/2026, 2:38:40 pm (UTC)'!
+mouseButton1Down: aMouseButtonEvent localPosition: localEventPosition
+	self removeProperty: #prevPosition! !
+
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 17/Oct/2026, 2:36:22 pm (UTC)'!
 mouseMove: event localPosition: localPosition
 	| prevPosition newPos|
 	event mouseButton1Pressed not ifTrue: [^ self ].
