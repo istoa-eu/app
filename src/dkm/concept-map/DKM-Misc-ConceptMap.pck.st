@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 18 October 2026 at 1:41:42 pm'!
+'From Cuis7.9 [latest update: #8266] on 18 October 2026 at 4:03:16 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 10!
+!provides: 'DKM-Misc-ConceptMap' 1 11!
 !requires: 'DKM-Core' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -141,7 +141,7 @@ initialize
 	model := ConceptMapModel new.
 	view := ConceptMapView presenter: self! !
 
-!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 17/Oct/2026, 1:01:19 pm (UTC)'!
+!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 18/Oct/2026, 1:56:04 pm (UTC)'!
 codeSample
 	^ 'ConceptMap title: ''Les quadrilatères'' ::
 	concept: ''Quadrilatère'' description: ''Quadrilatère quelconque'';
@@ -287,18 +287,19 @@ initialize
 	nodes := Set new.
 	relations := OrderedCollection new.! !
 
-!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 17/Oct/2026, 3:25:30 pm (UTC)'!
+!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:45:36 pm (UTC)'!
 drawOn: canvas
-	| sourcePosition targetPosition center extent angle |
+	| sourcePosition targetPosition center extent angle color |
+	color := owner color.
 	sourcePosition := source externalize: source morphCenter.
 	targetPosition := target externalize: target morphCenter.
 	center := sourcePosition - targetPosition / 4.0.
 	angle := center degrees. 
 	extent := self externalizeDistance: 10.
 	center := center + targetPosition.
-	canvas line: sourcePosition to: targetPosition width: 1 color: `Color black`.
-	canvas line: center to: center + (Point  r: extent degrees: angle + 30) width: 2 color: `Color black`.
-	canvas line: center to: center + (Point  r: extent degrees: angle - 30) width: 2 color: `Color black`.
+	canvas line: sourcePosition to: targetPosition width: 1 color: color.
+	canvas line: center to: center + (Point  r: extent degrees: angle + 30) width: 2 color: color.
+	canvas line: center to: center + (Point  r: extent degrees: angle - 30) width: 2 color: color.
 	center := sourcePosition + targetPosition / 2.0 .	
 	extent := self externalizeDistance: ((owner labelFont widthOfString: model label) @ (owner labelFont pointSize + 5)).
 	canvas 
@@ -308,7 +309,7 @@ drawOn: canvas
 		drawString: model label 
 		atCenterX: center
 		font: owner labelFont 
-		color: Color blue.! !
+		color: `Color black`.! !
 
 !ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:59 pm (UTC)'!
 model
@@ -372,7 +373,7 @@ nodeView: aNode
 		detect: [:aMorph | (aMorph is: #ConceptNodeView) and: [aMorph model == aNode]] 
 		ifNone: [nil]! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 3:27:53 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 18/Oct/2026, 1:54:23 pm (UTC)'!
 nodeViewFor: node at: position
 " 	Create the view of this node, when it exists, return its view instance "
 	| view |
@@ -380,6 +381,8 @@ nodeViewFor: node at: position
 	view ifNil: [
 		view := ConceptNodeView contents: node label ::	
 			model: node;
+			borderColor: self color;
+			color: self color veryMuchLighter ;
 			setBalloonText: node balloonText .
 		view morphExtent: view minimumExtent.
 		self addMorph: view.
@@ -414,13 +417,11 @@ updateCanvas
 		self addMorphBack: view].
 	self setExtent.! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 3:28:09 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 18/Oct/2026, 1:54:25 pm (UTC)'!
 updateColor
-! !
-
-!ConceptMapCanvas methodsFor: 'drawing' stamp: 'hlsf 17/Oct/2026, 12:33:09 pm (UTC)'!
-drawOn: canvas 
-	canvas fillRectangle: self localBounds color: Color white! !
+	submorphs 
+		select: [:each | each is: #ConceptNodeView] 
+		thenDo: [:view  | view borderColor: self color; color: self color veryMuchLighter ]! !
 
 !ConceptMapCanvas methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 7:46:50 pm (UTC)'!
 initialize
@@ -484,11 +485,11 @@ handlesMouseDown: event
 	^ true
 ! !
 
-!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 17/Oct/2026, 2:38:40 pm (UTC)'!
-mouseButton1Down: aMouseButtonEvent localPosition: localEventPosition
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 18/Oct/2026, 2:00:57 pm (UTC)'!
+mouseButton1Up: aMouseButtonEvent localPosition: localEventPosition
 	self removeProperty: #prevPosition! !
 
-!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 18/Oct/2026, 11:39:11 am (UTC)'!
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 18/Oct/2026, 2:00:52 pm (UTC)'!
 mouseMove: event localPosition: localPosition
 	| prevPosition newPos|
 	event mouseButton1Pressed not ifTrue: [^ self ].
