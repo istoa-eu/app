@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 17 October 2026 at 3:59:22 pm'!
+'From Cuis7.9 [latest update: #8266] on 18 October 2026 at 4:02:44 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 23!
+!provides: 'DKM-Core' 1 24!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -370,6 +370,15 @@ updateColor
 !DKMCanvas methodsFor: 'updating' stamp: 'hlsf 14/Oct/2026, 7:42:14 pm (UTC)'!
 updateWidth
 	self subclassResponsibility ! !
+
+!DKMCanvas methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:41:19 pm (UTC)'!
+drawOn: canvas 
+	canvas fillRectangle: self localBounds color: Color white.
+	canvas drawString: self model title asUppercase atCenterX: extent x // 2 @ 10 font: self titleFont color: self color! !
+
+!DKMCanvas methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:34:56 pm (UTC)'!
+titleFont
+	^ (FontFamily familyName: FontFamily defaultFamilyName pointSize: 16) emphasized: 7! !
 
 !DKMContainer methodsFor: 'geometry testing' stamp: 'hlsf 29/Sep/2025, 7:35:40 pm (UTC)'!
 clipsSubmorphs

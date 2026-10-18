@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 15 October 2026 at 10:22:48 pm'!
+'From Cuis7.9 [latest update: #8266] on 18 October 2026 at 4:02:49 pm'!
 'Description '!
-!provides: 'DKM-History-Timeline' 1 25!
+!provides: 'DKM-History-Timeline' 1 26!
 !requires: 'UI-Widgets' 1 75 nil!
 !requires: 'DKM-Core' 1 17 nil!
 SystemOrganization addCategory: #'DKM-History-Timeline'!
@@ -527,7 +527,7 @@ presenter: aPresenter
 setExtent
 	self morphExtent: self model canvasWidth @ TimelineCanvas height! !
 
-!TimelineCanvas methodsFor: 'updating' stamp: 'hlsf 9/Oct/2025, 8:58:39 am (UTC)'!
+!TimelineCanvas methodsFor: 'updating' stamp: 'hlsf 18/Oct/2026, 1:47:28 pm (UTC)'!
 updateCanvas
 	| views view |
 	self setExtent.
@@ -538,7 +538,7 @@ updateCanvas
 		" We alternate the position #above #below the timeline "
 		view position: (self positions atWrap: i);
 			abscissa: (self model abscissaAt: entry date) - (TimelineEntryView extent x // 2);
-			borderColor: self mainView borderColor;
+			borderColor: self color;
 			borderWidth: self mainView borderWidth .		
 		views add: view.
 		view := TimelineConnector new entryView: view; yourself.
@@ -559,12 +559,10 @@ updateWidth
 		select: [:each | each is: #TimelineEntryView] 
 		thenDo: [:eventView  | eventView borderWidth: self entryWidth]! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026, 7:12:54 pm (UTC)'!
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:38:35 pm (UTC)'!
 drawFullOn: canvas
 	| start end timelineY model endGrad |
 	model := presenter model.
-	canvas fillRectangle: self localBounds color: Color white.
-	canvas drawString: model title atCenterX: extent x // 2 @ 0 font: self titleFont color: self color.
 	timelineY := TimelineCanvas topMargin + TimelineEntryView extent y + TimelineConnector height.
 	endGrad := extent x - 11.
 "	Axe and right arrow "
@@ -585,13 +583,11 @@ drawFullOn: canvas
 
 ! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026, 7:17:16 pm (UTC)'!
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:38:22 pm (UTC)'!
 drawGapsOn: canvas
 	| start end timelineY model entries endGrad |
 	model := presenter model.
 	entries := model entries.
-	canvas fillRectangle: self localBounds color: Color white.
-	canvas drawString: model title atCenterX: extent x // 2 @ 0 font: self titleFont color: self color.
 	timelineY := TimelineCanvas topMargin + TimelineEntryView extent y + TimelineConnector height.
 	endGrad := extent x - 11.
 	
@@ -624,13 +620,14 @@ drawGapsOn: canvas
 	"start := (model firstEvent date roundDownTo: model graduation interval) - model subGraduation interval."
 	self drawOn: canvas subGraduationAt: timelineY - 5 from: start to: end hardStop: endGrad! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026, 11:15:07 am (UTC)'!
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:38:57 pm (UTC)'!
 drawOn: canvas
+	super drawOn: canvas.
 	(self model isShrunk and: [self model temporalGaps notEmpty])
 		ifTrue: [self drawGapsOn: canvas]
 		ifFalse: [self drawFullOn: canvas]! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026, 7:03:05 pm (UTC)'!
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:35:32 pm (UTC)'!
 drawOn: canvas graduationAt: posY from: start to: end hardStop: endGrad
 	| model pos  |
 	" First level graduation "
@@ -640,7 +637,7 @@ drawOn: canvas graduationAt: posY from: start to: end hardStop: endGrad
 		and: [(aDate between: start and: end)
 		and: [pos := (model abscissaAt: aDate) @ posY.  pos x between: 0 and: endGrad ]])  ifTrue: [
 			canvas strokeWidth: self entryWidth color: self color do: [canvas moveTo: pos; rel_LineTo: 0 @ 20].
-			canvas drawString: aDate yearNumber asString atCenterX: pos + (0@25) font: self gradFont color: self color] ]
+			canvas drawString: aDate yearNumber asString atCenterX: pos + (0@25) font: self smallFont color: self color] ]
 ! !
 
 !TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026, 7:08:45 pm (UTC)'!
@@ -655,15 +652,11 @@ drawOn: canvas subGraduationAt: posY from: start to: end hardStop: endGrad
 			and: [pos := (model abscissaAt: aDate) @ posY. pos x between: 0 and: endGrad] ]) ifTrue: [
 				canvas moveTo: pos; rel_LineTo: 0 @ 10]] ] ! !
 
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026, 9:10:02 am (UTC)'!
-gradFont
+!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:35:32 pm (UTC)'!
+smallFont
 	^ font ifNil: [
 		font := FontFamily familyName: FontFamily defaultFamilyName pointSize: 8]
 ! !
-
-!TimelineCanvas methodsFor: 'drawing' stamp: 'hlsf 8/Feb/2026, 9:09:05 am (UTC)'!
-titleFont
-	^ (FontFamily familyName: FontFamily defaultFamilyName pointSize: 16) emphasized: 7! !
 
 !TimelineCanvas class methodsFor: 'as yet unclassified' stamp: 'hlsf 4/Oct/2025, 10:54:42 am (UTC)'!
 bottomMargin
