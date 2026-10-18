@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 17 October 2026 at 5:31:44 pm'!
+'From Cuis7.9 [latest update: #8266] on 18 October 2026 at 1:41:42 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 9!
+!provides: 'DKM-Misc-ConceptMap' 1 10!
 !requires: 'DKM-Core' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -339,6 +339,10 @@ labelFont
 		labelFont := FontFamily familyName: FontFamily defaultFamilyName pointSize: 8]
 ! !
 
+!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 18/Oct/2026, 11:26:23 am (UTC)'!
+nodeViews
+	^ submorphs select: [:each | each is: #ConceptNodeView]! !
+
 !ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:42:59 am (UTC)'!
 presenter: aPresenter
 	super presenter: aPresenter.
@@ -383,7 +387,7 @@ nodeViewFor: node at: position
 		view morphCenter: position].
 	^ view! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 1:32:56 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 18/Oct/2026, 11:35:42 am (UTC)'!
 updateCanvas
 	| topNodes node relations interval view position |
 	self removeAllMorphs.
@@ -407,7 +411,8 @@ updateCanvas
 			source: (self nodeView: relation source) 
 			target: (self nodeView: relation target) ::
 			model: relation.
-		self addMorphBack: view]! !
+		self addMorphBack: view].
+	self setExtent.! !
 
 !ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 3:28:09 pm (UTC)'!
 updateColor
@@ -422,6 +427,16 @@ initialize
 	super initialize.
 	self morphExtent: 2000@2000.
 	! !
+
+!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 18/Oct/2026, 11:37:40 am (UTC)'!
+setExtent
+	| fullbounds |
+	fullbounds := self nodeViews 
+		inject: (Rectangle origin: 0@0 extent: 0@0) 
+		into: [:rect :node | rect merge: node fullBoundsInOwner].
+	fullbounds := fullbounds expandBy: 100. 
+	self morphExtent: fullbounds extent.
+	self nodeViews do: [:each | each morphPosition: each morphPosition - fullbounds origin]! !
 
 !ConceptMapView methodsFor: 'initialization' stamp: 'hlsf 14/Oct/2026, 7:37:46 pm (UTC)'!
 installView
@@ -473,7 +488,7 @@ handlesMouseDown: event
 mouseButton1Down: aMouseButtonEvent localPosition: localEventPosition
 	self removeProperty: #prevPosition! !
 
-!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 17/Oct/2026, 2:36:22 pm (UTC)'!
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 18/Oct/2026, 11:39:11 am (UTC)'!
 mouseMove: event localPosition: localPosition
 	| prevPosition newPos|
 	event mouseButton1Pressed not ifTrue: [^ self ].
@@ -481,5 +496,6 @@ mouseMove: event localPosition: localPosition
 	prevPosition := self valueOfProperty: #prevPosition.
 	prevPosition 
 		ifNotNil: [self morphPosition: self morphPosition + newPos - prevPosition].
-	self setProperty: #prevPosition toValue: newPos.
-	owner redrawNeeded ! !
+	self setProperty: #prevPosition toValue: newPos.	
+	owner setExtent;
+		redrawNeeded ! !
