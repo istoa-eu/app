@@ -1,7 +1,7 @@
-'From Cuis7.9 [latest update: #8266] on 20 October 2026 at 8:26:34 pm'!
+'From Cuis7.9 [latest update: #8276] on 20 October 2026 at 11:57:59 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 13!
-!requires: 'DKM-Core' 1 18 nil!
+!provides: 'DKM-Misc-ConceptMap' '1.14.0'!
+!requires: 'DKM-Core' '1.18.0' '1.*.*'!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
 
@@ -77,7 +77,7 @@ ConceptMapView class
 
 !classDefinition: #ConceptNodeView category: #'DKM-Misc-ConceptMap'!
 TextParagraphMorph subclass: #ConceptNodeView
-	instanceVariableNames: 'model angle'
+	instanceVariableNames: 'model'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'DKM-Misc-ConceptMap'!
@@ -107,10 +107,7 @@ The model with:
 
 !ConceptNodeView commentStamp: '<historical>' prior: 0!
 A view of a node in the map.
-- model, a ConceptNode instance
-- angle, the angle as seen from my top node 
-(the one I am a target and ranked highter as topNode, 
-see ConcepMapModel>topNodes)!
+- model, a ConceptNode instance!
 
 !ConceptMap methodsFor: 'DSL' stamp: 'hlsf 15/Oct/2026, 7:46:12 pm (UTC)'!
 concept: aString
@@ -141,7 +138,12 @@ initialize
 	model := ConceptMapModel new.
 	view := ConceptMapView presenter: self! !
 
-!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 18/Oct/2026, 2:26:38 pm (UTC)'!
+!ConceptMap methodsFor: 'as yet unclassified' stamp: 'hlsf 20/Oct/2026, 8:57:17 pm (UTC)'!
+openView
+	view canvas updateCanvas.
+	^ self view! !
+
+!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 20/Oct/2026, 9:00:45 pm (UTC)'!
 codeSample
 	^ 'ConceptMap title: ''Les quadrilatères'' ::
 	concept: ''Quadrilatère'' description: ''Quadrilatère quelconque'';
@@ -159,7 +161,7 @@ codeSample
 	relationFrom: ''Losange'' to: ''Carré'' labeled: ''quatre angles droits'';
 	relationFrom: ''Rectangle'' to: ''Carré'' labeled: ''côtés isométriques'';
 	color: Color blue;
-	view'! !
+	openView'! !
 
 !ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 15/Oct/2026, 7:44:53 pm (UTC)'!
 codeSample2
@@ -171,6 +173,52 @@ codeSample2
 	relationFrom: ''Chloroplasts'' to: ''Glucose'' labeled: ''produces'';
 	color: Color blue;
 	view'! !
+
+!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 20/Oct/2026, 8:53:52 pm (UTC)'!
+codeSample3
+	^ 'ConceptMap title: ''Chronologie des 20 grandes batailles d''''Alexandre le Grand'' ::
+    concept: ''Bataille de Chéronée (338 av. J.-C.)'' description: ''Victoire décisive de Philippe II et du jeune Alexandre contre la coalition grecque (Athènes et Thèbes).'';
+    concept: ''Campagne des Balkans (335 av. J.-C.)'' description: ''Expédition au nord de la Macédoine contre les Thraces, Triballes et Illyriens pour sécuriser les frontières.'';
+    concept: ''Siège de Thèbes (335 av. J.-C.)'' description: ''Saccage et destruction de la cité de Thèbes révoltée avant de partir en Asie.'';
+    concept: ''Bataille du Granique (334 av. J.-C.)'' description: ''Première victoire majeure contre les satrapes perses en Asie Mineure.'';
+    concept: ''Siège de Milet (334 av. J.-C.)'' description: ''Prise de la cité ionienne et dissolution temporaire de la flotte macédonienne.'';
+    concept: ''Siège d''''Halicarnasse (334 av. J.-C.)'' description: ''Siège complexe contre les forces perses et le mercenaire Memnon de Rhodes.'';
+    concept: ''Bataille d''''Issos (333 av. J.-C.)'' description: ''Premier affrontement direct contre Darius III en Cilicie, fuite du roi perse.'';
+    concept: ''Siège de Tyr (332 av. J.-C.)'' description: ''Siège de 7 mois d''''une cité insulaire phénicienne grâce à la construction d''''une digue.'';
+    concept: ''Siège de Gaza (332 av. J.-C.)'' description: ''Prise de la forteresse clé ouvrant l''''accès direct à l''''Égypte.'';
+    concept: ''Bataille de Gaugamèles (331 av. J.-C.)'' description: ''Victoire tactique magistrale détruisant définitivement l''''empire achéménide de Darius III.'';
+    concept: ''Bataille des Portes Persiques (330 av. J.-C.)'' description: ''Passage forcé des gorges défendues par Ariobarzane pour atteindre Persépolis.'';
+    concept: ''Bataille du Polytimète (328 av. J.-C.)'' description: ''Seul revers macédonien de la campagne, venge plus tard par Alexandre contre Spitamenès.'';
+    concept: ''Siège de la Roche Sogdienne (327 av. J.-C.)'' description: ''Prise d''''une forteresse réputée inexpugnable grâce à des escaladeurs d''''élite.'';
+    concept: ''Siège d''''Aornos (327 av. J.-C.)'' description: ''Capture d''''un piton rocheux mythique dans le nord de l''''Inde.'';
+    concept: ''Siège de Massaga (327 av. J.-C.)'' description: ''Victoire difficile contre les Assakéniens au début de la campagne indienne.'';
+    concept: ''Bataille de l''''Hydaspe (326 av. J.-C.)'' description: ''Affrontement majeur contre le roi Poros et ses éléphants de guerre dans le Pendjab.'';
+    concept: ''Siège de Sangala (326 av. J.-C.)'' description: ''Dernière grande bataille rangée en Inde contre les Cathéens.'';
+    concept: ''Campagne contre les Malliens (326 av. J.-C.)'' description: ''Siège d''''une ville indienne où Alexandre est grièvement blessé par une flèche au poumon.'';
+    concept: ''Conquête de la vallée de l''''Indus (325 av. J.-C.)'' description: ''Soumission des peuples du sud de l''''Indus jusqu''''à l''''océan Indien.'';
+    concept: ''Traversée du désert de Gédrosie (325 av. J.-C.)'' description: ''Retraite éprouvante de l''''armée macédonienne vers la Perse.'';
+
+    relationFrom: ''Bataille de Chéronée (338 av. J.-C.)'' to: ''Campagne des Balkans (335 av. J.-C.)'' labeled: ''Sacre d''''Alexandre (336)'';
+    relationFrom: ''Campagne des Balkans (335 av. J.-C.)'' to: ''Siège de Thèbes (335 av. J.-C.)'' labeled: ''Révolte en Grèce'';
+    relationFrom: ''Siège de Thèbes (335 av. J.-C.)'' to: ''Bataille du Granique (334 av. J.-C.)'' labeled: ''Invasion de la Perse'';
+    relationFrom: ''Bataille du Granique (334 av. J.-C.)'' to: ''Siège de Milet (334 av. J.-C.)'' labeled: ''Avancée en Ionie'';
+    relationFrom: ''Siège de Milet (334 av. J.-C.)'' to: ''Siège d''''Halicarnasse (334 av. J.-C.)'' labeled: ''Campagne de Carie'';
+    relationFrom: ''Siège d''''Halicarnasse (334 av. J.-C.)'' to: ''Bataille d''''Issos (333 av. J.-C.)'' labeled: ''Marche vers la Cilicie'';
+    relationFrom: ''Bataille d''''Issos (333 av. J.-C.)'' to: ''Siège de Tyr (332 av. J.-C.)'' labeled: ''Sécurisation de la côte'';
+    relationFrom: ''Siège de Tyr (332 av. J.-C.)'' to: ''Siège de Gaza (332 av. J.-C.)'' labeled: ''Route de l''''Égypte'';
+    relationFrom: ''Siège de Gaza (332 av. J.-C.)'' to: ''Bataille de Gaugamèles (331 av. J.-C.)'' labeled: ''Marche vers la Mésopotamie'';
+    relationFrom: ''Bataille de Gaugamèles (331 av. J.-C.)'' to: ''Bataille des Portes Persiques (330 av. J.-C.)'' labeled: ''Route de Persépolis'';
+    relationFrom: ''Bataille des Portes Persiques (330 av. J.-C.)'' to: ''Bataille du Polytimète (328 av. J.-C.)'' labeled: ''Poursuite en Sogdiane'';
+    relationFrom: ''Bataille du Polytimète (328 av. J.-C.)'' to: ''Siège de la Roche Sogdienne (327 av. J.-C.)'' labeled: ''Pacification de l''''Asie Centrale'';
+    relationFrom: ''Siège de la Roche Sogdienne (327 av. J.-C.)'' to: ''Siège de Massaga (327 av. J.-C.)'' labeled: ''Début de l''''Invasion de l''''Inde'';
+    relationFrom: ''Siège de Massaga (327 av. J.-C.)'' to: ''Siège d''''Aornos (327 av. J.-C.)'' labeled: ''Poursuite de la campagne indienne'';
+    relationFrom: ''Siège d''''Aornos (327 av. J.-C.)'' to: ''Bataille de l''''Hydaspe (326 av. J.-C.)'' labeled: ''Traversée de l''''Indus'';
+    relationFrom: ''Bataille de l''''Hydaspe (326 av. J.-C.)'' to: ''Siège de Sangala (326 av. J.-C.)'' labeled: ''Progression vers l''''Est'';
+    relationFrom: ''Siège de Sangala (326 av. J.-C.)'' to: ''Campagne contre les Malliens (326 av. J.-C.)'' labeled: ''Mutinerie sur l''''Hyphase & descente'';
+    relationFrom: ''Campagne contre les Malliens (326 av. J.-C.)'' to: ''Conquête de la vallée de l''''Indus (325 av. J.-C.)'' labeled: ''Descente du fleuve Indus'';
+    relationFrom: ''Conquête de la vallée de l''''Indus (325 av. J.-C.)'' to: ''Traversée du désert de Gédrosie (325 av. J.-C.)'' labeled: ''Retour vers Babylone'';
+    color: Color red;
+    openView'! !
 
 !ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 10/Oct/2026, 9:57:20 am (UTC)'!
 description
@@ -261,7 +309,7 @@ topNodes
 	^ nodes asOrderedCollection sort: [:nodeA :nodeB | 
 		(self relationsWithSource: nodeA) size > (self relationsWithSource: nodeB) size]! !
 
-!ConceptMapModel methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:24:18 am (UTC)'!
+!ConceptMapModel methodsFor: 'accessing' stamp: 'hlsf 20/Oct/2026, 8:54:30 pm (UTC)'!
 addNode: aNode
 	nodes add: aNode.
 	self triggerEvent: #changedConceptMap.
@@ -349,66 +397,58 @@ labelFont
 nodeViews
 	^ submorphs select: [:each | each is: #ConceptNodeView]! !
 
-!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 10/Oct/2026, 10:42:59 am (UTC)'!
+!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 20/Oct/2026, 8:55:22 pm (UTC)'!
 presenter: aPresenter
 	super presenter: aPresenter.
-	presenter model when: #changedConceptMap send: #updateCanvas to: self.! !
+"	presenter model when: #changedConceptMap send: #updateCanvas to: self."! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 6:26:23 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 8:50:24 pm (UTC)'!
 adjustPosition: nodeView around: center at: distance with: angle
 " We ensure this nodeView does not overlap existing morph "
-	| newAngle newDistance checkBlock |
+	| newAngle newDistance checkBlock|
 	
 	checkBlock :=  [:anAngle :aDistance |
 		nodeView morphCenter: center + (Point r: aDistance degrees: anAngle ).
 		nodeView isOverlapping ifFalse: [^ Array with: aDistance with: anAngle ]].
 	
 	" Try shifting the angle "
-	angle + 45 to: 360 by: 45 do: checkBlock.
+	angle + self angleStep to: 360 by: self angleStep do: [:anAngle | 
+		checkBlock value: anAngle value: distance].
 	
 	" Try intermediate angle and further distance "
-	newAngle := 45.0 / 2.
-	newDistance := distance * 1.5.
-	newAngle to: 360 by: 45 do: checkBlock 
-		
+	newDistance := distance.
+	5 timesRepeat: [
+		newAngle := self angleStep  / 2.
+		newDistance := newDistance + distance * 0.5.
+		newAngle to: 360 by: self angleStep do: [:anAngle | 
+			checkBlock value: anAngle value: newDistance ]].
+	"We do not view an empty space, return to original position "
+	nodeView morphCenter: center + (Point r: distance degrees: angle).
+	^ nil
 		! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 6:13:33 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 9:49:18 pm (UTC)'!
 insertTargets: nodes from: remainingNodes centeredAt: center 
-	| relations nodeToInsert nodePosition nodeAngle view nodeDistance |
+	| nodeToInsert nodePosition nodeAngle view nodeDistance array |
 	nodeAngle := 0.
-	nodeDistance := 200.
+	nodeDistance := self nodeDistance.
 	nodes withIndexDo: [:node :index |
 		nodeToInsert := remainingNodes remove: node ifAbsent: [nil].
 		nodeToInsert ifNotNil: [
 			nodePosition := center + (Point r: nodeDistance degrees: nodeAngle).
 			view := self nodeViewFor: node at: nodePosition.
-			view isOverlapping ifTrue: [
-				self adjustPosition: view around: center at:nodeDistance  with: nodeAngle].
-			relations := self model relationsWithSource: node.
-			relations ifNotEmpty: [
+			view isOverlapping 
+				ifTrue: [
+					array := self adjustPosition: view around: center at: nodeDistance with: nodeAngle.
+					array ifNotNil: [
+						nodeDistance := array first.
+						nodeAngle := array second] ].
+			nodeAngle := nodeAngle + self angleStep .
+			(self model relationsWithSource: node) ifNotEmpty: [:relations |.
 				self 
 					insertTargets: (relations collect: #target) 
 					from: remainingNodes 
 					centeredAt:  nodePosition ] ] ]! !
-
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 5:27:01 pm (UTC)'!
-insertTargets: nodes from: remainingNodes centeredAt: center withAperture: angleInterval
-	| relations nodeToInsert nodePosition nodeAngle view |
-	nodes withIndexDo: [:node :index |
-		nodeToInsert := remainingNodes remove: node ifAbsent: [nil].
-		nodeToInsert ifNotNil: [
-			nodeAngle := angleInterval at: index.
-			nodePosition := center + (Point r: 200 degrees: nodeAngle).
-			view := self nodeViewFor: node at: nodePosition .
-			relations := self model relationsWithSource: node.
-			relations ifNotEmpty: [
-				view angle:  (nodeAngle - 60 to: nodeAngle + 60 by: 120 / relations size).
-				self 
-					insertTargets: (relations collect: #target) 
-					from: remainingNodes 
-					centeredAt:  nodePosition 
-					withAperture: view angle ] ] ]! !
 
 !ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 12:29:52 pm (UTC)'!
 nodeView: aNode
@@ -441,25 +481,30 @@ nodeViewFor: node at: position
 		view morphCenter: position].
 	^ view! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 5:35:45 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 9:47:55 pm (UTC)'!
 updateCanvas
-	| topNodes node relations interval view position |
+	| topNodes node view center nodeAngle nodeDistance array |
 	self removeAllMorphs.
-	position := extent // 2.
+	center := extent // 2.
+	nodeAngle := 0.
+	nodeDistance := self nodeDistance.
 	topNodes := self model topNodes.
 	[topNodes notEmpty] whileTrue: [
 		node := topNodes removeAt: 1.
-		view := self nodeViewFor: node at: position.
-		relations := self model relationsWithSource: node.
-		relations isEmpty ifTrue: [^ self].
-		interval := 0 to: 359 by: 360 / relations size.
-		view angle: interval.
-		self 
-			insertTargets: (relations collect: #target)
-			from:  topNodes
-			centeredAt:  extent // 2
-			withAngle: 40.
-		position := position - (200@0)	].
+		view := self nodeViewFor: node at: center + (Point r: nodeDistance degrees: nodeAngle).
+		view isOverlapping 
+			ifTrue: [
+				array := self adjustPosition: view around: center at: nodeDistance with: nodeAngle.
+				array ifNotNil: [
+					nodeDistance := array first.
+					nodeAngle := array second] ].
+		nodeAngle := nodeAngle + self angleStep.
+		(self model relationsWithSource: node) ifNotEmpty: [:relations |
+			self 
+				insertTargets: (relations collect: #target)
+				from:  topNodes
+				centeredAt: center]].
+	""
 	self model relations do: [:relation |
 		view := ConceptRelationView 
 			source: (self nodeView: relation source) 
@@ -480,6 +525,14 @@ initialize
 	self morphExtent: 2000@2000.
 	! !
 
+!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 20/Oct/2026, 8:22:39 pm (UTC)'!
+angleStep
+	^ 45! !
+
+!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 20/Oct/2026, 9:43:42 pm (UTC)'!
+nodeDistance
+	^ 200! !
+
 !ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 18/Oct/2026, 11:37:40 am (UTC)'!
 setExtent
 	| fullbounds |
@@ -494,14 +547,6 @@ setExtent
 installView
 	canvas := ConceptMapCanvas new presenter: presenter.
 	self installViewWith: #(zWheel).! !
-
-!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:41 pm (UTC)'!
-angle
-	^ angle! !
-
-!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:47 pm (UTC)'!
-angle: anObject
-	angle := anObject! !
 
 !ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:51 pm (UTC)'!
 model
@@ -531,12 +576,14 @@ defaultPadding
 is: aSymbol
 	^ aSymbol == #ConceptNodeView or: [super is: aSymbol]! !
 
-!ConceptNodeView methodsFor: 'testing' stamp: 'hlsf 20/Oct/2026, 6:12:15 pm (UTC)'!
+!ConceptNodeView methodsFor: 'testing' stamp: 'hlsf 20/Oct/2026, 9:22:13 pm (UTC)'!
 isOverlapping
 "Am I overlapping other morph ?"
-	owner submorphsDo: [:morph| 
+	| myBounds |
+	myBounds := self fullBoundsInOwner.
+	owner nodeViews do: [:morph| 
 		(morph ~= self 
-		and: [morph collides: self]) ifTrue: [ ^true]].
+		and: [myBounds intersects: morph fullBoundsInOwner ]) ifTrue: [ ^true]].
 	^ false! !
 
 !ConceptNodeView methodsFor: 'event handling testing' stamp: 'hlsf 17/Oct/2026, 1:47:55 pm (UTC)'!

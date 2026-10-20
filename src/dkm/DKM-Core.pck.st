@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 18 October 2026 at 4:02:44 pm'!
+'From Cuis7.9 [latest update: #8266] on 20 October 2026 at 11:07:30 pm'!
 'Description '!
-!provides: 'DKM-Core' 1 24!
+!provides: 'DKM-Core' 1 25!
 SystemOrganization addCategory: #'DKM-Core'!
 
 
@@ -213,11 +213,15 @@ dslCategory
 " The method category of the DSL "
 	^ 'DSL'! !
 
-!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 11/Jan/2026, 5:42:41 pm (UTC)'!
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 20/Oct/2026, 8:26:37 pm (UTC)'!
 evaluateSample
+	self evaluateSample: #codeSample! !
+
+!DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 20/Oct/2026, 8:27:23 pm (UTC)'!
+evaluateSample: method
 " Evaluate the sample and present it to the world "
 	| view |
-	view := Compiler evaluate: self codeSample.
+	view := Compiler evaluate: (self perform: method).
 	view openInHand! !
 
 !DKMPresenter class methodsFor: 'user interface' stamp: 'hlsf 25/Dec/2025, 8:54:54 am (UTC)'!
