@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8266] on 18 October 2026 at 4:03:16 pm'!
+'From Cuis7.9 [latest update: #8266] on 20 October 2026 at 8:26:34 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' 1 11!
+!provides: 'DKM-Misc-ConceptMap' 1 13!
 !requires: 'DKM-Core' 1 18 nil!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -141,7 +141,7 @@ initialize
 	model := ConceptMapModel new.
 	view := ConceptMapView presenter: self! !
 
-!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 18/Oct/2026, 1:56:04 pm (UTC)'!
+!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 18/Oct/2026, 2:26:38 pm (UTC)'!
 codeSample
 	^ 'ConceptMap title: ''Les quadrilatères'' ::
 	concept: ''Quadrilatère'' description: ''Quadrilatère quelconque'';
@@ -149,10 +149,10 @@ codeSample
 	concept: ''Losange'' description: ''Quadrilatère dont les côtés opposés sont parallèles, ses quatres côtés sont isométriques. Ses diagonales se coupent en leur milieu et sont perpendiculaires.'';
 	concept: ''Rectangle'' description: ''Quadrilatère dont les côtés opposés sont parallèles, les angles de ses quatre sommets sont droits. Ses diagonales se coupent en leur milieu et sont isométriques.'';
 	concept: ''Carré'' description: ''Quadrilatère dont les côtés opposés sont parallèles, ses quatres côtés sont isométriques et les angles de ses quatre sommets sont droits. Ses diagonales se coupent en leur milieu perpendiculairement et sont isométriques.'';
-	concept: ''Fer de lance'';
+	concept: ''Fer de lance''  description: ''concave, diagonales perpendiculaires'';
 	concept: ''Cerf-volant'';
 	relationFrom: ''Quadrilatère'' to: ''Parallélogramme'' labeled: ''côtés opposés parallèles'';
-	relationFrom: ''Quadrilatère'' to: ''Fer de lance'' labeled: ''concave, diagonales perpendiculaires'';
+	relationFrom: ''Quadrilatère'' to: ''Fer de lance'';
 	relationFrom: ''Quadrilatère'' to: ''Cerf-volant'' labeled: ''convexe, diagonales perpendiculaires'';
 	relationFrom: ''Parallélogramme'' to: ''Rectangle'' labeled: ''quatre angles droits'';
 	relationFrom: ''Parallélogramme'' to: ''Losange'' labeled: ''côtés isométriques'';
@@ -175,6 +175,10 @@ codeSample2
 !ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 10/Oct/2026, 9:57:20 am (UTC)'!
 description
 	^ 'Visualize relationships between concepts, ideas, and scientific processes.' translated! !
+
+!ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 18/Oct/2026, 2:13:58 pm (UTC)'!
+svgIcon
+	^ '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><g><rect fill="none" height="24" width="24"/></g><g><polygon points="15,16 15,17.26 9,14.26 9,11.09 11.7,8 16,8 16,2 10,2 10,6.9 7.3,10 3,10 3,16 8,16 15,19.5 15,22 21,22 21,16"/></g></svg>'! !
 
 !ConceptMap class methodsFor: 'DKM' stamp: 'hlsf 10/Oct/2026, 9:15:10 am (UTC)'!
 title
@@ -287,7 +291,7 @@ initialize
 	nodes := Set new.
 	relations := OrderedCollection new.! !
 
-!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 1:45:36 pm (UTC)'!
+!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 2:28:25 pm (UTC)'!
 drawOn: canvas
 	| sourcePosition targetPosition center extent angle color |
 	color := owner color.
@@ -300,16 +304,17 @@ drawOn: canvas
 	canvas line: sourcePosition to: targetPosition width: 1 color: color.
 	canvas line: center to: center + (Point  r: extent degrees: angle + 30) width: 2 color: color.
 	canvas line: center to: center + (Point  r: extent degrees: angle - 30) width: 2 color: color.
-	center := sourcePosition + targetPosition / 2.0 .	
-	extent := self externalizeDistance: ((owner labelFont widthOfString: model label) @ (owner labelFont pointSize + 5)).
-	canvas 
-		fillRectangle:  (center - ( extent x // 2 @ 0) extent: extent)
-		color: (Color white alpha: 0.8).
-	canvas 
-		drawString: model label 
-		atCenterX: center
-		font: owner labelFont 
-		color: `Color black`.! !
+	model label ifNotNil: [:label |
+		center := sourcePosition + targetPosition / 2.0 .	
+		extent := self externalizeDistance: ((owner labelFont widthOfString: label) @ (owner labelFont pointSize + 5)).
+		canvas 
+			fillRectangle:  (center - ( extent x // 2 @ 0) extent: extent)
+			color: (Color white alpha: 0.8).
+		canvas 
+			drawString: label 
+			atCenterX: center
+			font: owner labelFont 
+			color: `Color black`]! !
 
 !ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:30:59 pm (UTC)'!
 model
@@ -349,8 +354,46 @@ presenter: aPresenter
 	super presenter: aPresenter.
 	presenter model when: #changedConceptMap send: #updateCanvas to: self.! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 17/Oct/2026, 3:27:43 pm (UTC)'!
-insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleInterval
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 6:26:23 pm (UTC)'!
+adjustPosition: nodeView around: center at: distance with: angle
+" We ensure this nodeView does not overlap existing morph "
+	| newAngle newDistance checkBlock |
+	
+	checkBlock :=  [:anAngle :aDistance |
+		nodeView morphCenter: center + (Point r: aDistance degrees: anAngle ).
+		nodeView isOverlapping ifFalse: [^ Array with: aDistance with: anAngle ]].
+	
+	" Try shifting the angle "
+	angle + 45 to: 360 by: 45 do: checkBlock.
+	
+	" Try intermediate angle and further distance "
+	newAngle := 45.0 / 2.
+	newDistance := distance * 1.5.
+	newAngle to: 360 by: 45 do: checkBlock 
+		
+		! !
+
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 6:13:33 pm (UTC)'!
+insertTargets: nodes from: remainingNodes centeredAt: center 
+	| relations nodeToInsert nodePosition nodeAngle view nodeDistance |
+	nodeAngle := 0.
+	nodeDistance := 200.
+	nodes withIndexDo: [:node :index |
+		nodeToInsert := remainingNodes remove: node ifAbsent: [nil].
+		nodeToInsert ifNotNil: [
+			nodePosition := center + (Point r: nodeDistance degrees: nodeAngle).
+			view := self nodeViewFor: node at: nodePosition.
+			view isOverlapping ifTrue: [
+				self adjustPosition: view around: center at:nodeDistance  with: nodeAngle].
+			relations := self model relationsWithSource: node.
+			relations ifNotEmpty: [
+				self 
+					insertTargets: (relations collect: #target) 
+					from: remainingNodes 
+					centeredAt:  nodePosition ] ] ]! !
+
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 5:27:01 pm (UTC)'!
+insertTargets: nodes from: remainingNodes centeredAt: center withAperture: angleInterval
 	| relations nodeToInsert nodePosition nodeAngle view |
 	nodes withIndexDo: [:node :index |
 		nodeToInsert := remainingNodes remove: node ifAbsent: [nil].
@@ -362,7 +405,7 @@ insertTarget: nodes from: remainingNodes centeredAt: center withAperture: angleI
 			relations ifNotEmpty: [
 				view angle:  (nodeAngle - 60 to: nodeAngle + 60 by: 120 / relations size).
 				self 
-					insertTarget: (relations collect: #target) 
+					insertTargets: (relations collect: #target) 
 					from: remainingNodes 
 					centeredAt:  nodePosition 
 					withAperture: view angle ] ] ]! !
@@ -373,24 +416,32 @@ nodeView: aNode
 		detect: [:aMorph | (aMorph is: #ConceptNodeView) and: [aMorph model == aNode]] 
 		ifNone: [nil]! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 18/Oct/2026, 1:54:23 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 5:41:40 pm (UTC)'!
+nodeViewFor: node
+" 	Create the view of this node, when it exists, return its view instance "
+	| view |
+	view := ConceptNodeView contents: node label ::	
+		model: node;
+		borderColor: self color;
+		color: self color veryMuchLighter ;
+		setBalloonText: node balloonText .
+		view morphExtent: view minimumExtent.
+		view shrink.
+	^ view! !
+
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 5:42:19 pm (UTC)'!
 nodeViewFor: node at: position
 " 	Create the view of this node, when it exists, return its view instance "
 	| view |
 	view := self nodeView: node.
 	view ifNil: [
-		view := ConceptNodeView contents: node label ::	
-			model: node;
-			borderColor: self color;
-			color: self color veryMuchLighter ;
-			setBalloonText: node balloonText .
-		view morphExtent: view minimumExtent.
+		view := self nodeViewFor: node.
 		self addMorph: view.
 		view shrink .
 		view morphCenter: position].
 	^ view! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 18/Oct/2026, 11:35:42 am (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 5:35:45 pm (UTC)'!
 updateCanvas
 	| topNodes node relations interval view position |
 	self removeAllMorphs.
@@ -404,10 +455,10 @@ updateCanvas
 		interval := 0 to: 359 by: 360 / relations size.
 		view angle: interval.
 		self 
-			insertTarget: (relations collect: #target)
+			insertTargets: (relations collect: #target)
 			from:  topNodes
 			centeredAt:  extent // 2
-			withAperture: interval.
+			withAngle: 40.
 		position := position - (200@0)	].
 	self model relations do: [:relation |
 		view := ConceptRelationView 
@@ -479,6 +530,14 @@ defaultPadding
 !ConceptNodeView methodsFor: 'testing' stamp: 'hlsf 14/Oct/2026, 5:15:46 pm (UTC)'!
 is: aSymbol
 	^ aSymbol == #ConceptNodeView or: [super is: aSymbol]! !
+
+!ConceptNodeView methodsFor: 'testing' stamp: 'hlsf 20/Oct/2026, 6:12:15 pm (UTC)'!
+isOverlapping
+"Am I overlapping other morph ?"
+	owner submorphsDo: [:morph| 
+		(morph ~= self 
+		and: [morph collides: self]) ifTrue: [ ^true]].
+	^ false! !
 
 !ConceptNodeView methodsFor: 'event handling testing' stamp: 'hlsf 17/Oct/2026, 1:47:55 pm (UTC)'!
 handlesMouseDown: event

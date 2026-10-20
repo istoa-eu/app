@@ -1,8 +1,9 @@
-'From Cuis7.7 [latest update: #7823] on 1 February 2026 at 12:24:59 pm'!
+'From Cuis7.9 [latest update: #8266] on 20 October 2026 at 5:30:33 pm'!
 'Description '!
-!provides: 'iStoaApp' 1 20!
+!provides: 'iStoaApp' 1 21!
 !requires: 'DKM-Physics-GasSimulation' 1 33 nil!
 !requires: 'DKM-Math-Geometry' 1 3 nil!
+!requires: 'DKM-Misc-ConceptMap' 1 12 nil!
 !requires: 'Commander' 1 9 nil!
 !requires: 'DKM-History-Timeline' 1 6 nil!
 SystemOrganization addCategory: #iStoaApp!
@@ -19,7 +20,7 @@ Stoa class
 	instanceVariableNames: ''!
 
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 18/Jan/2026 19:17:05'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 18/Jan/2026, 5:17:05 pm (UTC)'!
 getMenuIn: aWorld at: aHand
 	| menu |
 	menu :=  (CommandBuilder on: #iStoaAppCommand) getMenu.
@@ -28,13 +29,13 @@ getMenuIn: aWorld at: aHand
 		addStayUpIcons .
 	^ menu! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 24/Dec/2025 20:45:56'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 24/Dec/2025, 6:45:56 pm (UTC)'!
 history: menuBuilder
 	<iStoaAppCommand>
 	self newEntryIn: #history forDKM: Timeline in: #timeline with: menuBuilder 
 			! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 29/Jan/2026 22:27:39'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 29/Jan/2026, 8:27:39 pm (UTC)'!
 math: menuBuilder
 	<iStoaAppCommand>
 	self newEntryIn: #math forDKM: InteractiveGeometry in: #interactiveGeometry with: menuBuilder.
@@ -42,7 +43,7 @@ math: menuBuilder
 
 			! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 18/Jan/2026 19:12:47'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 18/Jan/2026, 5:12:47 pm (UTC)'!
 newEntryIn: parentEntry forDKM: aDKMPresenter in: dkmMenuEntry with: menuBuilder
 "	Install the menu entries to play and to edit this aDKMPresenter 	"
 	| playEntry editEntry docEntry promptForAI |
@@ -77,14 +78,20 @@ newEntryIn: parentEntry forDKM: aDKMPresenter in: dkmMenuEntry with: menuBuilder
 			action: [Clipboard storeObject: aDKMPresenter promptForAI]
 			! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 24/Dec/2025 20:46:45'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 20/Oct/2026, 3:29:13 pm (UTC)'!
+others: menuBuilder
+	<iStoaAppCommand>
+	self newEntryIn: #others forDKM: ConceptMap in: #conceptMap with: menuBuilder 
+			! !
+
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 24/Dec/2025, 6:46:45 pm (UTC)'!
 physics: menuBuilder
 	<iStoaAppCommand>
 	self newEntryIn: #physics forDKM: GasSimulation in: #gasSimulation with: menuBuilder 
 
 			! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 27/Dec/2025 19:59:55'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 27/Dec/2025, 5:59:55 pm (UTC)'!
 preferencesMenu: menuBuilder
 	<iStoaAppCommand>
 	menuBuilder newEntry: 'Size of GUI elements' in: #preferences ::
@@ -97,15 +104,15 @@ preferencesMenu: menuBuilder
 		help: 'Turn full screen mode on when it is off, off when it is on.';
 		order: 20.! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 25/Dec/2025 00:17:19'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 24/Dec/2025, 10:17:19 pm (UTC)'!
 setCuisMenu
 	Preferences at: #worldMenu put: TheWorldMenu! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 25/Dec/2025 00:16:43'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 24/Dec/2025, 10:16:43 pm (UTC)'!
 setStoaMenu
 	Preferences at: #worldMenu put: Stoa! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 27/Dec/2025 20:37:37'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 27/Dec/2025, 6:37:37 pm (UTC)'!
 toolMenu: menuBuilder
 	<iStoaAppCommand>
 
@@ -131,7 +138,7 @@ toolMenu: menuBuilder
 		icon: #saveIcon;
 		help: 'Save this iStoa session.'! !
 
-!Stoa class methodsFor: 'menu' stamp: 'hlsf 22/Jan/2026 20:05:14'!
+!Stoa class methodsFor: 'menu' stamp: 'hlsf 20/Oct/2026, 3:27:25 pm (UTC)'!
 topMenu: menuBuilder
 	<iStoaAppCommand>
 	menuBuilder newEntry: #history ::
@@ -143,6 +150,10 @@ topMenu: menuBuilder
 	menuBuilder newEntry: #physics ::
 		label: 'Physics';
 		order: 30.
+	menuBuilder newEntry: #others ::
+		label: 'Others';
+		order: 40.
+
 	menuBuilder newEntry: #tools ::
 		label: 'Tools';
 		icon: #systemIcon;
@@ -160,21 +171,21 @@ topMenu: menuBuilder
 		order: 999	
 		! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 12/Jan/2026 20:53:20'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 12/Jan/2026, 6:53:20 pm (UTC)'!
 browseApi: aDKMPresenter
 	| browser |
 	browser := HierarchyBrowserWindow onClass: aDKMPresenter presenterClass selector: nil.
 	browser model messageCategoryListIndex: (browser model messageCategoryList indexOf: aDKMPresenter dslCategory)! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 27/Dec/2025 15:59:40'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 27/Dec/2025, 1:59:40 pm (UTC)'!
 cuisVersion
 	^ SystemVersion current versionString, ' #', SystemVersion current highestUpdate printString! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 27/Dec/2025 16:00:03'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 27/Dec/2025, 2:00:03 pm (UTC)'!
 iStoaCopyright
 	^ 'Source code application: Copyright 2025-2026 Hilaire Fernandes'! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 1/Feb/2026 12:24:50'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 1/Feb/2026, 10:24:50 am (UTC)'!
 iStoaInformationString
 	|text |
 	text := 'iStoa (istoa.eu) is a simulation environment to explore the Dynamic Knowledge Models (DKM).
@@ -190,26 +201,26 @@ LICENSES:
  - Each DKM comes with its own license terms (visit istoa.eu/dkm).' translated format: {self iStoaVersion. self iStoaCopyright. self cuisVersion }.
 	^ text! !
 
-!Stoa class methodsFor: 'documentation' stamp: 'hlsf 22/Jan/2026 20:06:05'!
+!Stoa class methodsFor: 'documentation' stamp: 'hlsf 20/Oct/2026, 3:30:22 pm (UTC)'!
 iStoaVersion
 	^ 'Installed version: ', 
-		'26.02a (code revision ', 
+		'26.11a (code revision ', 
 		(String streamContents: [:str | 
 			(CodePackage installedPackages at: 'iStoaApp') featureSpec provides printVersionRevisionOn: str]), ')'! !
 
-!Stoa class methodsFor: 'user interface' stamp: 'hlsf 27/Dec/2025 16:00:17'!
+!Stoa class methodsFor: 'user interface' stamp: 'hlsf 27/Dec/2025, 2:00:17 pm (UTC)'!
 about
 	UISupervisor whenUIinSafeState: [
 		(PopUpMenu labels: ' Ok ' ) 
 			startUpNonModalWithCaption:  self iStoaInformationString ]! !
 
-!Stoa class methodsFor: 'user interface' stamp: 'hlsf 27/Dec/2025 19:53:59'!
+!Stoa class methodsFor: 'user interface' stamp: 'hlsf 27/Dec/2025, 5:53:59 pm (UTC)'!
 quit
 	(self confirm: 'There is may be unsaved data!! 
 Are you sure to quit the iStoa environment?') ifFalse: [ ^ self].
 	Smalltalk quitPrimitive! !
 
-!Stoa class methodsFor: 'user interface' stamp: 'hlsf 27/Dec/2025 16:22:39'!
+!Stoa class methodsFor: 'user interface' stamp: 'hlsf 27/Dec/2025, 2:22:39 pm (UTC)'!
 toggleFullscreen	
 	| isFullscreen |
 	isFullscreen := [ Preferences at: #fullscreen ] 
@@ -219,7 +230,7 @@ toggleFullscreen
 	Preferences at: #fullscreen put: isFullscreen not.
 	Display fullScreenMode: isFullscreen not! !
 
-!Stoa class methodsFor: 'system-support' stamp: 'hlsf 22/Jan/2026 18:37:43'!
+!Stoa class methodsFor: 'system-support' stamp: 'hlsf 22/Jan/2026, 4:37:43 pm (UTC)'!
 install
 	| world  stream |
 	"Report by any mean installation and run time"
