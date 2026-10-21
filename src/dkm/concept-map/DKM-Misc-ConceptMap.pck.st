@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8276] on 20 October 2026 at 11:57:59 pm'!
+'From Cuis7.9 [latest update: #8276] on 21 October 2026 at 7:01:16 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' '1.14.0'!
+!provides: 'DKM-Misc-ConceptMap' '1.15.0'!
 !requires: 'DKM-Core' '1.18.0' '1.*.*'!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -47,7 +47,7 @@ ConceptMapModel class
 
 !classDefinition: #ConceptRelationView category: #'DKM-Misc-ConceptMap'!
 Morph subclass: #ConceptRelationView
-	instanceVariableNames: 'source target model'
+	instanceVariableNames: 'source target model width'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'DKM-Misc-ConceptMap'!
@@ -339,22 +339,23 @@ initialize
 	nodes := Set new.
 	relations := OrderedCollection new.! !
 
-!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 18/Oct/2026, 2:28:25 pm (UTC)'!
+!ConceptRelationView methodsFor: 'drawing' stamp: 'hlsf 21/Oct/2026, 4:56:18 pm (UTC)'!
 drawOn: canvas
 	| sourcePosition targetPosition center extent angle color |
 	color := owner color.
 	sourcePosition := source externalize: source morphCenter.
 	targetPosition := target externalize: target morphCenter.
-	center := sourcePosition - targetPosition / 4.0.
+	center := sourcePosition - targetPosition / 3.0.
 	angle := center degrees. 
 	extent := self externalizeDistance: 10.
 	center := center + targetPosition.
-	canvas line: sourcePosition to: targetPosition width: 1 color: color.
-	canvas line: center to: center + (Point  r: extent degrees: angle + 30) width: 2 color: color.
-	canvas line: center to: center + (Point  r: extent degrees: angle - 30) width: 2 color: color.
+	canvas line: sourcePosition to: targetPosition width: self width color: color.
+	canvas line: center to: center + (Point  r: extent degrees: angle + 30) width: 2 + self width color: color.
+	canvas line: center to: center + (Point  r: extent degrees: angle - 30) width: 2 + self width color: color.
 	model label ifNotNil: [:label |
 		center := sourcePosition + targetPosition / 2.0 .	
-		extent := self externalizeDistance: ((owner labelFont widthOfString: label) @ (owner labelFont pointSize + 5)).
+		extent := self externalizeDistance: (
+			(owner labelFont widthOfString: label) @ (owner labelFont pointSize + 5)).
 		canvas 
 			fillRectangle:  (center - ( extent x // 2 @ 0) extent: extent)
 			color: (Color white alpha: 0.8).
@@ -372,6 +373,10 @@ model
 model: anObject
 	model := anObject! !
 
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 21/Oct/2026, 4:27:01 pm (UTC)'!
+source
+	^ source! !
+
 !ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:31:09 pm (UTC)'!
 source: anObject
 	source := anObject! !
@@ -379,6 +384,19 @@ source: anObject
 !ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:31:15 pm (UTC)'!
 target: anObject
 	target := anObject! !
+
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 21/Oct/2026, 3:33:26 pm (UTC)'!
+width
+	^ width ifNil: [width := 1]! !
+
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 21/Oct/2026, 4:30:12 pm (UTC)'!
+width: integer
+	 width := integer.
+	self redrawNeeded ! !
+
+!ConceptRelationView methodsFor: 'testing' stamp: 'hlsf 21/Oct/2026, 3:30:21 pm (UTC)'!
+is: aSymbol
+	^ aSymbol == #ConceptRelationView or: [super is: aSymbol]! !
 
 !ConceptRelationView class methodsFor: 'instance creation' stamp: 'hlsf 17/Oct/2026, 12:22:30 pm (UTC)'!
 source: sourceView target: targetView
@@ -401,6 +419,12 @@ nodeViews
 presenter: aPresenter
 	super presenter: aPresenter.
 "	presenter model when: #changedConceptMap send: #updateCanvas to: self."! !
+
+!ConceptMapCanvas methodsFor: 'accessing' stamp: 'hlsf 21/Oct/2026, 4:26:50 pm (UTC)'!
+relationViewsWithSource: nodeView
+	^ submorphs select: [:each | 
+		(each is: #ConceptRelationView)
+		and: [each source == nodeView]]! !
 
 !ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 8:50:24 pm (UTC)'!
 adjustPosition: nodeView around: center at: distance with: angle
@@ -481,14 +505,16 @@ nodeViewFor: node at: position
 		view morphCenter: position].
 	^ view! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 9:47:55 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 21/Oct/2026, 5:01:02 pm (UTC)'!
 updateCanvas
 	| topNodes node view center nodeAngle nodeDistance array |
 	self removeAllMorphs.
 	center := extent // 2.
 	nodeAngle := 0.
 	nodeDistance := self nodeDistance.
-	topNodes := self model topNodes.
+	" Top nodes strategies. First nodes with a hight source rate
+	topNodes := self model topNodes."
+	topNodes := self model nodes asOrderedCollection .
 	[topNodes notEmpty] whileTrue: [
 		node := topNodes removeAt: 1.
 		view := self nodeViewFor: node at: center + (Point r: nodeDistance degrees: nodeAngle).
@@ -525,13 +551,13 @@ initialize
 	self morphExtent: 2000@2000.
 	! !
 
-!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 20/Oct/2026, 8:22:39 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 21/Oct/2026, 4:41:45 pm (UTC)'!
 angleStep
-	^ 45! !
+	^ 30! !
 
-!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 20/Oct/2026, 9:43:42 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 21/Oct/2026, 4:40:34 pm (UTC)'!
 nodeDistance
-	^ 200! !
+	^ 400! !
 
 !ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 18/Oct/2026, 11:37:40 am (UTC)'!
 setExtent
@@ -548,6 +574,10 @@ installView
 	canvas := ConceptMapCanvas new presenter: presenter.
 	self installViewWith: #(zWheel).! !
 
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 21/Oct/2026, 3:17:12 pm (UTC)'!
+canvas
+	^ owner! !
+
 !ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:51 pm (UTC)'!
 model
 	^ model! !
@@ -555,6 +585,11 @@ model
 !ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 17/Oct/2026, 3:29:55 pm (UTC)'!
 model: anObject
 	model := anObject! !
+
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 21/Oct/2026, 4:26:39 pm (UTC)'!
+thickness: integer
+	self borderWidth: integer.
+	(owner relationViewsWithSource: self) do: [:relationView | relationView width: integer]! !
 
 !ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 1:22:17 pm (UTC)'!
 defaultBorderColor
@@ -576,12 +611,12 @@ defaultPadding
 is: aSymbol
 	^ aSymbol == #ConceptNodeView or: [super is: aSymbol]! !
 
-!ConceptNodeView methodsFor: 'testing' stamp: 'hlsf 20/Oct/2026, 9:22:13 pm (UTC)'!
+!ConceptNodeView methodsFor: 'testing' stamp: 'hlsf 21/Oct/2026, 3:17:21 pm (UTC)'!
 isOverlapping
 "Am I overlapping other morph ?"
 	| myBounds |
 	myBounds := self fullBoundsInOwner.
-	owner nodeViews do: [:morph| 
+	self canvas  nodeViews do: [:morph| 
 		(morph ~= self 
 		and: [myBounds intersects: morph fullBoundsInOwner ]) ifTrue: [ ^true]].
 	^ false! !
@@ -591,11 +626,23 @@ handlesMouseDown: event
 	^ true
 ! !
 
+!ConceptNodeView methodsFor: 'event handling testing' stamp: 'hlsf 21/Oct/2026, 3:11:14 pm (UTC)'!
+handlesMouseOver: event
+	^ true! !
+
 !ConceptNodeView methodsFor: 'events' stamp: 'hlsf 18/Oct/2026, 2:00:57 pm (UTC)'!
 mouseButton1Up: aMouseButtonEvent localPosition: localEventPosition
 	self removeProperty: #prevPosition! !
 
-!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 18/Oct/2026, 2:00:52 pm (UTC)'!
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 21/Oct/2026, 4:47:10 pm (UTC)'!
+mouseEnter: event
+	self thickness: 4! !
+
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 21/Oct/2026, 3:12:08 pm (UTC)'!
+mouseLeave: event
+	self thickness: 1! !
+
+!ConceptNodeView methodsFor: 'events' stamp: 'hlsf 21/Oct/2026, 3:17:28 pm (UTC)'!
 mouseMove: event localPosition: localPosition
 	| prevPosition newPos|
 	event mouseButton1Pressed not ifTrue: [^ self ].
@@ -604,5 +651,5 @@ mouseMove: event localPosition: localPosition
 	prevPosition 
 		ifNotNil: [self morphPosition: self morphPosition + newPos - prevPosition].
 	self setProperty: #prevPosition toValue: newPos.	
-	owner setExtent;
+	self canvas setExtent;
 		redrawNeeded ! !
