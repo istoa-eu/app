@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8276] on 21 October 2026 at 7:01:16 pm'!
+'From Cuis7.9 [latest update: #8276] on 22 October 2026 at 5:50:13 pm'!
 'Description '!
-!provides: 'DKM-Misc-ConceptMap' '1.15.0'!
+!provides: 'DKM-Misc-ConceptMap' '1.16.0'!
 !requires: 'DKM-Core' '1.18.0' '1.*.*'!
 SystemOrganization addCategory: #'DKM-Misc-ConceptMap'!
 
@@ -389,10 +389,9 @@ target: anObject
 width
 	^ width ifNil: [width := 1]! !
 
-!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 21/Oct/2026, 4:30:12 pm (UTC)'!
+!ConceptRelationView methodsFor: 'accessing' stamp: 'hlsf 22/Oct/2026, 3:10:38 pm (UTC)'!
 width: integer
-	 width := integer.
-	self redrawNeeded ! !
+	 width := integer! !
 
 !ConceptRelationView methodsFor: 'testing' stamp: 'hlsf 21/Oct/2026, 3:30:21 pm (UTC)'!
 is: aSymbol
@@ -426,7 +425,7 @@ relationViewsWithSource: nodeView
 		(each is: #ConceptRelationView)
 		and: [each source == nodeView]]! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 8:50:24 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 22/Oct/2026, 3:25:45 pm (UTC)'!
 adjustPosition: nodeView around: center at: distance with: angle
 " We ensure this nodeView does not overlap existing morph "
 	| newAngle newDistance checkBlock|
@@ -441,7 +440,7 @@ adjustPosition: nodeView around: center at: distance with: angle
 	
 	" Try intermediate angle and further distance "
 	newDistance := distance.
-	5 timesRepeat: [
+	10 timesRepeat: [
 		newAngle := self angleStep  / 2.
 		newDistance := newDistance + distance * 0.5.
 		newAngle to: 360 by: self angleStep do: [:anAngle | 
@@ -451,7 +450,7 @@ adjustPosition: nodeView around: center at: distance with: angle
 	^ nil
 		! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 20/Oct/2026, 9:49:18 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 22/Oct/2026, 3:40:15 pm (UTC)'!
 insertTargets: nodes from: remainingNodes centeredAt: center 
 	| nodeToInsert nodePosition nodeAngle view nodeDistance array |
 	nodeAngle := 0.
@@ -462,7 +461,7 @@ insertTargets: nodes from: remainingNodes centeredAt: center
 			nodePosition := center + (Point r: nodeDistance degrees: nodeAngle).
 			view := self nodeViewFor: node at: nodePosition.
 			view isOverlapping 
-				ifTrue: [
+				ifTrue: [ 'adjusting...' print.
 					array := self adjustPosition: view around: center at: nodeDistance with: nodeAngle.
 					array ifNotNil: [
 						nodeDistance := array first.
@@ -505,16 +504,16 @@ nodeViewFor: node at: position
 		view morphCenter: position].
 	^ view! !
 
-!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 21/Oct/2026, 5:01:02 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 22/Oct/2026, 3:47:42 pm (UTC)'!
 updateCanvas
 	| topNodes node view center nodeAngle nodeDistance array |
 	self removeAllMorphs.
 	center := extent // 2.
 	nodeAngle := 0.
 	nodeDistance := self nodeDistance.
-	" Top nodes strategies. First nodes with a hight source rate
-	topNodes := self model topNodes."
-	topNodes := self model nodes asOrderedCollection .
+	" Top nodes strategies. First nodes with a hight source rate"
+	topNodes := self model topNodes.
+	"topNodes := self model nodes asOrderedCollection ."
 	[topNodes notEmpty] whileTrue: [
 		node := topNodes removeAt: 1.
 		view := self nodeViewFor: node at: center + (Point r: nodeDistance degrees: nodeAngle).
@@ -523,7 +522,8 @@ updateCanvas
 				array := self adjustPosition: view around: center at: nodeDistance with: nodeAngle.
 				array ifNotNil: [
 					nodeDistance := array first.
-					nodeAngle := array second] ].
+					nodeAngle := array second]
+					ifNil: ['no space' print ]].
 		nodeAngle := nodeAngle + self angleStep.
 		(self model relationsWithSource: node) ifNotEmpty: [:relations |
 			self 
@@ -537,7 +537,7 @@ updateCanvas
 			target: (self nodeView: relation target) ::
 			model: relation.
 		self addMorphBack: view].
-	self setExtent.! !
+	self setExtent! !
 
 !ConceptMapCanvas methodsFor: 'updating' stamp: 'hlsf 18/Oct/2026, 1:54:25 pm (UTC)'!
 updateColor
@@ -551,13 +551,13 @@ initialize
 	self morphExtent: 2000@2000.
 	! !
 
-!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 21/Oct/2026, 4:41:45 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 22/Oct/2026, 3:43:32 pm (UTC)'!
 angleStep
-	^ 30! !
+	^ 45! !
 
-!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 21/Oct/2026, 4:40:34 pm (UTC)'!
+!ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 22/Oct/2026, 3:43:50 pm (UTC)'!
 nodeDistance
-	^ 400! !
+	^ 350! !
 
 !ConceptMapCanvas methodsFor: 'geometry' stamp: 'hlsf 18/Oct/2026, 11:37:40 am (UTC)'!
 setExtent
@@ -586,10 +586,11 @@ model
 model: anObject
 	model := anObject! !
 
-!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 21/Oct/2026, 4:26:39 pm (UTC)'!
+!ConceptNodeView methodsFor: 'accessing' stamp: 'hlsf 22/Oct/2026, 3:10:51 pm (UTC)'!
 thickness: integer
 	self borderWidth: integer.
-	(owner relationViewsWithSource: self) do: [:relationView | relationView width: integer]! !
+	(owner relationViewsWithSource: self) do: [:relationView | relationView width: integer].
+	owner redrawNeeded ! !
 
 !ConceptNodeView methodsFor: 'initialization' stamp: 'hlsf 17/Oct/2026, 1:22:17 pm (UTC)'!
 defaultBorderColor
@@ -653,3 +654,7 @@ mouseMove: event localPosition: localPosition
 	self setProperty: #prevPosition toValue: newPos.	
 	self canvas setExtent;
 		redrawNeeded ! !
+
+!ConceptNodeView methodsFor: 'as yet unclassified' stamp: 'hlsf 22/Oct/2026, 3:05:49 pm (UTC)'!
+contents: aString
+	super contents: (aString asString truncateWithElipsisTo: 25)! !
